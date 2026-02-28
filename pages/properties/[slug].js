@@ -1,75 +1,83 @@
-import { useRouter } from "next/router";
-import Image from "next/image";
+import { createClient } from "@supabase/supabase-js";
 import Layout from "@/components/Layout";
 import ContactForm from "@/components/ContactForm";
-import { getPropertyBySlug } from "@/data/properties";
 
-export default function PropertyDetailPage() {
-  const router = useRouter();
-  const { slug } = router.query;
-  const property = slug ? getPropertyBySlug(slug) : null;
+// Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
+export default function PropertyDetailPage({ property }) {
   if (!property) {
     return (
-      <Layout title="Property not found">
-        <section className="section">
-          <div className="container section__narrow">
-            <h1 className="section__title">Property not found</h1>
-            <p className="section__subtitle">The property you are looking for may have been sold or is temporarily offline.</p>
-          </div>
-        </section>
+      <Layout>
+        <div className="py-20 text-center">
+          <h1 className="text-3xl font-bold">Property not found</h1>
+        </div>
       </Layout>
     );
   }
 
   return (
-    <Layout title={property.title}>
-      <article className="section">
-        <div className="container property-detail">
-          <div className="property-detail__media">
-            <div className="property-detail__hero">
-              <Image
-                src={property.heroImage}
-                alt={property.title}
-                fill
-                className="property-detail__hero-image"
-                sizes="(min-width: 1024px) 60vw, 100vw"
-              />
-              {property.badge && <span className="property-detail__badge">{property.badge}</span>}
-            </div>
-            <div className="property-detail__thumbs">
-              {property.gallery.map((src) => (
-                <div key={src} className="property-detail__thumb">
-                  <Image src={src} alt={property.title} fill className="property-detail__thumb-image" sizes="200px" />
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="property-detail__content">
-            <h1 className="property-detail__title">{property.title}</h1>
-            <p className="property-detail__location">{property.location}</p>
-            <p className="property-detail__price">{property.price}</p>
-            <div className="property-detail__meta">
-              <span>{property.type}</span>
-              <span>{property.bedrooms} bedrooms</span>
-              <span>{property.bathrooms} bathrooms</span>
-              <span>{property.area}</span>
-              <span className="property-detail__status">{property.status}</span>
-            </div>
-            <p className="property-detail__description">{property.description}</p>
-            <ul className="checklist">
-              {property.highlights.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-            <div className="property-detail__cta">
-              <h2>Book a private viewing</h2>
-              <p>Share your details and preferred time and our team will arrange a confidential inspection.</p>
-              <ContactForm compact />
-            </div>
-          </div>
+    <Layout>
+      <section className="max-w-6xl mx-auto px-6 py-16">
+
+        {/* Image */}
+        <div className="mb-8">
+          <img
+            src={property.image_url || "/placeholder.jpg"}
+            alt={property.title}
+            className="w-full h-[500px] object-cover rounded-xl"
+          />
         </div>
-      </article>
+
+        {/* Details */}
+        <h1 className="text-4xl font-bold mb-4">
+          {property.title}
+        </h1>
+
+        <p className="text-purple-600 text-xl mb-4">
+          ₦{property.price?.toLocaleString()}
+        </p>
+
+        <p className="text-gray-600 mb-6">
+          {property.location}
+        </p>
+
+        <p className="text-gray-700 mb-10">
+          {property.description}
+        </p>
+
+        {/* Contact Form */}
+        <ContactForm property={property} />
+
+      </section>
     </Layout>
   );
+}
+
+
+// Fetch property from Supabase
+export async function getServerSideProps({ params }) {
+
+  const { data, error } = await supabase
+    .from("properties")
+    .select("*")
+    .eq("slug", params.slug)
+    .single();
+
+  if (error || !data) {
+    return {
+      props: {
+        property: null,
+      },
+    };
+  }
+
+  return {
+    props: {
+      property: data,
+    },
+  };
 }

@@ -1,17 +1,42 @@
 import HeroSlider from "@/components/HeroSlider";
 import PropertyGrid from "@/components/PropertyGrid";
-import properties from "@/data/properties";
+import { createClient } from "@supabase/supabase-js";
 
-export default function Home() {
+// Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
+
+export default function Home({ properties }) {
   return (
     <>
       <HeroSlider />
 
-      <PropertyGrid
-        properties={properties}
-        title="Featured Properties"
-        subtitle="Exclusive luxury listings curated for you"
-      />
+      <PropertyGrid properties={properties} />
     </>
   );
+}
+
+// Server-side fetch from Supabase
+export async function getServerSideProps() {
+  const { data, error } = await supabase
+    .from("properties")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Supabase fetch error:", error);
+    return {
+      props: {
+        properties: [],
+      },
+    };
+  }
+
+  return {
+    props: {
+      properties: data || [],
+    },
+  };
 }

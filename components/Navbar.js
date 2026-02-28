@@ -3,12 +3,10 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { supabase } from "@/lib/supabase/client";
 import LogoutButton from "./LogoutButton";
 
 export default function Navbar() {
-
-  const supabase = createClient();
 
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -185,12 +183,10 @@ border: scrolled ? "1px solid rgba(255,255,255,0.3)" : "none",
 
 <div style={styles.container}>
 
-
 <Link href="/" style={styles.logoContainer}>
 <img src="/logo.png" alt="Fantabrand Logo" style={styles.logoImage} />
 <span style={styles.logoText}>Fantabrand</span>
 </Link>
-
 
 <nav style={styles.desktopNav} ref={navRef}>
 
@@ -214,24 +210,15 @@ opacity: indicatorStyle.opacity,
 }}
 />
 
-
-{/* ================= AUTH BUTTONS ================= */}
-
-{/* ================= AUTH BUTTONS ================= */}
-
 {!user && (
-
   <Link href="/login" style={styles.admin}>
     Login
   </Link>
-
 )}
 
 {user && (
-
   <div style={{ position: "relative" }}>
 
-    {/* Avatar Circle */}
     <div
       onClick={() => setMenuOpen(!menuOpen)}
       style={{
@@ -245,51 +232,37 @@ opacity: indicatorStyle.opacity,
         justifyContent: "center",
         fontWeight: "600",
         cursor: "pointer",
-        userSelect: "none",
       }}
     >
       {user.email.charAt(0).toUpperCase()}
     </div>
 
-    {/* Notification Badge for Admin */}
     {role === "admin" && leadCount > 0 && (
       <span style={styles.badge}>
         {leadCount}
       </span>
     )}
 
-    {/* Dropdown */}
     {menuOpen && (
-      <div
-        style={{
-          position: "absolute",
-          right: 0,
-          top: "45px",
-          background: "#fff",
-          borderRadius: "10px",
-          boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
-          padding: "10px 0",
-          minWidth: "180px",
-          zIndex: 999,
-        }}
-      >
-
+      <div style={{
+        position: "absolute",
+        right: 0,
+        top: "45px",
+        background: "#fff",
+        borderRadius: "10px",
+        boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
+        padding: "10px 0",
+        minWidth: "180px",
+        zIndex: 999,
+      }}>
         {role === "admin" && (
-          <Link
-            href="/admin"
-            style={styles.dropdownItem}
-            onClick={() => setMenuOpen(false)}
-          >
+          <Link href="/admin" style={styles.dropdownItem}>
             Admin Dashboard
           </Link>
         )}
 
         {role === "user" && (
-          <Link
-            href="/dashboard"
-            style={styles.dropdownItem}
-            onClick={() => setMenuOpen(false)}
-          >
+          <Link href="/dashboard" style={styles.dropdownItem}>
             User Dashboard
           </Link>
         )}
@@ -302,22 +275,6 @@ opacity: indicatorStyle.opacity,
     )}
 
   </div>
-
-)}
-
-
-{user && role === "user" && (
-
-<div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-
-<Link href="/dashboard" style={styles.admin}>
-Dashboard
-</Link>
-
-<LogoutButton />
-
-</div>
-
 )}
 
 </nav>
@@ -349,40 +306,34 @@ paddingBottom: "6px",
 
 
 const styles = {
-
 container: {
 padding: "18px 24px",
 display: "flex",
 justifyContent: "space-between",
 alignItems: "center",
 },
-
 logoContainer: {
 display: "flex",
 alignItems: "center",
 gap: "10px",
 textDecoration: "none",
 },
-
 logoImage: {
 height: "34px",
 width: "34px",
 objectFit: "contain",
 },
-
 logoText: {
 fontSize: "22px",
 fontWeight: "bold",
 color: "#6a0dad",
 },
-
 desktopNav: {
 display: "flex",
 gap: "28px",
 alignItems: "center",
 position: "relative",
 },
-
 admin: {
 background: "linear-gradient(135deg,#6a0dad,#c77dff)",
 color: "#fff",
@@ -390,7 +341,6 @@ padding: "7px 16px",
 borderRadius: "8px",
 textDecoration: "none",
 },
-
 badge: {
 position: "absolute",
 top: "-6px",
@@ -403,10 +353,10 @@ fontSize: "11px",
 fontWeight: "700",
 },
 dropdownItem: {
-  display: "block",
-  padding: "10px 15px",
-  textDecoration: "none",
-  color: "#111",
-  fontSize: "14px",
+display: "block",
+padding: "10px 15px",
+textDecoration: "none",
+color: "#111",
+fontSize: "14px",
 },
 };
