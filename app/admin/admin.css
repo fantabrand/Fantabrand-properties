@@ -1,0 +1,66 @@
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.admin-sidebar {
+  width: 240px;
+  background: #020a2a;
+  color: white;
+  padding: 20px;
+}
+
+.admin-sidebar h2 {
+  margin-bottom: 20px;
+}
+
+.admin-sidebar nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar a {
+  color: white;
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+
+.admin-sidebar a:hover {
+  color: #60a5fa;
+}
+
+/* MAIN CONTENT — FIX IS HERE */
+.admin-content {
+  flex: 1;
+  padding: 30px;
+  background: #f9fafb;
+  color: #111827; /* FORCE DARK TEXT */
+}
+
+/* FORM */
+.admin-content form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+}
+
+.admin-content input,
+.admin-content textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  color: #111; /* FORCE TEXT VISIBLE */
+}
+
+.admin-content button {
+  background: #020a2a;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
