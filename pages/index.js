@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase/client";
 import HeroSlider from "../components/HeroSlider";
+import WhyChoose from "../components/WhyChoose"; // ✅ added
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
 
@@ -72,6 +73,9 @@ export default function Home() {
         </div>
 
       </section>
+
+      {/* WHY CHOOSE US SECTION ✅ */}
+      <WhyChoose />
 
     </main>
   );

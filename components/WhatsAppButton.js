@@ -1,8 +1,6 @@
-"use client";
-
 export default function WhatsAppButton() {
 
-  const phoneNumber = "2349063504797"; // replace with your real number
+  const phoneNumber = "2349063504797";
 
   const message = encodeURIComponent(
     "Hello Fantabrand Properties, I am interested in your property listings."

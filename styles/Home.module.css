@@ -1,6 +1,6 @@
 .home {
-  background: #0f0f14;
-  color: white;
+  background: #ffffff;
+  color: rgb(255, 255, 255);
 }
 
 /* HERO */
@@ -111,7 +111,7 @@
 
 .featureSection {
   padding: 100px 0;
-  background: #0f0f14;
+  background: #fdfdfd;
 }
 
 .grid {
