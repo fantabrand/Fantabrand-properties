@@ -1,0 +1,44 @@
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background: linear-gradient(180deg, #111118, #191926);
+  border-right: 1px solid rgba(255,255,255,0.05);
+  padding: 30px 20px;
+  position: fixed;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 40px;
+  background: linear-gradient(90deg, #a855f7, #6d28d9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.link {
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: #9ca3af;
+  text-decoration: none;
+  transition: 0.25s;
+}
+
+.link:hover {
+  background: rgba(168,85,247,0.1);
+  color: white;
+}
+
+.active {
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #a855f7, #6d28d9);
+  color: white;
+  text-decoration: none;
+}

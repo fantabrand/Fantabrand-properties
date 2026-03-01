@@ -1,16 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase/client";
+import { useRouter } from "next/router";
 
-export default function AddProperty() {
+export default function AddPropertyPage() {
+
+  const router = useRouter();
+
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  async function checkUser() {
+
+    const { data, error } = await supabase.auth.getUser();
+
+    if (error || !data.user) {
+      router.push("/login");
+      return;
+    }
+
+    setCheckingAuth(false);
+  }
 
   async function handleSubmit(e) {
+
     e.preventDefault();
 
     if (!image) {
@@ -18,117 +39,106 @@ export default function AddProperty() {
       return;
     }
 
-    setLoading(true);
+    const fileName = `${Date.now()}-${image.name}`;
 
-    try {
+    // Upload image
+    const { error: uploadError } = await supabase.storage
+      .from("property-images")
+      .upload(fileName, image);
 
-      const fileName = `${Date.now()}-${image.name}`;
-
-      // Upload image to Supabase Storage
-      const { error: uploadError } = await supabase.storage
-        .from("property-images")
-        .upload(fileName, image);
-
-      if (uploadError) {
-        console.error(uploadError);
-        alert("Image upload failed");
-        setLoading(false);
-        return;
-      }
-
-      // Get public URL
-      const { data } = supabase.storage
-        .from("property-images")
-        .getPublicUrl(fileName);
-
-      const image_url = data.publicUrl;
-
-      // Insert property into database
-      const { error: dbError } = await supabase
-        .from("properties")
-        .insert([
-          {
-            title,
-            price,
-            location,
-            description,
-            image_url,
-          },
-        ]);
-
-      if (dbError) {
-        console.error(dbError);
-        alert("Database insert failed");
-        setLoading(false);
-        return;
-      }
-
-      alert("Property uploaded successfully!");
-
-      // Reset form
-      setTitle("");
-      setPrice("");
-      setLocation("");
-      setDescription("");
-      setImage(null);
-
-    } catch (error) {
-      console.error(error);
-      alert("Unexpected error occurred");
+    if (uploadError) {
+      alert("Image upload failed");
+      return;
     }
 
-    setLoading(false);
+    // Get public URL
+    const { data } = supabase.storage
+      .from("property-images")
+      .getPublicUrl(fileName);
+
+    const image_url = data.publicUrl;
+
+    // Insert property
+    const { error } = await supabase
+      .from("properties")
+      .insert([
+        {
+          title,
+          price,
+          location,
+          description,
+          image_url,
+          gallery: image_url
+        },
+      ]);
+
+    if (error) {
+      alert("Property save failed");
+    } else {
+      alert("Property uploaded successfully");
+      router.push("/admin");
+    }
+  }
+
+  if (checkingAuth) {
+    return (
+      <div className="p-10 text-xl">
+        Checking authentication...
+      </div>
+    );
   }
 
   return (
-    <div style={{ maxWidth: "600px", margin: "50px auto" }}>
-      <h1>Add Property</h1>
 
-      <form onSubmit={handleSubmit}>
+    <div className="max-w-2xl mx-auto p-10">
+
+      <h1 className="text-3xl font-bold mb-6">
+        Add New Property
+      </h1>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
 
         <input
-          placeholder="Title"
-          value={title}
+          placeholder="Property Title"
+          className="w-full border p-3 rounded"
           onChange={(e) => setTitle(e.target.value)}
           required
         />
-        <br /><br />
 
         <input
           placeholder="Price"
-          value={price}
+          className="w-full border p-3 rounded"
           onChange={(e) => setPrice(e.target.value)}
           required
         />
-        <br /><br />
 
         <input
           placeholder="Location"
-          value={location}
+          className="w-full border p-3 rounded"
           onChange={(e) => setLocation(e.target.value)}
           required
         />
-        <br /><br />
 
         <textarea
           placeholder="Description"
-          value={description}
+          className="w-full border p-3 rounded"
           onChange={(e) => setDescription(e.target.value)}
         />
-        <br /><br />
 
         <input
           type="file"
           onChange={(e) => setImage(e.target.files[0])}
           required
         />
-        <br /><br />
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Uploading..." : "Upload Property"}
+        <button
+          className="bg-purple-700 hover:bg-purple-800 text-white px-6 py-3 rounded-lg"
+        >
+          Upload Property
         </button>
 
       </form>
+
     </div>
   );
 }
