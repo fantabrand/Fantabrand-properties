@@ -193,6 +193,10 @@ border: scrolled ? "1px solid rgba(255,255,255,0.3)" : "none",
 <NavLink href="/" active={isActive("/")}>Home</NavLink>
 <NavLink href="/properties" active={isActive("/properties")}>Properties</NavLink>
 <NavLink href="/services" active={isActive("/services")}>Services</NavLink>
+
+{/* ✅ NEWS LINK ADDED */}
+<NavLink href="/news" active={isActive("/news")}>News</NavLink>
+
 <NavLink href="/about" active={isActive("/about")}>About</NavLink>
 <NavLink href="/contact" active={isActive("/contact")}>Contact</NavLink>
 
