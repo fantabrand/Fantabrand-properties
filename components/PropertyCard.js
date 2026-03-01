@@ -1,36 +1,42 @@
-"use client";
-
 import Link from "next/link";
 
 export default function PropertyCard({ property }) {
-
   return (
+    <Link href={`/properties/${property.id}`}>
+      
+      <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-2 transition duration-300 cursor-pointer">
 
-    <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        {/* Image */}
+        <div className="relative overflow-hidden">
+          
+          <img
+            src={property.image_url}
+            alt={property.title}
+            className="w-full h-64 object-cover hover:scale-110 transition duration-500"
+          />
 
-      <img
-        src={property.image_url}
-        alt={property.title}
-        className="w-full h-64 object-cover"
-      />
+          {/* Price badge */}
+          <div className="absolute bottom-3 left-3 bg-gradient-to-r from-purple-500 to-purple-700 text-white text-sm font-semibold px-3 py-1 rounded-md shadow">
+            ₦{property.price?.toLocaleString()}
+          </div>
 
-      <div className="p-4">
+        </div>
 
-        <h2 className="text-xl font-semibold">
-          {property.title}
-        </h2>
+        {/* Content */}
+        <div className="p-4">
 
-        <p className="text-purple-700 font-bold">
-          {property.price}
-        </p>
+          <h3 className="text-gray-900 text-lg font-semibold">
+            {property.title}
+          </h3>
 
-        <p className="text-gray-500">
-          {property.location}
-        </p>
+          <p className="text-gray-500 text-sm mt-1">
+            {property.location}
+          </p>
+
+        </div>
 
       </div>
 
-    </div>
-
+    </Link>
   );
 }

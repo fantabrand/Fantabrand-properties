@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase/client";
 import HeroSlider from "../components/HeroSlider";
-import WhyChoose from "../components/WhyChoose"; // ✅ added
+import WhyChoose from "../components/WhyChoose";
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
 
@@ -14,19 +14,22 @@ export default function Home() {
   }, []);
 
   async function fetchProperties() {
-    const { data } = await supabase
+
+    const { data, error } = await supabase
       .from("properties")
       .select("*")
       .order("created_at", { ascending: false })
       .limit(6);
 
-    setProperties(data || []);
+    if (!error) {
+      setProperties(data || []);
+    }
   }
 
   return (
     <main className={styles.home}>
 
-      {/* HERO */}
+      {/* HERO SECTION */}
       <HeroSlider />
 
       {/* FEATURED PROPERTIES */}
@@ -45,7 +48,12 @@ export default function Home() {
           <div className={styles.grid}>
 
             {properties.map((property) => (
-              <div key={property.id} className={styles.card}>
+
+              <Link
+                key={property.id}
+                href={`/properties/${property.id}`}
+                className={styles.card}
+              >
 
                 <img
                   src={property.image_url}
@@ -54,27 +62,44 @@ export default function Home() {
                 />
 
                 <div className={styles.cardContent}>
-                  <h3>{property.title}</h3>
-                  <p>{property.location}</p>
-                  <strong>₦{property.price}</strong>
+
+                  <h3 className={styles.cardTitle}>
+                    {property.title}
+                  </h3>
+
+                  <p className={styles.cardLocation}>
+                    {property.location}
+                  </p>
+
+                  <p className={styles.cardPrice}>
+                    ₦{property.price?.toLocaleString()}
+                  </p>
+
                 </div>
 
-              </div>
+              </Link>
+
             ))}
 
           </div>
 
+          {/* VIEW ALL BUTTON */}
           <div className={styles.center}>
-            <Link href="/properties" className={styles.primaryBtn}>
+
+            <Link
+              href="/properties"
+              className={styles.primaryBtn}
+            >
               View All Properties
             </Link>
+
           </div>
 
         </div>
 
       </section>
 
-      {/* WHY CHOOSE US SECTION ✅ */}
+      {/* WHY CHOOSE US */}
       <WhyChoose />
 
     </main>

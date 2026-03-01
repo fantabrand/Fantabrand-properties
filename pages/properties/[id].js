@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase/client";
+import { supabase } from "../../lib/supabase/client";
 
 export default function PropertyDetails() {
 
@@ -9,177 +9,238 @@ export default function PropertyDetails() {
 
   const [property, setProperty] = useState(null);
 
-  const [clientName, setClientName] = useState("");
-  const [clientEmail, setClientEmail] = useState("");
-  const [clientPhone, setClientPhone] = useState("");
-  const [message, setMessage] = useState("");
-
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-
-    if (id) {
-      fetchProperty();
-    }
-
+    if (id) fetchProperty();
   }, [id]);
 
   async function fetchProperty() {
-
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("properties")
       .select("*")
       .eq("id", id)
       .single();
 
-    if (!error) {
-
-      setProperty(data);
-
-    } else {
-
-      console.error(error);
-
-    }
-
-    setLoading(false);
+    setProperty(data);
   }
 
-  async function handleBooking(e) {
+  if (!property) return null;
 
-    e.preventDefault();
+  // WhatsApp message
+  const whatsappMessage = encodeURIComponent(
+    `Hello Fantabrand Properties, I'm interested in "${property.title}". Please provide more details.`
+  );
 
-    const { error } = await supabase
-      .from("inspection_requests")
-      .insert([
-        {
-          property_id: property.id,
-          name: clientName,
-          email: clientEmail,
-          phone: clientPhone,
-          message: message,
-          status: "pending"
-        }
-      ]);
-
-    if (!error) {
-
-      alert("Inspection request submitted successfully!");
-
-      setClientName("");
-      setClientEmail("");
-      setClientPhone("");
-      setMessage("");
-
-    } else {
-
-      alert("Booking failed");
-
-      console.error(error);
-
-    }
-  }
-
-  if (loading) {
-
-    return (
-      <div className="p-10 text-xl">
-        Loading property...
-      </div>
-    );
-  }
-
-  if (!property) {
-
-    return (
-      <div className="p-10">
-        Property not found
-      </div>
-    );
-  }
+  const whatsappLink = `https://wa.me/2349063504797?text=${whatsappMessage}`;
 
   return (
+    <div className="property-page">
 
-    <div className="max-w-5xl mx-auto p-10">
+      <div className="container">
 
-      {/* IMAGE */}
-      <img
-        src={property.image_url}
-        className="w-full h-96 object-cover rounded-xl mb-6"
-      />
+        <div className="layout">
 
-      {/* DETAILS */}
-      <h1 className="text-4xl font-bold mb-3">
-        {property.title}
-      </h1>
+          {/* IMAGE */}
+          <div className="image-wrapper">
+            <img
+              src={property.image_url}
+              alt={property.title}
+            />
+          </div>
 
-      <p className="text-purple-700 text-xl font-semibold mb-2">
-        ₦{property.price}
-      </p>
+          {/* DETAILS */}
+          <div className="details">
 
-      <p className="text-gray-600 mb-4">
-        {property.location}
-      </p>
+            <h1>{property.title}</h1>
 
-      <p className="text-gray-700 mb-10">
-        {property.description}
-      </p>
+            {/* PRICE + BUTTONS ROW */}
+            <div className="price-row">
 
-      {/* BOOKING FORM */}
-      <div className="bg-white shadow-lg p-8 rounded-xl">
+              <div className="price">
+                ₦{property.price?.toLocaleString()}
+              </div>
 
-        <h2 className="text-2xl font-bold mb-6">
-          Book Inspection
-        </h2>
+              <div className="actions">
 
-        <form
-          onSubmit={handleBooking}
-          className="space-y-4"
-        >
+                <a
+                  href={whatsappLink}
+                  target="_blank"
+                  className="whatsapp-btn"
+                >
+                  WhatsApp
+                </a>
 
-          <input
-            placeholder="Your Name"
-            className="w-full border p-3 rounded"
-            value={clientName}
-            onChange={(e) => setClientName(e.target.value)}
-            required
-          />
+                <button className="inspect-btn">
+                  Book Inspection
+                </button>
 
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full border p-3 rounded"
-            value={clientEmail}
-            onChange={(e) => setClientEmail(e.target.value)}
-            required
-          />
+              </div>
 
-          <input
-            placeholder="Phone"
-            className="w-full border p-3 rounded"
-            value={clientPhone}
-            onChange={(e) => setClientPhone(e.target.value)}
-            required
-          />
+            </div>
 
-          <textarea
-            placeholder="Message"
-            className="w-full border p-3 rounded"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
+            <p className="location">
+              {property.location}
+            </p>
 
-          <button
-            className="bg-purple-700 hover:bg-purple-800 text-white px-6 py-3 rounded-lg"
-          >
-            Submit Inspection Request
-          </button>
 
-        </form>
+            {/* FEATURES GRID */}
+            <div className="features">
+
+              <div className="feature">
+                <span className="label">Bedrooms</span>
+                <span className="value">{property.bedrooms || "--"}</span>
+              </div>
+
+              <div className="feature">
+                <span className="label">Bathrooms</span>
+                <span className="value">{property.bathrooms || "--"}</span>
+              </div>
+
+              <div className="feature">
+                <span className="label">Area</span>
+                <span className="value">{property.area || "--"} sqm</span>
+              </div>
+
+              <div className="feature">
+                <span className="label">Property Type</span>
+                <span className="value">{property.type || "Property"}</span>
+              </div>
+
+            </div>
+
+
+            {/* DESCRIPTION */}
+            <div className="description">
+              {property.description}
+            </div>
+
+          </div>
+
+        </div>
 
       </div>
 
-    </div>
 
+      <style jsx>{`
+
+        .property-page {
+          padding: 80px 20px;
+          background: #fff;
+        }
+
+        .container {
+          max-width: 1200px;
+          margin: auto;
+        }
+
+        .layout {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 60px;
+        }
+
+        .image-wrapper {
+          height: 400px;
+          overflow: hidden;
+          border-radius: 12px;
+        }
+
+        .image-wrapper img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .details h1 {
+          font-size: 32px;
+          margin-bottom: 15px;
+        }
+
+        .price-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 15px;
+          flex-wrap: wrap;
+          gap: 15px;
+        }
+
+        .price {
+          font-size: 26px;
+          font-weight: 700;
+        }
+
+        .actions {
+          display: flex;
+          gap: 10px;
+        }
+
+        .whatsapp-btn {
+          background: #25D366;
+          color: white;
+          padding: 10px 18px;
+          border-radius: 6px;
+          text-decoration: none;
+          font-weight: 500;
+        }
+
+        .inspect-btn {
+          background: black;
+          color: white;
+          border: none;
+          padding: 10px 18px;
+          border-radius: 6px;
+          cursor: pointer;
+        }
+
+        .location {
+          color: #777;
+          margin-bottom: 25px;
+        }
+
+        .features {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 20px;
+          margin-bottom: 30px;
+        }
+
+        .feature {
+          background: #f8f8f8;
+          padding: 15px;
+          border-radius: 8px;
+        }
+
+        .label {
+          display: block;
+          font-size: 13px;
+          color: #777;
+        }
+
+        .value {
+          font-size: 18px;
+          font-weight: 600;
+        }
+
+        .description {
+          line-height: 1.7;
+          color: #444;
+        }
+
+
+        @media (max-width: 900px) {
+
+          .layout {
+            grid-template-columns: 1fr;
+          }
+
+          .image-wrapper {
+            height: 280px;
+          }
+
+        }
+
+      `}</style>
+
+    </div>
   );
 }
