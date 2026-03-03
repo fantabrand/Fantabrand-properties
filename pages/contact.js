@@ -1,30 +1,131 @@
-import Layout from "@/components/Layout";
-import ContactForm from "@/components/ContactForm";
+import { useState } from "react";
+import WhatsAppFloat from "../components/WhatsAppFloat";
+import ExecutiveChat from "../components/ExecutiveChat";
+import { supabase } from "../lib/supabase/client";
+import styles from "../styles/Contact.module.css";
 
-export default function ContactPage() {
+export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: ""
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const { error } = await supabase
+      .from("contact")
+      .insert([formData]);
+
+    if (!error) {
+      setSuccess(true);
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        message: ""
+      });
+    }
+
+    setLoading(false);
+  };
+
   return (
-    <Layout title="Contact">
-      <section className="section">
-        <div className="container section__split">
-          <div>
-            <h1 className="section__title">Let&apos;s talk about your next property move.</h1>
-            <p className="section__subtitle">
-              Whether you are buying, selling, developing or simply exploring options, Fantabrand Properties is available
-              to guide you with clear, data-informed advice.
-            </p>
-            <div className="contact-info">
-              <h2>Our office</h2>
-              <p>Ilorin, Kwara State, Nigeria</p>
-              <p>Phone: +234 (0) 000 000 0000</p>
-              <p>Email: hello@fantabrandproperties.com.ng</p>
-            </div>
+    <div className={styles.contactPage}>
+
+      <div className={styles.contactContainer}>
+<WhatsAppFloat />
+<ExecutiveChat />
+        {/* LEFT SIDE */}
+        <div className={styles.contactInfo}>
+          <h1>Let’s Start a Conversation</h1>
+          <p>
+            Whether you're an investor, buyer, or strategic partner,
+            Fantabrand Properties is ready to engage.
+          </p>
+
+          <div className={styles.infoBlock}>
+            <h4>Email</h4>
+            <span>info@fantabrandproperties.com</span>
           </div>
-          <div className="section__card">
-            <h2>Send us a message</h2>
-            <ContactForm />
+
+          <div className={styles.infoBlock}>
+            <h4>Phone</h4>
+            <span>+234 900 000 0000</span>
+          </div>
+
+          <div className={styles.infoBlock}>
+            <h4>Office</h4>
+            <span>Lagos, Nigeria</span>
           </div>
         </div>
-      </section>
-    </Layout>
+
+        {/* RIGHT SIDE FORM */}
+        <div className={styles.formWrapper}>
+          {success ? (
+            <div className={styles.successMessage}>
+              <h3>Message Sent Successfully</h3>
+              <p>Our team will respond to you shortly.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <input
+                type="text"
+                name="name"
+                placeholder="Full Name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+
+              <input
+                type="text"
+                name="phone"
+                placeholder="Phone Number"
+                value={formData.phone}
+                onChange={handleChange}
+              />
+
+              <textarea
+                name="message"
+                placeholder="Your Message"
+                rows="5"
+                value={formData.message}
+                onChange={handleChange}
+                required
+              />
+
+              <button type="submit" disabled={loading}>
+                {loading ? "Sending..." : "Send Message"}
+              </button>
+            </form>
+          )}
+        </div>
+
+      </div>
+
+    </div>
   );
 }

@@ -1,0 +1,19 @@
+.whatsapp {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: linear-gradient(135deg, #7c3aed, #9333ea);
+  color: white;
+  padding: 14px 22px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 15px 40px rgba(124, 58, 237, 0.4);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.whatsapp:hover {
+  transform: translateY(-5px);
+}

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase/client";
 import HeroSlider from "../components/HeroSlider";
+import RotatingProperties from "../components/RotatingProperties";
 import WhyChoose from "../components/WhyChoose";
-import PropertyCard from "../components/PropertyCard";
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
 
@@ -21,7 +21,7 @@ export default function Home() {
       .from("properties")
       .select("*")
       .order("created_at", { ascending: false })
-      .limit(6);
+      .limit(12); // allow enough for rotation
 
     setProperties(data || []);
   }
@@ -63,21 +63,9 @@ export default function Home() {
             Handpicked premium real estate opportunities
           </p>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: "30px",
-              marginTop: "40px",
-            }}
-          >
-            {properties.map((property) => (
-              <PropertyCard
-                key={property.id}
-                property={property}
-              />
-            ))}
+          {/* ✅ ROTATING PROPERTIES */}
+          <div style={{ marginTop: "40px" }}>
+            <RotatingProperties properties={properties} />
           </div>
 
           <div className={styles.center}>
@@ -108,9 +96,7 @@ export default function Home() {
               className={styles.featuredNews}
             >
               <img
-                src={
-                  news[heroIndex].image_url || "/hero1.jpg"
-                }
+                src={news[heroIndex].image_url || "/hero1.jpg"}
                 alt={news[heroIndex].title}
               />
               <div className={styles.overlay} />

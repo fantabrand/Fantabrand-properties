@@ -32,9 +32,9 @@ export default function PropertyCard({ property }) {
 
             {/* FEATURES */}
             <div className={styles.features}>
-              <span>{property.bedrooms || 0} Beds</span>
-              <span>{property.bathrooms || 0} Baths</span>
-              <span>{property.size || 0} sqm</span>
+              <span>{property.bedrooms || 150} sqm</span>
+              <span>{property.bathrooms || 300} sqm</span>
+              <span>{property.size || 500} sqm</span>
             </div>
 
             <p className={styles.price}>
