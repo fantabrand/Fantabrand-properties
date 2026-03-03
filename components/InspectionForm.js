@@ -58,7 +58,7 @@ export default function InspectionForm({ property }) {
         .from("inspection_requests")   // ✅ FIXED TABLE NAME
         .insert({
           user_id: user.id,
-          property_id: property.id,
+          property_id: property.slug,
           preferred_date: date,       // ✅ FIXED COLUMN NAME
           status: "pending"
         });

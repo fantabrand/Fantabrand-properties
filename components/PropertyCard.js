@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function PropertyCard({ property }) {
   return (
-    <Link href={`/properties/${property.id}`}>
+    <Link href={`/properties/${property.slug}`}>
       
       <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-2 transition duration-300 cursor-pointer">
 

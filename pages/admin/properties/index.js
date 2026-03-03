@@ -31,7 +31,7 @@ export default function ManageProperties() {
 
       <h1>Manage Properties</h1>
 
-      <Link href="/admin/add-property" className={styles.addBtn}>
+      <Link href="/admin/properties/new" className={styles.addBtn}>
         + Add New Property
       </Link>
 
@@ -54,7 +54,7 @@ export default function ManageProperties() {
               <td>
 
                 <Link
-                  href={`/admin/edit-property?id=${property.id}`}
+                  href={`/admin/edit-property?id=${property.slug}`}
                   className={styles.editBtn}
                 >
                   Edit
