@@ -53,12 +53,9 @@ export default function ManageProperties() {
               <td>{property.location}</td>
               <td>
 
-                <Link
-                  href={`/admin/edit-property?id=${property.slug}`}
-                  className={styles.editBtn}
-                >
-                  Edit
-                </Link>
+               <Link href={`/admin/edit-property/${property.id}`}>
+  <button className="editBtn">Edit</button>
+</Link>
 
                 <button
                   onClick={() => deleteProperty(property.id)}

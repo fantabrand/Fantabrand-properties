@@ -10,9 +10,7 @@ export default function PropertyDetails() {
   const [property, setProperty] = useState(null);
 
   useEffect(() => {
-    if (slug) {
-      fetchProperty();
-    }
+    if (slug) fetchProperty();
   }, [slug]);
 
   async function fetchProperty() {
@@ -22,41 +20,178 @@ export default function PropertyDetails() {
       .eq("slug", slug)
       .single();
 
-    if (!error) {
+    if (error) {
+      console.log(error);
+    } else {
       setProperty(data);
     }
   }
 
-  if (!property) return <p style={{ padding: "100px" }}>Loading...</p>;
+  if (!property) return <p className={styles.loading}>Loading...</p>;
+
+  // SAFE JSON PARSING
+  const whyLocation = property.why_location
+    ? JSON.parse(property.why_location)
+    : [];
+
+  const attractions = property.environment_attractions
+    ? JSON.parse(property.environment_attractions)
+    : [];
+
+  const features = property.estate_features
+    ? JSON.parse(property.estate_features)
+    : [];
+
+  const paymentPlan = property.payment_plan
+    ? JSON.parse(property.payment_plan)
+    : {};
+
+  const whatsappUrl = `https://wa.me/2349063504797?text=${encodeURIComponent(
+    `Hello, I am interested in ${property.title}`
+  )}`;
 
   return (
     <div className={styles.container}>
+      <div className={styles.grid}>
+        {/* LEFT SIDE */}
+        <div className={styles.left}>
+          <h1 className={styles.title}>{property.title}</h1>
+          <p className={styles.subLocation}>{property.location}</p>
 
-      <div className={styles.imageSection}>
-        <img
-          src={property.image_url}
-          alt={property.title}
-          className={styles.image}
-        />
-      </div>
+          <img
+            src={property.image_url}
+            alt={property.title}
+            className={styles.heroImage}
+          />
 
-      <div className={styles.contentSection}>
-        <h1>{property.title}</h1>
+          {/* DESCRIPTION */}
+          <div className={styles.section}>
+            <h2>Description</h2>
+            <p>{property.description}</p>
+          </div>
 
-        <p className={styles.location}>
-          {property.location}
-        </p>
+          {/* WHY LOCATION */}
+          {whyLocation.length > 0 && (
+            <div className={styles.section}>
+              <h2>Why This Location</h2>
+              <ul>
+                {whyLocation.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-        <p className={styles.price}>
-          ₦{property.price?.toLocaleString()}
-        </p>
+          {/* ENVIRONMENT ATTRACTIONS */}
+          {attractions.length > 0 && (
+            <div className={styles.section}>
+              <h2>Environment Attractions</h2>
+              <ul>
+                {attractions.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-        <div className={styles.description}>
-          {property.description}
+          {/* ESTATE FEATURES */}
+          {features.length > 0 && (
+            <div className={styles.section}>
+              <h2>Estate Features</h2>
+
+              <div className={styles.featuresGrid}>
+                {features.map((item, index) => (
+                  <div key={index} className={styles.featureCard}>
+                    ✔ {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* PAYMENT PLAN */}
+          {Object.keys(paymentPlan).length > 0 && (
+            <div className={styles.section}>
+              <h2>Payment Plan</h2>
+
+              <div className={styles.paymentGrid}>
+                {Object.keys(paymentPlan).map((size) => (
+                  <div key={size} className={styles.paymentCard}>
+                    <h4>{size}</h4>
+                    <p>Outright: ₦{paymentPlan[size]?.outright || "-"}</p>
+                    <p>3 Months: ₦{paymentPlan[size]?.["3months"] || "-"}</p>
+                    <p>6 Months: ₦{paymentPlan[size]?.["6months"] || "-"}</p>
+                    <p>
+                      Initial Deposit: ₦
+                      {paymentPlan[size]?.initialDeposit || "-"}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-      </div>
+        {/* RIGHT SIDE - STICKY CARD */}
+        <div className={styles.right}>
+          <div className={styles.priceCard}>
+            <h1 className={styles.price}>₦{property.price}</h1>
+            <p className={styles.location}>{property.location}</p>
 
+            {/* TITLE DOCUMENT BADGE */}
+            {property.title_document && (
+              <div
+                style={{
+                  background: "#e6f4ea",
+                  color: "#137333",
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                  marginBottom: "15px",
+                  fontWeight: "600",
+                  textAlign: "center",
+                }}
+              >
+                📜 {property.title_document}
+              </div>
+            )}
+
+            {/* BROCHURE DOWNLOAD */}
+            {property.brochure_url && (
+              <a
+                href={property.brochure_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "block",
+                  marginBottom: "15px",
+                  textAlign: "center",
+                  padding: "12px",
+                  background: "#2563eb",
+                  color: "white",
+                  borderRadius: "8px",
+                  textDecoration: "none",
+                  fontWeight: "600",
+                }}
+              >
+                Download Brochure
+              </a>
+            )}
+
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.whatsapp}
+            >
+              Chat on WhatsApp
+            </a>
+
+            <button className={styles.inspectBtn}>
+              Book Inspection
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

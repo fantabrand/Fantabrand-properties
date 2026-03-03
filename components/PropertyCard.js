@@ -1,42 +1,58 @@
 import Link from "next/link";
+import styles from "../styles/PropertyCard.module.css";
 
 export default function PropertyCard({ property }) {
+  if (!property?.slug) return null;
+
+  const whatsappMessage = encodeURIComponent(
+    `Hello Fantabrand Properties, I am interested in ${property.title}.`
+  );
+
   return (
-    <Link href={`/properties/${property.slug}`}>
-      
-      <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-2 transition duration-300 cursor-pointer">
-
-        {/* Image */}
-        <div className="relative overflow-hidden">
-          
-          <img
-            src={property.image_url}
-            alt={property.title}
-            className="w-full h-64 object-cover hover:scale-110 transition duration-500"
-          />
-
-          {/* Price badge */}
-          <div className="absolute bottom-3 left-3 bg-gradient-to-r from-purple-500 to-purple-700 text-white text-sm font-semibold px-3 py-1 rounded-md shadow">
-            ₦{property.price?.toLocaleString()}
-          </div>
-
-        </div>
-
-        {/* Content */}
-        <div className="p-4">
-
-          <h3 className="text-gray-900 text-lg font-semibold">
-            {property.title}
-          </h3>
-
-          <p className="text-gray-500 text-sm mt-1">
-            {property.location}
-          </p>
-
-        </div>
-
+    <div className={styles.cardWrapper}>
+      {/* STATUS BADGE */}
+      <div className={styles.badge}>
+        {property.status || "For Sale"}
       </div>
 
-    </Link>
+      <Link href={`/properties/${property.slug}`}>
+        <div className={styles.card}>
+          <div className={styles.imageWrapper}>
+            <img
+              src={property.image_url || "/hero1.jpg"}
+              alt={property.title}
+              className={styles.image}
+            />
+            <div className={styles.overlay}></div>
+          </div>
+
+          <div className={styles.content}>
+            <h3 className={styles.title}>{property.title}</h3>
+            <p className={styles.location}>{property.location}</p>
+
+            {/* FEATURES */}
+            <div className={styles.features}>
+              <span>{property.bedrooms || 0} Beds</span>
+              <span>{property.bathrooms || 0} Baths</span>
+              <span>{property.size || 0} sqm</span>
+            </div>
+
+            <p className={styles.price}>
+              ₦{property.price?.toLocaleString()}
+            </p>
+          </div>
+        </div>
+      </Link>
+
+      {/* WHATSAPP BUTTON */}
+      <a
+        href={`https://wa.me/2349063504797?text=${whatsappMessage}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.whatsappBtn}
+      >
+        Inquire
+      </a>
+    </div>
   );
 }
