@@ -14,10 +14,9 @@
 }
 
 .slide {
-  flex: 0 0 33.3333%;
+  flex: 0 0 100%;
   padding: 0 15px;
   box-sizing: border-box;
-  transition: transform 0.4s ease;
 }
 
 .slide:hover {

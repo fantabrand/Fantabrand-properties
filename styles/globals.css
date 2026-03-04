@@ -12,11 +12,8 @@ body {
   padding: 0;
   background: #ffffff;
   color: #111111;
+  overflow-x: hidden;
 }
-
-/* =========================
-   WHY CHOOSE SECTION
-========================= */
 
 /* =========================
    WHY CHOOSE SECTION (WHITE LUXURY VERSION)
@@ -75,7 +72,7 @@ body {
   transform: translateY(-8px);
   border-color: #a855f7;
   background: #ffffff;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 /* ICON */
@@ -106,7 +103,6 @@ body {
 ========================= */
 
 @media (max-width: 768px) {
-
   .whychoose-section {
     padding: 70px 20px;
   }
@@ -114,8 +110,9 @@ body {
   .whychoose-header h2 {
     font-size: 28px;
   }
+}
 
-}/* =========================
+/* =========================
    WHATSAPP FLOAT BUTTON
 ========================= */
 
@@ -123,25 +120,17 @@ body {
   position: fixed;
   bottom: 25px;
   right: 25px;
-
   width: 60px;
   height: 60px;
-
   background: #25D366;
   color: white;
-
   border-radius: 50%;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   cursor: pointer;
-
   transition: all 0.3s ease;
-
   z-index: 9999;
 }
 
@@ -149,14 +138,11 @@ body {
   transform: scale(1.1);
   background: #1ebe5d;
 }
+
 /* =========================
    REMOVE DEFAULT LINK UNDERLINE
 ========================= */
 
-a,
-a:link,
-a:visited,
-a:hover,
-a:active {
-  text-decoration: none !important;
+a {
+  text-decoration: none;
 }

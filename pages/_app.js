@@ -13,31 +13,34 @@ const raleway = Raleway({
 });
 
 export default function App({ Component, pageProps }) {
-
   const router = useRouter();
 
-  // Hide layout & assistant on admin routes
   const isAdminRoute = router.pathname.startsWith("/admin");
 
   return (
-    <main
+    <div
       className={raleway.variable}
-      style={{ fontFamily: "var(--font-raleway)" }}
+      style={{
+        fontFamily: "var(--font-raleway)",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
     >
-
-      {/* Navbar (Hidden on admin) */}
+      {/* Navbar */}
       {!isAdminRoute && <Navbar />}
 
-      {/* Page Content */}
-      <Component {...pageProps} />
+      {/* Main Content Area */}
+      <div style={{ flex: 1 }}>
+        <Component {...pageProps} />
+      </div>
 
-      {/* Footer (Hidden on admin) */}
+      {/* Footer */}
       {!isAdminRoute && <Footer />}
 
-      {/* Global Floating Features (Hidden on admin) */}
+      {/* Floating Components */}
       {!isAdminRoute && <ExecutiveChat />}
       {!isAdminRoute && <WhatsAppFloat />}
-
-    </main>
+    </div>
   );
 }

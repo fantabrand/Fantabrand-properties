@@ -12,7 +12,9 @@ export default function Navbar() {
 
   const lastScrollY = useRef(0);
 
-  // Scroll behavior
+  /* =========================
+     Scroll Behavior
+  ========================= */
   useEffect(() => {
     const handleScroll = () => {
       const currentScroll = window.scrollY;
@@ -32,14 +34,33 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close menu on route change
+  /* =========================
+     Close Menu On Route Change
+  ========================= */
   useEffect(() => {
     setMenuOpen(false);
   }, [router.pathname]);
 
-  // Lock body scroll when menu open
+  /* =========================
+     Body Scroll Lock (Fully Safe)
+  ========================= */
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "auto";
+    if (menuOpen) {
+      // Prevent layout shift when scrollbar disappears
+      const scrollbarWidth =
+        window.innerWidth - document.documentElement.clientWidth;
+
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    };
   }, [menuOpen]);
 
   return (
@@ -75,7 +96,9 @@ export default function Navbar() {
             </Link>
 
             <div
-              className={`${styles.hamburger} ${menuOpen ? styles.active : ""}`}
+              className={`${styles.hamburger} ${
+                menuOpen ? styles.active : ""
+              }`}
               onClick={() => setMenuOpen(!menuOpen)}
             >
               <span></span>
@@ -88,7 +111,9 @@ export default function Navbar() {
 
       {/* Overlay */}
       <div
-        className={`${styles.overlay} ${menuOpen ? styles.show : ""}`}
+        className={`${styles.overlay} ${
+          menuOpen ? styles.show : ""
+        }`}
         onClick={() => setMenuOpen(false)}
       />
 

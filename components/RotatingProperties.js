@@ -1,20 +1,15 @@
-import { useEffect, useState, useRef } from "react";
-import PropertyCard from "./PropertyCard";
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase/client";
 import styles from "../styles/RotatingProperties.module.css";
 
-export default function RotatingProperties({ properties }) {
+export default function RotatingProperties({ properties = [] }) {
   const [index, setIndex] = useState(0);
-  const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
-
-  const visibleCount = 3;
-
-  if (!properties || properties.length === 0) return null;
 
   const total = properties.length;
 
-  // Auto rotate
   useEffect(() => {
+    if (total === 0) return;
+
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % total);
     }, 4000);
@@ -22,61 +17,44 @@ export default function RotatingProperties({ properties }) {
     return () => clearInterval(interval);
   }, [total]);
 
-  // Swipe handlers
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.targetTouches[0].clientX;
-  };
+  if (!properties || total === 0) {
+    return null;
+  }
 
-  const handleTouchMove = (e) => {
-    touchEndX.current = e.targetTouches[0].clientX;
-  };
+  const property = properties[index];
 
-  const handleTouchEnd = () => {
-    const distance = touchStartX.current - touchEndX.current;
+  let imageUrl = null;
 
-    if (distance > 50) {
-      setIndex((prev) => (prev + 1) % total);
+  if (property.image) {
+    if (property.image.startsWith("http")) {
+      imageUrl = property.image;
+    } else {
+      const { data } = supabase.storage
+        .from("property-images")
+        .getPublicUrl(property.image);
+
+      imageUrl = data?.publicUrl;
     }
-
-    if (distance < -50) {
-      setIndex((prev) => (prev - 1 + total) % total);
-    }
-  };
+  }
 
   return (
     <div className={styles.wrapper}>
-      
-      <div
-        className={styles.viewport}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        <div
-          className={styles.track}
-          style={{
-            transform: `translateX(-${index * (100 / visibleCount)}%)`,
-          }}
-        >
-          {properties.map((property) => (
-            <div key={property.id} className={styles.slide}>
-              <PropertyCard property={property} />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Dots only */}
-      <div className={styles.dots}>
-        {properties.map((_, i) => (
-          <span
-            key={i}
-            className={i === index ? styles.activeDot : ""}
-            onClick={() => setIndex(i)}
+      <div className={styles.card}>
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={property.title}
+            className={styles.image}
           />
-        ))}
-      </div>
+        ) : (
+          <div className={styles.imagePlaceholder}>
+            Image unavailable
+          </div>
+        )}
 
+        <h3>{property.title}</h3>
+        <p>{property.location}</p>
+      </div>
     </div>
   );
 }

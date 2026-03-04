@@ -3,23 +3,34 @@ import styles from "../styles/About.module.css";
 import ExecutiveSection from "../components/ExecutiveSection";
 
 export default function About() {
-
   useEffect(() => {
-    const sections = document.querySelectorAll(`.${styles.reveal}`);
+    if (typeof window === "undefined") return;
+
+    const container = document.querySelector(`.${styles.aboutPage}`);
+    if (!container) return;
+
+    const sections = container.querySelectorAll(`.${styles.reveal}`);
+    if (!sections.length) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
+      (entries, observerInstance) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add(styles.revealActive);
 
-            // Stagger children
-            const items = entry.target.querySelectorAll(`.${styles.revealItem}`);
+            // Stagger animation for children
+            const items = entry.target.querySelectorAll(
+              `.${styles.revealItem}`
+            );
+
             items.forEach((item, index) => {
               setTimeout(() => {
                 item.classList.add(styles.revealItemActive);
               }, index * 150);
             });
+
+            // Stop observing once revealed
+            observerInstance.unobserve(entry.target);
           }
         });
       },
@@ -40,7 +51,7 @@ export default function About() {
         <div className={styles.heroContent}>
           <h1>Redefining Modern Real Estate</h1>
           <p>
-            At Fantabrand Properties Limited, we create premium living 
+            At Fantabrand Properties Limited, we create premium living
             environments designed for long-term value and timeless elegance.
           </p>
         </div>
@@ -105,7 +116,8 @@ export default function About() {
         <div className={`${styles.coreHeader} ${styles.revealItem}`}>
           <h2>Our Core Values</h2>
           <p>
-            The principles that define how we build, operate, and deliver long-term value.
+            The principles that define how we build, operate, and deliver
+            long-term value.
           </p>
         </div>
 
@@ -138,7 +150,9 @@ export default function About() {
         <p className={styles.revealItem}>
           Partner with Fantabrand for smart, secure real estate investments.
         </p>
-        <button className={styles.revealItem}>Explore Properties</button>
+        <button className={styles.revealItem}>
+          Explore Properties
+        </button>
       </section>
 
     </div>
