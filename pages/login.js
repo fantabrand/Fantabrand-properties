@@ -25,7 +25,7 @@ if (error) {
   alert(error.message);
   setLoading(false);
 } else {
-  router.push("/admin");
+  router.replace("/admin");
 }
 
 
