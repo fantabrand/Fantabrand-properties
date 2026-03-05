@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { supabase } from "../lib/supabase/client";
 import { useRouter } from "next/router";
+import { supabase } from "../lib/supabase/client";
 import styles from "../styles/Login.module.css";
 
 export default function Login() {
@@ -14,13 +14,11 @@ export default function Login() {
   async function handleLogin(e) {
     e.preventDefault();
 
-    if (loading) return;
-
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
-      password,
+      password
     });
 
     if (error) {
@@ -29,15 +27,18 @@ export default function Login() {
       return;
     }
 
-    // wait briefly for session initialization
-    setTimeout(() => {
-      router.replace("/admin");
-    }, 500);
+    // Wait for session to be ready
+    const { data } = await supabase.auth.getSession();
+
+    if (data.session) {
+      router.push("/admin");
+    }
+
+    setLoading(false);
   }
 
   return (
     <div className={styles.container}>
-
       <form onSubmit={handleLogin} className={styles.card}>
 
         <h2>Admin Login</h2>
@@ -46,7 +47,7 @@ export default function Login() {
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e)=>setEmail(e.target.value)}
           required
         />
 
@@ -54,16 +55,15 @@ export default function Login() {
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e)=>setPassword(e.target.value)}
           required
         />
 
-        <button type="submit">
+        <button type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </button>
 
       </form>
-
     </div>
   );
 }

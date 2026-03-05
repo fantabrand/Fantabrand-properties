@@ -21,47 +21,64 @@ export default function AdminDashboard() {
   }, []);
 
   async function checkUser() {
+    try {
 
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-    if (!session) {
-      router.replace("/login");
-      return;
+      if (!session) {
+        router.replace("/login");
+        return;
+      }
+
+      await fetchStats();
+
+    } catch (error) {
+
+      console.error("Dashboard error:", error);
+
+    } finally {
+
+      setLoading(false);
+
     }
-
-    await fetchStats();
-    setLoading(false);
   }
 
   async function fetchStats() {
 
-  const [propertiesRes, inspectionsRes, pendingRes] =
-    await Promise.all([
+    try {
 
-      supabase
-        .from("properties")
-        .select("*", { count: "exact", head: true }),
+      const [propertiesRes, inspectionsRes, pendingRes] =
+        await Promise.all([
 
-      supabase
-        .from("inspections")
-        .select("*", { count: "exact", head: true }),
+          supabase
+            .from("properties")
+            .select("*", { count: "exact", head: true }),
 
-      supabase
-        .from("inspections")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "pending")
+          supabase
+            .from("inspections")
+            .select("*", { count: "exact", head: true }),
 
-    ]);
+          supabase
+            .from("inspections")
+            .select("*", { count: "exact", head: true })
+            .eq("status", "pending")
 
-  setStats({
-    properties: propertiesRes.count || 0,
-    inspections: inspectionsRes.count || 0,
-    pending: pendingRes.count || 0,
-  });
+        ]);
 
-}
+      setStats({
+        properties: propertiesRes.count || 0,
+        inspections: inspectionsRes.count || 0,
+        pending: pendingRes.count || 0,
+      });
+
+    } catch (error) {
+
+      console.error("Stats fetch error:", error);
+
+    }
+  }
 
   if (loading) {
     return (
