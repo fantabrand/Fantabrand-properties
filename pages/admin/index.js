@@ -37,28 +37,31 @@ export default function AdminDashboard() {
 
   async function fetchStats() {
 
-    const { count: properties } =
-      await supabase
+  const [propertiesRes, inspectionsRes, pendingRes] =
+    await Promise.all([
+
+      supabase
         .from("properties")
-        .select("*", { count: "exact", head: true });
+        .select("*", { count: "exact", head: true }),
 
-    const { count: inspections } =
-      await supabase
+      supabase
         .from("inspections")
-        .select("*", { count: "exact", head: true });
+        .select("*", { count: "exact", head: true }),
 
-    const { count: pending } =
-      await supabase
+      supabase
         .from("inspections")
         .select("*", { count: "exact", head: true })
-        .eq("status", "pending");
+        .eq("status", "pending")
 
-    setStats({
-      properties: properties || 0,
-      inspections: inspections || 0,
-      pending: pending || 0,
-    });
-  }
+    ]);
+
+  setStats({
+    properties: propertiesRes.count || 0,
+    inspections: inspectionsRes.count || 0,
+    pending: pendingRes.count || 0,
+  });
+
+}
 
   if (loading) {
     return (
