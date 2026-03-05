@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { supabase } from "../lib/supabase/client";
 import styles from "../styles/Login.module.css";
@@ -9,6 +9,19 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // If already logged in, go to admin
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+
+      if (data.session) {
+        router.push("/admin");
+      }
+    };
+
+    checkSession();
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,7 +39,6 @@ export default function Login() {
       return;
     }
 
-    // Successful login
     if (data.session) {
       router.push("/admin");
     }
@@ -41,7 +53,7 @@ export default function Login() {
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e)=>setEmail(e.target.value)}
           required
         />
 
@@ -49,7 +61,7 @@ export default function Login() {
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e)=>setPassword(e.target.value)}
           required
         />
 
