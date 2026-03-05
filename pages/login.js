@@ -1,34 +1,40 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { supabase } from "../lib/supabase/client";
-import styles from "../styles/Login.module.css";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { supabase } from '../lib/supabase/client';
 
-export default function Login() {
+export default function LoginPage() {
   const router = useRouter();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // If already logged in, go to admin
+  // Check session on mount
   useEffect(() => {
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-
-      if (data.session) {
-        router.push("/admin");
+    supabase.auth.getSession().then(({ data }) => {
+      if (data?.session) {
+        router.replace('/admin');
       }
-    };
+    });
 
-    checkSession();
+    // Respond to auth change (like login from token)
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          router.replace('/admin');
+        }
+      }
+    );
+
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
   }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -36,39 +42,29 @@ export default function Login() {
     if (error) {
       alert(error.message);
       setLoading(false);
-      return;
-    }
-
-    if (data.session) {
-      router.push("/admin");
     }
   };
 
   return (
-    <div className={styles.container}>
-      <form onSubmit={handleLogin} className={styles.card}>
-        <h2>Admin Login</h2>
-
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e)=>setEmail(e.target.value)}
-          required
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e)=>setPassword(e.target.value)}
-          required
-        />
-
-        <button type="submit">
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleLogin}>
+      <h2>Admin Login</h2>
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+        required
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+        required
+      />
+      <button type="submit" disabled={loading}>
+        {loading ? 'Logging in...' : 'Login'}
+      </button>
+    </form>
   );
 }
