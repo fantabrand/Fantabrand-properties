@@ -2,8 +2,13 @@ import AdminLayout from "../../components/admin/AdminLayout";
 import styles from "../../styles/AdminDashboard.module.css";
 import { supabase } from "../../lib/supabase/client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export default function AdminDashboard() {
+
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(true);
 
   const [stats, setStats] = useState({
     properties: 0,
@@ -12,10 +17,26 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
-    fetchStats();
+    checkUser();
   }, []);
 
+  async function checkUser() {
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      router.replace("/login");
+      return;
+    }
+
+    await fetchStats();
+    setLoading(false);
+  }
+
   async function fetchStats() {
+
     const { count: properties } =
       await supabase
         .from("properties")
@@ -37,6 +58,14 @@ export default function AdminDashboard() {
       inspections: inspections || 0,
       pending: pending || 0,
     });
+  }
+
+  if (loading) {
+    return (
+      <AdminLayout>
+        <p style={{ padding: "40px" }}>Loading dashboard...</p>
+      </AdminLayout>
+    );
   }
 
   return (
