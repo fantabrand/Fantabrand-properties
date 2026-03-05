@@ -207,4 +207,20 @@
   .hamburger {
     display: flex;
   }
+}.menuButton{
+display:flex;
+align-items:center;
+gap:8px;
+cursor:pointer;
+}
+
+.menuText{
+font-size:14px;
+font-weight:500;
+}
+
+@media (min-width:768px){
+.menuText{
+display:none;
+}
 }

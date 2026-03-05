@@ -1,7 +1,7 @@
 import styles from "../styles/WhatsAppFloat.module.css";
 
 export default function WhatsAppFloat() {
-  const phoneNumber = "2349000000000"; // replace with your real number
+  const phoneNumber = "2349063504797"; // replace with your real number
 
   const message = encodeURIComponent(
     "Hello Fantabrand Properties, I would like to make an inquiry."

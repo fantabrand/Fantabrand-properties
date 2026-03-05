@@ -5,11 +5,9 @@ import styles from "./Navbar.module.css";
 
 export default function Navbar() {
   const router = useRouter();
-
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
-
   const lastScrollY = useRef(0);
 
   /* =========================
@@ -31,6 +29,7 @@ export default function Navbar() {
     };
 
     window.addEventListener("scroll", handleScroll);
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -42,11 +41,10 @@ export default function Navbar() {
   }, [router.pathname]);
 
   /* =========================
-     Body Scroll Lock (Fully Safe)
+     Body Scroll Lock
   ========================= */
   useEffect(() => {
     if (menuOpen) {
-      // Prevent layout shift when scrollbar disappears
       const scrollbarWidth =
         window.innerWidth - document.documentElement.clientWidth;
 
@@ -91,20 +89,23 @@ export default function Navbar() {
 
           {/* ACTIONS */}
           <div className={styles.actions}>
-            <Link href="/admin/login" className={styles.adminBtn}>
-              Admin
-            </Link>
 
+            {/* MOBILE MENU BUTTON */}
             <div
-              className={`${styles.hamburger} ${
+              className={`${styles.menuButton} ${
                 menuOpen ? styles.active : ""
               }`}
               onClick={() => setMenuOpen(!menuOpen)}
             >
-              <span></span>
-              <span></span>
-              <span></span>
+              <span className={styles.menuText}>Menu</span>
+
+              <div className={styles.hamburger}>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
             </div>
+
           </div>
         </div>
       </nav>
@@ -136,6 +137,7 @@ export default function Navbar() {
 
 function NavLink({ href, children, current }) {
   const active = current === href;
+
   return (
     <Link href={href} className={active ? styles.active : ""}>
       {children}

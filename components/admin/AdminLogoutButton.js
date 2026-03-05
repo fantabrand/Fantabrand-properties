@@ -1,29 +1,23 @@
-import { useRouter } from "next/router";
 import { supabase } from "@/lib/supabase/client";
+import { useRouter } from "next/router";
+import styles from "../../styles/AdminSidebar.module.css";
 
 export default function AdminLogoutButton() {
 
-  const router = useRouter();
+const router = useRouter();
 
-  async function handleLogout() {
+async function handleLogout() {
 
-    const { error } = await supabase.auth.signOut();
+await supabase.auth.signOut();
 
-    if (!error) {
-      router.push("/login");
-    } else {
-      alert("Logout failed");
-    }
-  }
+router.replace("/login");
 
-  return (
+}
 
-    <button
-      onClick={handleLogout}
-      className="bg-black hover:bg-gray-800 text-white px-5 py-2 rounded-lg"
-    >
-      Logout
-    </button>
-
-  );
+return ( <button
+   onClick={handleLogout}
+   className={styles.logoutBtn}
+ >
+Logout </button>
+);
 }

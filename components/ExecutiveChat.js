@@ -40,7 +40,7 @@ export default function ExecutiveChat() {
             </p>
 
             <a
-              href="https://wa.me/2349000000000"
+              href="https://wa.me/2349063504797"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.chatButton}

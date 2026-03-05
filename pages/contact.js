@@ -64,7 +64,7 @@ export default function Contact() {
 
           <div className={styles.infoBlock}>
             <h4>Phone</h4>
-            <span>+234 900 000 0000</span>
+            <span>+234 9063504797</span>
           </div>
 
           <div className={styles.infoBlock}>
