@@ -1,0 +1,41 @@
+.container{
+padding:30px;
+}
+
+.container h1{
+margin-bottom:20px;
+}
+
+.actions{
+margin-bottom:20px;
+}
+
+.actions button{
+background:#6a0dad;
+color:white;
+border:none;
+padding:10px 15px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.table{
+width:100%;
+border-collapse:collapse;
+}
+
+.table th,
+.table td{
+padding:12px;
+border-bottom:1px solid #ddd;
+text-align:left;
+}
+
+.delete{
+background:red;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:4px;
+cursor:pointer;
+}

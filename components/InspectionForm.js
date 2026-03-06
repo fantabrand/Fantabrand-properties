@@ -41,7 +41,7 @@ export default function InspectionForm({ property }) {
 
     if (!user) {
       alert("Please login to book inspection.");
-      router.push("/login");
+      router.push("/admin/login")
       return;
     }
 

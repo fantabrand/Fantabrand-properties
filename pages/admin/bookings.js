@@ -21,7 +21,7 @@ export default function AdminBookings() {
 
     if (!data.user) {
 
-      router.push("/login");
+      router.push("/admin/login")
 
       return;
     }

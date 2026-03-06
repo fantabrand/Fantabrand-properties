@@ -60,3 +60,11 @@
 .logoutBtn:hover{
   opacity:0.9;
 }
+.badge {
+  background: #8b5cf6;
+  color: white;
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-left: 6px;
+}

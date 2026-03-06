@@ -23,7 +23,7 @@ export default function AdminLogoutButton() {
       return;
     }
 
-    router.replace("/login");
+    router.replace("/admin/login")
 
   }
 

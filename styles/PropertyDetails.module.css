@@ -127,3 +127,37 @@
   padding: 100px;
   text-align: center;
 }
+.galleryRow{
+display:flex;
+gap:10px;
+margin-top:12px;
+flex-wrap:wrap;
+}
+
+.galleryThumb{
+width:90px;
+height:70px;
+object-fit:cover;
+border-radius:6px;
+cursor:pointer;
+border:2px solid transparent;
+transition:0.2s;
+}
+
+.galleryThumb:hover{
+border:2px solid #7c3aed;
+}
+.inspectBox{
+display:flex;
+flex-direction:column;
+gap:10px;
+margin-top:20px;
+}
+
+.inspectBox input,
+.inspectBox select{
+padding:10px;
+border-radius:6px;
+border:1px solid #ddd;
+font-size:14px;
+}

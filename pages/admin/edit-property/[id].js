@@ -30,7 +30,7 @@ export default function EditProperty() {
     const { data } = await supabase.auth.getUser();
 
     if (!data.user) {
-      router.push("/login");
+      router.push("/admin/login")
       return;
     }
 
