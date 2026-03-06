@@ -6,112 +6,115 @@ import { useRouter } from "next/router";
 
 export default function AdminDashboard() {
 
-  const router = useRouter();
+const router = useRouter();
 
-  const [loading, setLoading] = useState(true);
+const [loading, setLoading] = useState(true);
 
-  const [stats, setStats] = useState({
-    properties: 0,
-    inspections: 0,
-    pending: 0,
+const [stats, setStats] = useState({
+properties: 0,
+inspections: 0,
+pending: 0,
+});
+
+useEffect(() => {
+
+async function checkUser() {
+
+  try {
+
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      router.replace("/login");
+      return;
+    }
+
+    await fetchStats();
+
+  } catch (error) {
+
+    console.error("Dashboard error:", error);
+
+  } finally {
+
+    setLoading(false);
+
+  }
+
+}
+
+checkUser();
+
+}, [router]);
+
+async function fetchStats() {
+
+try {
+
+  const [propertiesRes, inspectionsRes, pendingRes] =
+    await Promise.all([
+
+      supabase
+        .from("properties")
+        .select("*", { count: "exact", head: true }),
+
+      supabase
+        .from("inspections")
+        .select("*", { count: "exact", head: true }),
+
+      supabase
+        .from("inspections")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "pending")
+
+    ]);
+
+  setStats({
+    properties: propertiesRes.count || 0,
+    inspections: inspectionsRes.count || 0,
+    pending: pendingRes.count || 0,
   });
 
-  useEffect(() => {
-    checkUser();
-  }, []);
+} catch (error) {
 
-  async function checkUser() {
-    try {
+  console.error("Stats fetch error:", error);
 
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+}
 
-      if (!session) {
-        router.replace("/login");
-        return;
-      }
+}
 
-      await fetchStats();
+if (loading) {
+return ( <AdminLayout>
+<p style={{ padding: "40px" }}>Loading dashboard...</p> </AdminLayout>
+);
+}
 
-    } catch (error) {
+return (
 
-      console.error("Dashboard error:", error);
+<AdminLayout>
 
-    } finally {
+  <h1 className={styles.title}>Dashboard Overview</h1>
 
-      setLoading(false);
+  <div className={styles.grid}>
 
-    }
-  }
+    <div className={styles.card}>
+      <p>Total Properties</p>
+      <h2>{stats.properties}</h2>
+    </div>
 
-  async function fetchStats() {
+    <div className={styles.card}>
+      <p>Inspection Requests</p>
+      <h2>{stats.inspections}</h2>
+    </div>
 
-    try {
+    <div className={styles.card}>
+      <p>Pending Requests</p>
+      <h2>{stats.pending}</h2>
+    </div>
 
-      const [propertiesRes, inspectionsRes, pendingRes] =
-        await Promise.all([
+  </div>
 
-          supabase
-            .from("properties")
-            .select("*", { count: "exact", head: true }),
+</AdminLayout>
 
-          supabase
-            .from("inspections")
-            .select("*", { count: "exact", head: true }),
-
-          supabase
-            .from("inspections")
-            .select("*", { count: "exact", head: true })
-            .eq("status", "pending")
-
-        ]);
-
-      setStats({
-        properties: propertiesRes.count || 0,
-        inspections: inspectionsRes.count || 0,
-        pending: pendingRes.count || 0,
-      });
-
-    } catch (error) {
-
-      console.error("Stats fetch error:", error);
-
-    }
-  }
-
-  if (loading) {
-    return (
-      <AdminLayout>
-        <p style={{ padding: "40px" }}>Loading dashboard...</p>
-      </AdminLayout>
-    );
-  }
-
-  return (
-    <AdminLayout>
-
-      <h1 className={styles.title}>Dashboard Overview</h1>
-
-      <div className={styles.grid}>
-
-        <div className={styles.card}>
-          <p>Total Properties</p>
-          <h2>{stats.properties}</h2>
-        </div>
-
-        <div className={styles.card}>
-          <p>Inspection Requests</p>
-          <h2>{stats.inspections}</h2>
-        </div>
-
-        <div className={styles.card}>
-          <p>Pending Requests</p>
-          <h2>{stats.pending}</h2>
-        </div>
-
-      </div>
-
-    </AdminLayout>
-  );
+);
 }
