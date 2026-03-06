@@ -9,25 +9,21 @@ export default function AdminProtectedRoute({ children }) {
 
   useEffect(() => {
 
-    async function checkAuth() {
-
+    const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
-        router.replace("/login");
+        router.push("/login");
       } else {
         setLoading(false);
       }
+    };
 
-    }
+    checkUser();
 
-    checkAuth();
+  }, []);
 
-  }, [router]);
-
-  if (loading) {
-    return <p style={{ padding: "40px" }}>Checking authentication...</p>;
-  }
+  if (loading) return <p>Loading...</p>;
 
   return children;
 }
