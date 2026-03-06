@@ -9,7 +9,6 @@ export default function AdminDashboard() {
 const router = useRouter();
 
 const [loading, setLoading] = useState(true);
-
 const [stats, setStats] = useState({
 properties: 0,
 inspections: 0,
@@ -18,74 +17,55 @@ pending: 0,
 
 useEffect(() => {
 
-async function checkUser() {
+async function init() {
 
-  try {
+  const { data: { session } } = await supabase.auth.getSession();
 
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-      router.replace("/login");
-      return;
-    }
-
-    await fetchStats();
-
-  } catch (error) {
-
-    console.error("Dashboard error:", error);
-
-  } finally {
-
-    setLoading(false);
-
+  if (!session) {
+    router.replace("/login");
+    return;
   }
+
+  await fetchStats();
+  setLoading(false);
 
 }
 
-checkUser();
+init();
 
 }, [router]);
 
 async function fetchStats() {
 
-try {
+const [propertiesRes, inspectionsRes, pendingRes] =
+  await Promise.all([
 
-  const [propertiesRes, inspectionsRes, pendingRes] =
-    await Promise.all([
+    supabase
+      .from("properties")
+      .select("*", { count: "exact", head: true }),
 
-      supabase
-        .from("properties")
-        .select("*", { count: "exact", head: true }),
+    supabase
+      .from("inspections")
+      .select("*", { count: "exact", head: true }),
 
-      supabase
-        .from("inspections")
-        .select("*", { count: "exact", head: true }),
+    supabase
+      .from("inspections")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "pending")
 
-      supabase
-        .from("inspections")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "pending")
+  ]);
 
-    ]);
-
-  setStats({
-    properties: propertiesRes.count || 0,
-    inspections: inspectionsRes.count || 0,
-    pending: pendingRes.count || 0,
-  });
-
-} catch (error) {
-
-  console.error("Stats fetch error:", error);
-
-}
+setStats({
+  properties: propertiesRes.count || 0,
+  inspections: inspectionsRes.count || 0,
+  pending: pendingRes.count || 0,
+});
 
 }
 
 if (loading) {
 return ( <AdminLayout>
-<p style={{ padding: "40px" }}>Loading dashboard...</p> </AdminLayout>
+<p style={{ padding: "40px" }}>Checking authentication...</p> </AdminLayout>
 );
 }
 
