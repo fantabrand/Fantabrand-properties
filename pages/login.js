@@ -1,100 +1,148 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { supabase } from '../lib/supabase/client';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { supabase } from "../lib/supabase/client";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  // Redirect to admin if already signed in
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data?.session) router.replace('/admin');
-    });
+const router = useRouter();
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (event === 'SIGNED_IN' && session) {
-          router.replace('/admin');
-        }
-      }
-    );
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const [loading, setLoading] = useState(false);
 
-    return () => {
-      listener?.subscription.unsubscribe();
-    };
-  }, []);
+// Redirect if already logged in
+useEffect(() => {
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+async function checkSession() {
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data } = await supabase.auth.getSession();
 
-    if (error) {
-      alert(error.message);
-      setLoading(false);
+  if (data?.session) {
+    router.replace("/admin");
+  }
+
+}
+
+checkSession();
+
+const { data: listener } = supabase.auth.onAuthStateChange(
+  (event, session) => {
+
+    if (event === "SIGNED_IN" && session) {
+      router.replace("/admin");
     }
-  };
 
-  return (
-    <div
+  }
+);
+
+return () => {
+  listener?.subscription?.unsubscribe();
+};
+
+}, [router]);
+
+const handleLogin = async (e) => {
+
+e.preventDefault();
+
+if (loading) return;
+
+setLoading(true);
+
+const { data, error } = await supabase.auth.signInWithPassword({
+  email,
+  password,
+});
+
+if (error) {
+
+  alert(error.message);
+  setLoading(false);
+  return;
+
+}
+
+// Immediate redirect after successful login
+if (data?.session) {
+  router.push("/admin");
+}
+
+};
+
+return (
+
+<div
+  style={{
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f9f9f9",
+  }}
+>
+
+  <form
+    onSubmit={handleLogin}
+    style={{
+      background: "#fff",
+      padding: "2rem",
+      borderRadius: "8px",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+      width: "100%",
+      maxWidth: "400px",
+    }}
+  >
+
+    <h2 style={{ marginBottom: "1rem", textAlign: "center" }}>
+      Admin Login
+    </h2>
+
+    <input
+      type="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      placeholder="Email"
+      required
       style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#f9f9f9',
+        width: "100%",
+        padding: "10px",
+        marginBottom: "1rem",
+      }}
+    />
+
+    <input
+      type="password"
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      placeholder="Password"
+      required
+      style={{
+        width: "100%",
+        padding: "10px",
+        marginBottom: "1.5rem",
+      }}
+    />
+
+    <button
+      type="submit"
+      disabled={loading}
+      style={{
+        width: "100%",
+        padding: "10px",
+        backgroundColor: "#6a00f4",
+        color: "white",
+        border: "none",
+        borderRadius: "4px",
+        cursor: loading ? "not-allowed" : "pointer",
       }}
     >
-      <form
-        onSubmit={handleLogin}
-        style={{
-          background: '#fff',
-          padding: '2rem',
-          borderRadius: '8px',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-          width: '100%',
-          maxWidth: '400px',
-        }}
-      >
-        <h2 style={{ marginBottom: '1rem', textAlign: 'center' }}>Admin Login</h2>
+      {loading ? "Logging in..." : "Login"}
+    </button>
 
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-          style={{ width: '100%', padding: '10px', marginBottom: '1rem' }}
-        />
+  </form>
 
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-          style={{ width: '100%', padding: '10px', marginBottom: '1.5rem' }}
-        />
+</div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: '100%',
-            padding: '10px',
-            backgroundColor: '#6a00f4',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-          }}
-        >
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
-    </div>
-  );
+);
+
 }
