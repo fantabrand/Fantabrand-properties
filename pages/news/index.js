@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase/client";
-import AdminLayout from "../../../components/admin/AdminLayout";
 import Link from "next/link";
 
 export default function AdminNews(){
@@ -39,7 +38,7 @@ export default function AdminNews(){
 
   return(
 
-    <AdminLayout>
+    <div>
 
       <h1>Manage News</h1>
 
@@ -50,12 +49,15 @@ export default function AdminNews(){
       <br/><br/>
 
       {news.map(post=>(
-        <div key={post.id} style={{
-          background:"#111",
-          padding:"20px",
-          borderRadius:"10px",
-          marginBottom:"15px"
-        }}>
+        <div
+          key={post.id}
+          style={{
+            background:"#111",
+            padding:"20px",
+            borderRadius:"10px",
+            marginBottom:"15px"
+          }}
+        >
 
           <h3>{post.title}</h3>
 
@@ -79,8 +81,8 @@ export default function AdminNews(){
         </div>
       ))}
 
-    </AdminLayout>
+    </div>
 
-  )
+  );
 
 }
