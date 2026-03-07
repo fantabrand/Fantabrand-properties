@@ -5,28 +5,26 @@ import { useEffect, useState } from "react";
 export default function NewsDetails() {
 
   const router = useRouter();
-  const { id } = router.query;
+  const { slug } = router.query;
 
   const [item, setItem] = useState(null);
 
   useEffect(() => {
-    if (id) fetchNews();
-  }, [id]);
+    if (slug) fetchNews();
+  }, [slug]);
 
   async function fetchNews() {
 
     const { data, error } = await supabase
       .from("news")
       .select("*")
-      .eq("id", id)
+      .eq("slug", slug)
       .single();
 
-    if (error) {
-      console.error(error);
-      return;
+    if (!error) {
+      setItem(data);
     }
 
-    setItem(data);
   }
 
   if (!item) {
@@ -34,21 +32,24 @@ export default function NewsDetails() {
   }
 
   return (
+
     <div style={{
       maxWidth: "800px",
       margin: "auto",
       padding: "40px 20px"
     }}>
 
-      {item.image && (
+      {item.image_url && (
+
         <img
-          src={item.image}
+          src={item.image_url}
           style={{
             width: "100%",
             borderRadius: "12px",
             marginBottom: "20px"
           }}
         />
+
       )}
 
       <div style={{ color: "#666", marginBottom: "10px" }}>
@@ -71,5 +72,7 @@ export default function NewsDetails() {
       </div>
 
     </div>
+
   );
+
 }

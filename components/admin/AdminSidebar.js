@@ -16,9 +16,15 @@ export default function AdminSidebar({ closeSidebar }) {
 
   const menu = [
     { name: "Dashboard", path: "/admin" },
+
     { name: "Properties", path: "/admin/properties" },
     { name: "Add Property", path: "/admin/properties/new" },
+
+    { name: "News", path: "/admin/news" },
+    { name: "Add News", path: "/admin/news/new" },
+
     { name: "Inspections", path: "/admin/inspections" },
+
     { name: "Newsletter", path: "/admin/newsletter" },
   ];
 
