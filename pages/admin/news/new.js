@@ -86,11 +86,11 @@ export default function AddNews() {
         }
       ]);
 
-    if(error){
-      alert("Error publishing article");
-      console.log(error);
-      return;
-    }
+    if (error) {
+  console.log(error);
+  alert(error.message);
+  return;
+}
 
     router.push("/admin/news");
 
