@@ -1,7 +1,17 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   images: {
     domains: ["ixvywzrzfkufeoszzamm.supabase.co"],
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: "/sitemap.xml",
+        destination: "/api/sitemap",
+      },
+    ];
   },
 };
 
