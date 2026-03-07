@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../../../lib/supabase/client";
-import Link from "next/link";
-
+import { supabase } from "../../lib/supabase/client";
 export default function AdminNews(){
 
   const [news,setNews] = useState([]);
