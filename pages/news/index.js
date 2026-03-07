@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../../lib/supabase/client";
+import { supabase } from "@/lib/supabase/client";
 import Link from "next/link";
-export default function AdminNews(){
+
+export default function NewsPage(){
 
   const [news,setNews] = useState([]);
 
@@ -20,68 +21,102 @@ export default function AdminNews(){
 
   }
 
-  async function deletePost(id){
-
-    const confirmDelete = confirm("Delete article?");
-
-    if(!confirmDelete) return;
-
-    await supabase
-      .from("news")
-      .delete()
-      .eq("id",id);
-
-    fetchNews();
-
-  }
-
   return(
 
-    <div>
+    <div style={{
+      maxWidth:"1200px",
+      margin:"auto",
+      padding:"60px 20px"
+    }}>
 
-      <h1>Manage News</h1>
+      <h1 style={{
+        fontSize:"36px",
+        marginBottom:"40px"
+      }}>
+        Latest News
+      </h1>
 
-      <Link href="/admin/news/new">
-        <button>Create Article</button>
-      </Link>
+      <div style={{
+        display:"grid",
+        gridTemplateColumns:"repeat(auto-fit,minmax(320px,1fr))",
+        gap:"30px"
+      }}>
 
-      <br/><br/>
+        {news.map(post=>(
 
-      {news.map(post=>(
-        <div
-          key={post.id}
-          style={{
-            background:"#111",
-            padding:"20px",
-            borderRadius:"10px",
-            marginBottom:"15px"
-          }}
-        >
+          <Link
+            key={post.id}
+            href={`/news/${post.slug}`}
+            style={{textDecoration:"none"}}
+          >
 
-          <h3>{post.title}</h3>
+            <div style={{
+              background:"#fff",
+              borderRadius:"14px",
+              overflow:"hidden",
+              boxShadow:"0 10px 25px rgba(0,0,0,0.08)",
+              transition:"0.3s"
+            }}>
 
-          <p style={{opacity:0.7}}>
-            {post.slug}
-          </p>
+              {post.image_url && (
 
-          <Link href={`/news/${post.slug}`}>
-            View
+                <img
+                  src={post.image_url}
+                  style={{
+                    width:"100%",
+                    height:"200px",
+                    objectFit:"cover"
+                  }}
+                />
+
+              )}
+
+              <div style={{padding:"20px"}}>
+
+                <div style={{
+                  fontSize:"13px",
+                  color:"#777",
+                  marginBottom:"10px"
+                }}>
+                  {new Date(post.created_at).toDateString()}
+                </div>
+
+                <h2 style={{
+                  fontSize:"20px",
+                  marginBottom:"10px",
+                  color:"#111"
+                }}>
+                  {post.title}
+                </h2>
+
+                <p style={{
+                  color:"#555",
+                  fontSize:"14px",
+                  lineHeight:"1.6"
+                }}>
+                  {post.excerpt}
+                </p>
+
+                <div style={{
+                  marginTop:"15px",
+                  fontWeight:"bold",
+                  color:"#7c3aed"
+                }}>
+                  Read More →
+                </div>
+
+              </div>
+
+            </div>
+
           </Link>
 
-          {" | "}
+        ))}
 
-          <button
-            onClick={()=>deletePost(post.id)}
-            style={{color:"red"}}
-          >
-            Delete
-          </button>
-
-        </div>
-      ))}
+      </div>
 
     </div>
 
-  );
+  )
 
 }
