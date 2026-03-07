@@ -1,10 +1,9 @@
+import Head from "next/head";
 import "../styles/globals.css";
 import { Raleway } from "next/font/google";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-
 import ExecutiveChat from "../components/ExecutiveChat";
-import WhatsAppFloat from "../components/WhatsAppFloat";
 import NewsletterPopup from "../components/NewsletterPopup";
 
 import { useRouter } from "next/router";
@@ -32,14 +31,15 @@ export default function App({ Component, pageProps }) {
       }}
     >
       {!isAdminRoute && <Navbar />}
-
+<Head>
+  <link rel="icon" href="/favicon.png" />
+</Head>
       <div style={{ flex: 1 }}>
         <Component {...pageProps} />
       </div>
 
       {!isAdminRoute && <Footer />}
       {!isAdminRoute && <ExecutiveChat />}
-      {!isAdminRoute && <WhatsAppFloat />}
       {!isAdminRoute && <NewsletterPopup />}
     </div>
   );

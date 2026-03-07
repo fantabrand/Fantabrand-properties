@@ -6,7 +6,7 @@ export default function ExecutiveChat() {
   const [open, setOpen] = useState(false);
   const [typingText, setTypingText] = useState("");
 
-  const fullText = "I’m online, how may I help you?";
+  const fullText = "Executive assistant online";
 
   useEffect(() => {
 
@@ -30,7 +30,7 @@ export default function ExecutiveChat() {
 
 
   const whatsappMessage = encodeURIComponent(
-    "Hello Fantabrand Properties, I saw your website and would like assistance."
+    "Hello Fantabrand Properties, I would like to enquire about your available estates."
   );
 
   const whatsappLink = `https://wa.me/2349063504797?text=${whatsappMessage}`;
@@ -51,14 +51,15 @@ export default function ExecutiveChat() {
         <div className={styles.chatBox}>
 
           <div className={styles.chatHeader}>
-            Executive Assistant
+            Fantabrand Executive Desk
           </div>
 
           <div className={styles.chatBody}>
 
-            <p>
-              Welcome to Fantabrand Properties.
-              How may we assist you today?
+            <p className={styles.chatIntro}>
+              Welcome to <strong>Fantabrand Properties</strong>.
+              Our executive desk is available to assist you with
+              property enquiries, inspections, and investment options.
             </p>
 
             <a
@@ -67,7 +68,7 @@ export default function ExecutiveChat() {
               rel="noopener noreferrer"
               className={styles.chatButton}
             >
-              Speak on WhatsApp
+              Continue on WhatsApp
             </a>
 
           </div>
