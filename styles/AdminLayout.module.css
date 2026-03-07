@@ -5,18 +5,36 @@
   color: white;
 }
 
+/* MAIN CONTENT */
+
 .main {
   margin-left: 260px;
   padding: 40px;
-  width: 100%;
+  width: calc(100% - 260px);
+  transition: all 0.3s ease;
 }
-/* MOBILE ADMIN FIX */
+
+/* MENU BUTTON */
+
+.menuButton {
+  display: none;
+}
+
+/* OVERLAY */
+
+.overlay {
+  display: none;
+}
+
+/* ================= MOBILE ================= */
 
 @media (max-width: 768px) {
 
   .layout {
     flex-direction: column;
   }
+
+  /* sidebar becomes overlay */
 
   .sidebar {
     position: fixed;
@@ -32,36 +50,15 @@
     left: 0;
   }
 
+  /* dashboard full width */
+
   .main {
+    margin-left: 0;
     width: 100%;
     padding: 20px;
   }
 
-  .menuButton {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background: #7b2ff7;
-    color: white;
-    border: none;
-    padding: 10px 14px;
-    border-radius: 8px;
-    z-index: 2100;
-    cursor: pointer;
-  }
-
-}
-/* MOBILE ADMIN MENU */
-
-.menuButton {
-  display: none;
-}
-
-.overlay {
-  display: none;
-}
-
-@media (max-width: 768px) {
+  /* menu button */
 
   .menuButton {
     display: block;
@@ -79,6 +76,8 @@
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
   }
 
+  /* overlay background */
+
   .overlay {
     display: block;
     position: fixed;
@@ -86,25 +85,6 @@
     background: rgba(0,0,0,0.45);
     backdrop-filter: blur(3px);
     z-index: 1999;
-  }
-
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: -260px;
-    height: 100%;
-    width: 260px;
-    transition: left 0.3s ease;
-    z-index: 2000;
-  }
-
-  .sidebarOpen {
-    left: 0;
-  }
-
-  .main {
-    width: 100%;
-    padding: 20px;
   }
 
 }

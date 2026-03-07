@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase/client";
 import AdminLogoutButton from "./AdminLogoutButton";
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ closeSidebar }) {
 
   const router = useRouter();
 
@@ -60,7 +60,7 @@ export default function AdminSidebar() {
   return (
 
     <div className={styles.sidebar}>
-      
+
       <div className={styles.logo}>
         Fantabrand
       </div>
@@ -82,6 +82,7 @@ export default function AdminSidebar() {
             <Link
               key={item.path}
               href={item.path}
+              onClick={closeSidebar}
               className={
                 router.pathname === item.path
                   ? styles.active
