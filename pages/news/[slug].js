@@ -59,11 +59,38 @@ export default function NewsDetails() {
     item.meta_title || `${item.title} | Fantabrand Properties`;
 
   const pageDescription =
-    item.meta_description || item.excerpt || "Real estate news from Fantabrand Properties.";
+    item.meta_description ||
+    item.excerpt ||
+    "Real estate news from Fantabrand Properties.";
 
   const pageUrl = `https://fantabrandproperties.com.ng/news/${item.slug}`;
 
   const pageImage = item.image_url || "/logo.png";
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: item.title,
+    description: pageDescription,
+    image: pageImage,
+    author: {
+      "@type": "Organization",
+      name: "Fantabrand Properties"
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Fantabrand Properties",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://fantabrandproperties.com.ng/logo.png"
+      }
+    },
+    datePublished: item.created_at,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": pageUrl
+    }
+  };
 
   return (
     <>
@@ -72,6 +99,8 @@ export default function NewsDetails() {
         <title>{pageTitle}</title>
 
         <meta name="description" content={pageDescription} />
+
+        <link rel="canonical" href={pageUrl} />
 
         {/* Open Graph */}
 
@@ -87,6 +116,15 @@ export default function NewsDetails() {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
+
+        {/* Google Structured Data */}
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(articleSchema)
+          }}
+        />
 
       </Head>
 
@@ -166,6 +204,7 @@ export default function NewsDetails() {
 
                 <img
                   src={property.image}
+                  alt={property.title}
                   style={{
                     width: "100%",
                     height: "180px",

@@ -5,7 +5,6 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ExecutiveChat from "../components/ExecutiveChat";
 import NewsletterPopup from "../components/NewsletterPopup";
-
 import { useRouter } from "next/router";
 
 const raleway = Raleway({
@@ -17,7 +16,6 @@ const raleway = Raleway({
 export default function App({ Component, pageProps }) {
 
   const router = useRouter();
-
   const isAdminRoute = router.pathname.startsWith("/admin");
 
   return (
@@ -30,17 +28,27 @@ export default function App({ Component, pageProps }) {
         flexDirection: "column",
       }}
     >
+
+      <Head>
+        <link rel="icon" href="/favicon.png" />
+      </Head>
+
       {!isAdminRoute && <Navbar />}
-<Head>
-  <link rel="icon" href="/favicon.png" />
-</Head>
-      <div style={{ flex: 1 }}>
+
+      {/* Main Page Content */}
+      <div
+        style={{
+          flex: 1,
+          paddingTop: !isAdminRoute ? "100px" : "0px", // prevents navbar overlap
+        }}
+      >
         <Component {...pageProps} />
       </div>
 
       {!isAdminRoute && <Footer />}
       {!isAdminRoute && <ExecutiveChat />}
       {!isAdminRoute && <NewsletterPopup />}
+
     </div>
   );
 }

@@ -146,3 +146,21 @@ body {
 a {
   text-decoration: none;
 }
+.ProseMirror {
+  outline: none;
+  color: #111;
+}
+
+.ProseMirror p {
+  margin: 8px 0;
+}
+
+.ProseMirror h1,
+.ProseMirror h2,
+.ProseMirror h3 {
+  font-weight: 700;
+}
+
+.ProseMirror ul {
+  padding-left: 20px;
+}
