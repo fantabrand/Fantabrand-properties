@@ -49,7 +49,7 @@ export default function About() {
       <section className={styles.hero}>
         <div className={styles.heroOverlay}></div>
         <div className={styles.heroContent}>
-          <h1>Redefining Modern Real Estate</h1>
+          <h1>Luxury living redefined</h1>
           <p>
             At Fantabrand Properties Limited, we create premium living
             environments designed for long-term value and timeless elegance.

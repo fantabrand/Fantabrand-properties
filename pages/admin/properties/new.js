@@ -11,6 +11,8 @@ const [formData, setFormData] = useState({
 title: "",
 slug: "",
 location: "",
+latitude: "",
+longitude: "",
 price: "",
 description: "",
 title_document: "",
@@ -227,6 +229,24 @@ onChange={handleChange}
 required
 />
 
+<div className={styles.row}>
+
+<input
+name="latitude"
+placeholder="Latitude (Example: 8.4799)"
+value={formData.latitude}
+onChange={handleChange}
+/>
+
+<input
+name="longitude"
+placeholder="Longitude (Example: 4.5418)"
+value={formData.longitude}
+onChange={handleChange}
+/>
+
+</div>
+
 <input
 name="price"
 placeholder="Price"
@@ -248,6 +268,7 @@ required
 >
 <option value="">Select Title Document</option>
 <option value="C of O">C of O</option>
+<option value="R of O">R of O</option>
 <option value="Gazette">Gazette</option>
 <option value="Excision">Excision</option>
 <option value="Registered Survey">Registered Survey</option>

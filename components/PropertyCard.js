@@ -51,7 +51,7 @@ export default function PropertyCard({ property }) {
         rel="noopener noreferrer"
         className={styles.whatsappBtn}
       >
-        Inquire
+        Purchase
       </a>
     </div>
   );

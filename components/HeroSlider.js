@@ -4,7 +4,7 @@ import styles from "../styles/HeroSlider.module.css";
 const slides = [
   {
     image: "/hero1.jpg",
-    title: "Luxury Homes in Prime Locations",
+    title: "Luxury living redefined",
     subtitle: "Discover exclusive properties designed for refined living.",
   },
   {

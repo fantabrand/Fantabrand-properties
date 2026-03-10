@@ -66,8 +66,7 @@ export default function Footer() {
             lineHeight: 1.6,
             fontSize: "14px"
           }}>
-            Curating premium real estate investments and luxury
-            living spaces across Lagos.
+            Luxury living redefined.
           </p>
 
           {/* Social Media Icons */}

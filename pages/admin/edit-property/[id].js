@@ -1,181 +1,467 @@
+
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import styles from "@/styles/AdminEditProperty.module.css";
 import { supabase } from "@/lib/supabase/client";
 
 export default function EditProperty() {
 
-  const router = useRouter();
-  const { id } = router.query;
+const router = useRouter();
+const { id } = router.query;
 
-  const [checkingAuth, setCheckingAuth] = useState(true);
+const [checkingAuth,setCheckingAuth]=useState(true);
 
-  const [title, setTitle] = useState("");
-  const [price, setPrice] = useState("");
-  const [location, setLocation] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
-  const [existingImage, setExistingImage] = useState("");
+const [openSection,setOpenSection]=useState("basic");
 
-  useEffect(() => {
+const [formData,setFormData]=useState({
+title:"",
+slug:"",
+location:"",
+latitude:"",
+longitude:"",
+price:"",
+description:"",
+title_document:""
+});
 
-    if (id) {
-      checkUser();
-      fetchProperty();
-    }
+const [whyLocation,setWhyLocation]=useState("");
+const [attractions,setAttractions]=useState("");
+const [features,setFeatures]=useState("");
 
-  }, [id]);
+const [paymentPlan,setPaymentPlan]=useState({});
 
-  async function checkUser() {
+const [image,setImage]=useState(null);
+const [existingImage,setExistingImage]=useState("");
 
-    const { data } = await supabase.auth.getUser();
+const [galleryFiles,setGalleryFiles]=useState([]);
+const [existingGallery,setExistingGallery]=useState([]);
 
-    if (!data.user) {
-      router.push("/admin/login")
-      return;
-    }
+const [brochureFile,setBrochureFile]=useState(null);
+const [existingBrochure,setExistingBrochure]=useState("");
 
-    setCheckingAuth(false);
-  }
+useEffect(()=>{
 
-  async function fetchProperty() {
+if(id){
+checkUser();
+fetchProperty();
+}
 
-    const { data, error } = await supabase
-      .from("properties")
-      .select("*")
-      .eq("id", id)
-      .single();
+},[id]);
 
-    if (!error) {
+function toggleSection(section){
 
-      setTitle(data.title);
-      setPrice(data.price);
-      setLocation(data.location);
-      setDescription(data.description);
-      setExistingImage(data.image_url);
+setOpenSection(prev => prev===section ? null : section);
 
-    }
-  }
+}
 
-  async function handleUpdate(e) {
+async function checkUser(){
 
-    e.preventDefault();
+const {data}=await supabase.auth.getUser();
 
-    let image_url = existingImage;
+if(!data.user){
+router.push("/admin/login");
+return;
+}
 
-    // Upload new image if selected
-    if (image) {
+setCheckingAuth(false);
 
-      const fileName = `${Date.now()}-${image.name}`;
+}
 
-      const { error: uploadError } = await supabase.storage
-        .from("property-images")
-        .upload(fileName, image);
+async function fetchProperty(){
 
-      if (uploadError) {
-        alert("Image upload failed");
-        return;
-      }
+const {data,error}=await supabase
+.from("properties")
+.select("*")
+.eq("id",id)
+.single();
 
-      const { data } = supabase.storage
-        .from("property-images")
-        .getPublicUrl(fileName);
+if(!error){
 
-      image_url = data.publicUrl;
-    }
+setFormData({
+title:data.title || "",
+slug:data.slug || "",
+location:data.location || "",
+latitude:data.latitude || "",
+longitude:data.longitude || "",
+price:data.price || "",
+description:data.description || "",
+title_document:data.title_document || ""
+});
 
-    // Update database
-    const { error } = await supabase
-      .from("properties")
-      .update({
-        title,
-        price,
-        location,
-        description,
-        image_url,
-        gallery: image_url
-      })
-      .eq("id", id);
+setExistingImage(data.image_url || "");
 
-    if (!error) {
+setExistingGallery(
+data.gallery ? data.gallery.split(",") : []
+);
 
-      alert("Property updated successfully");
+setExistingBrochure(data.brochure_url || "");
 
-      router.push("/admin");
+setWhyLocation(
+data.why_location
+? JSON.parse(data.why_location).join("\n")
+: ""
+);
 
-    } else {
+setAttractions(
+data.environment_attractions
+? JSON.parse(data.environment_attractions).join("\n")
+: ""
+);
 
-      alert("Update failed");
+setFeatures(
+data.estate_features
+? JSON.parse(data.estate_features).join("\n")
+: ""
+);
 
-    }
-  }
+setPaymentPlan(
+data.payment_plan
+? JSON.parse(data.payment_plan)
+: {}
+);
 
-  if (checkingAuth) {
-    return <div className="p-10">Checking authentication...</div>;
-  }
+}
 
-  return (
+}
 
-    <div className="max-w-2xl mx-auto p-10">
+function handleChange(e){
 
-      <h1 className="text-3xl font-bold mb-6">
-        Edit Property
-      </h1>
+const {name,value}=e.target;
 
-      <form onSubmit={handleUpdate} className="space-y-4">
+setFormData({
+...formData,
+[name]:value
+});
 
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full border p-3 rounded"
-          required
-        />
+}
 
-        <input
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          className="w-full border p-3 rounded"
-          required
-        />
+async function uploadGalleryImages(){
 
-        <input
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          className="w-full border p-3 rounded"
-          required
-        />
+const urls=[];
 
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full border p-3 rounded"
-        />
+for(const file of galleryFiles){
 
-        {/* Existing Image */}
-        <div>
+const path=`properties/${formData.slug}/${Date.now()}-${file.name}`;
 
-          <p className="mb-2 font-semibold">Current Image:</p>
+const {error}=await supabase.storage
+.from("property-images")
+.upload(path,file);
 
-          <img
-            src={existingImage}
-            className="w-full h-48 object-cover rounded"
-          />
+if(error) throw error;
 
-        </div>
+const {data}=supabase.storage
+.from("property-images")
+.getPublicUrl(path);
 
-        {/* New Image */}
-        <input
-          type="file"
-          onChange={(e) => setImage(e.target.files[0])}
-        />
+urls.push(data.publicUrl);
 
-        <button
-          className="bg-purple-700 hover:bg-purple-800 text-white px-6 py-3 rounded-lg"
-        >
-          Update Property
-        </button>
+}
 
-      </form>
+return urls;
 
-    </div>
-  );
+}
+
+async function handleUpdate(e){
+
+e.preventDefault();
+
+let image_url=existingImage;
+
+if(image){
+
+const path=`properties/${Date.now()}-${image.name}`;
+
+const {error}=await supabase.storage
+.from("property-images")
+.upload(path,image);
+
+if(error){
+alert("Image upload failed");
+return;
+}
+
+const {data}=supabase.storage
+.from("property-images")
+.getPublicUrl(path);
+
+image_url=data.publicUrl;
+
+}
+
+let brochureUrl=existingBrochure;
+
+if(brochureFile){
+
+const path=`brochures/${Date.now()}-${brochureFile.name}`;
+
+const {error}=await supabase.storage
+.from("property-images")
+.upload(path,brochureFile);
+
+if(error){
+alert("Brochure upload failed");
+return;
+}
+
+const {data}=supabase.storage
+.from("property-images")
+.getPublicUrl(path);
+
+brochureUrl=data.publicUrl;
+
+}
+
+const galleryUrls=await uploadGalleryImages();
+
+const galleryString=[
+...existingGallery,
+...galleryUrls
+].join(",");
+
+const whyArray=whyLocation.split("\n").map(i=>i.trim()).filter(Boolean);
+const attractionArray=attractions.split("\n").map(i=>i.trim()).filter(Boolean);
+const featureArray=features.split("\n").map(i=>i.trim()).filter(Boolean);
+
+const {error}=await supabase
+.from("properties")
+.update({
+...formData,
+image_url,
+gallery:galleryString,
+brochure_url:brochureUrl,
+why_location:JSON.stringify(whyArray),
+environment_attractions:JSON.stringify(attractionArray),
+estate_features:JSON.stringify(featureArray),
+payment_plan:JSON.stringify(paymentPlan)
+})
+.eq("id",id);
+
+if(!error){
+
+alert("Property updated successfully");
+
+router.push("/admin/properties");
+
+}else{
+
+alert("Update failed");
+
+}
+
+}
+
+if(checkingAuth){
+return <div className="p-10">Checking authentication...</div>;
+}
+
+return(
+
+<div className={styles.container}>
+
+<h1 className={styles.title}>Edit Property</h1>
+
+<form onSubmit={handleUpdate} className={styles.form}>
+
+{/* BASIC INFORMATION */}
+
+<div className={styles.section}>
+
+<div
+className={styles.sectionHeader}
+onClick={()=>toggleSection("basic")}
+>
+
+<h3>Basic Information</h3>
+<span>{openSection==="basic"?"−":"+"}</span>
+
+</div>
+
+{openSection==="basic" && (
+
+<div className={styles.sectionContent}>
+
+<input
+name="title"
+value={formData.title}
+onChange={handleChange}
+className={styles.input}
+/>
+
+<input
+name="slug"
+value={formData.slug}
+onChange={handleChange}
+className={styles.input}
+/>
+
+<input
+name="location"
+value={formData.location}
+onChange={handleChange}
+className={styles.input}
+/>
+
+<div className={styles.row}>
+
+<input
+name="latitude"
+placeholder="Latitude"
+value={formData.latitude}
+onChange={handleChange}
+className={styles.input}
+/>
+
+<input
+name="longitude"
+placeholder="Longitude"
+value={formData.longitude}
+onChange={handleChange}
+className={styles.input}
+/>
+
+</div>
+
+<input
+name="price"
+value={formData.price}
+onChange={handleChange}
+className={styles.input}
+/>
+
+<textarea
+name="description"
+value={formData.description}
+onChange={handleChange}
+className={styles.textarea}
+/>
+
+<select
+name="title_document"
+value={formData.title_document}
+onChange={handleChange}
+className={styles.input}
+>
+
+<option value="">Select Title</option>
+<option value="C of O">C of O</option>
+<option value="Gazette">Gazette</option>
+<option value="Excision">Excision</option>
+<option value="Registered Survey">Registered Survey</option>
+
+</select>
+
+</div>
+
+)}
+
+</div>
+
+
+{/* PROPERTY CONTENT */}
+
+<div className={styles.section}>
+
+<div
+className={styles.sectionHeader}
+onClick={()=>toggleSection("content")}
+>
+
+<h3>Property Content</h3>
+<span>{openSection==="content"?"−":"+"}</span>
+
+</div>
+
+{openSection==="content" && (
+
+<div className={styles.sectionContent}>
+
+<textarea
+value={whyLocation}
+onChange={(e)=>setWhyLocation(e.target.value)}
+placeholder="Why Location"
+className={styles.textarea}
+/>
+
+<textarea
+value={attractions}
+onChange={(e)=>setAttractions(e.target.value)}
+placeholder="Environment Attractions"
+className={styles.textarea}
+/>
+
+<textarea
+value={features}
+onChange={(e)=>setFeatures(e.target.value)}
+placeholder="Estate Features"
+className={styles.textarea}
+/>
+
+</div>
+
+)}
+
+</div>
+
+
+{/* MEDIA UPLOADS */}
+
+<div className={styles.section}>
+
+<div
+className={styles.sectionHeader}
+onClick={()=>toggleSection("media")}
+>
+
+<h3>Media Uploads</h3>
+<span>{openSection==="media"?"−":"+"}</span>
+
+</div>
+
+{openSection==="media" && (
+
+<div className={styles.sectionContent}>
+
+<p>Current Image</p>
+
+<div className={styles.imagePreview}>
+<img src={existingImage}/>
+</div>
+
+<input
+type="file"
+className={styles.fileInput}
+onChange={(e)=>setImage(e.target.files[0])}
+/>
+
+<input
+type="file"
+multiple
+className={styles.fileInput}
+onChange={(e)=>setGalleryFiles([...e.target.files])}
+/>
+
+<input
+type="file"
+accept="application/pdf"
+className={styles.fileInput}
+onChange={(e)=>setBrochureFile(e.target.files[0])}
+/>
+
+</div>
+
+)}
+
+</div>
+
+
+<button className={styles.button}>
+Update Property
+</button>
+
+</form>
+
+</div>
+
+);
+
 }

@@ -51,7 +51,7 @@ export default function Contact() {
 <ExecutiveChat />
         {/* LEFT SIDE */}
         <div className={styles.contactInfo}>
-          <h1>Let’s Start a Conversation</h1>
+          <h1>We love hearing from you</h1>
           <p>
             Whether you're an investor, buyer, or strategic partner,
             Fantabrand Properties is ready to engage.
@@ -69,7 +69,7 @@ export default function Contact() {
 
           <div className={styles.infoBlock}>
             <h4>Office</h4>
-            <span>Lagos, Nigeria</span>
+            <span>2, Mubo Phase II, Ilorin, Kwara State</span>
           </div>
         </div>
 

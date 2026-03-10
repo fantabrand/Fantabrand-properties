@@ -27,7 +27,7 @@ const executives = [
 export default function ExecutiveSection() {
   return (
     <section className={styles.executiveSection}>
-      <h2>Leadership Team</h2>
+      <h2>Meet our Team</h2>
 
       <div className={styles.grid}>
         {executives.map((exec, index) => (

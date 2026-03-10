@@ -233,3 +233,36 @@
   }
 
 }
+.faqItem{
+border-bottom:1px solid #eee;
+padding:15px 0;
+}
+
+.faqQuestion{
+width:100%;
+background:none;
+border:none;
+display:flex;
+justify-content:space-between;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+}
+
+.faqAnswer{
+margin-top:10px;
+color:#555;
+line-height:1.6;
+}
+.mapContainer{
+margin-top:20px;
+border-radius:14px;
+overflow:hidden;
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+.mapNote{
+margin-top:10px;
+font-size:14px;
+color:#666;
+}
