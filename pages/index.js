@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase/client";
 import HeroSlider from "../components/HeroSlider";
 import RotatingProperties from "../components/RotatingProperties";
 import WhyChoose from "../components/WhyChoose";
+import Testimonials from "../components/Testimonials";
 import PremiumFaq from "../components/PremiumFaq";
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
@@ -238,6 +239,7 @@ export default function Home() {
         </section>
 
         <WhyChoose />
+        <Testimonials />
         <PremiumFaq />
 
       </main>

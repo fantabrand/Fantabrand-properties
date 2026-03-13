@@ -1,32 +1,35 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase/client";
+import Head from "next/head";
 
 export default function Testimonials() {
-  const testimonials = [
-    {
-      name: "Adeyemi Oladipo",
-      role: "Property Investor",
-      text: "Fantabrand helped me secure a prime plot in a fast-growing location. The process was smooth, transparent, and highly professional.",
-      image: "https://randomuser.me/api/portraits/men/32.jpg",
-    },
-    {
-      name: "Chioma Nwosu",
-      role: "Business Owner",
-      text: "I highly recommend Fantabrand Properties. Their team is trustworthy and the investment has already started appreciating.",
-      image: "https://randomuser.me/api/portraits/women/44.jpg",
-    },
-    {
-      name: "Ibrahim Bello",
-      role: "Real Estate Investor",
-      text: "Exceptional service and verified properties. Fantabrand is my go-to company for real estate investment.",
-      image: "https://randomuser.me/api/portraits/men/62.jpg",
-    },
-  ];
 
+  const [testimonials, setTestimonials] = useState([]);
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
+    fetchTestimonials();
+  }, []);
+
+  async function fetchTestimonials() {
+
+    const { data, error } = await supabase
+      .from("testimonials")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setTestimonials(data);
+    }
+
+  }
+
+  useEffect(() => {
+
+    if (testimonials.length === 0) return;
+
     const interval = setInterval(() => {
       setCurrent((prev) =>
         prev === testimonials.length - 1 ? 0 : prev + 1
@@ -34,7 +37,8 @@ export default function Testimonials() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+
+  }, [testimonials]);
 
   function nextSlide() {
     setCurrent(
@@ -48,80 +52,140 @@ export default function Testimonials() {
     );
   }
 
+  if (testimonials.length === 0) return null;
+
+  const reviewSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Fantabrand Properties",
+    "url": "https://fantabrandproperties.com.ng",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "reviewCount": testimonials.length
+    },
+    "review": testimonials.map((t) => ({
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": t.name
+      },
+      "reviewBody": t.text,
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      }
+    }))
+  };
+
   return (
-    <section style={sectionStyle}>
-      <div style={containerStyle}>
-        <h2 style={headingStyle}>
-          Real People, Real Testimonials
-        </h2>
 
-        <div style={carouselWrapper}>
-          <button onClick={prevSlide} style={arrowLeft}>
-            ‹
-          </button>
+    <>
 
-          <div style={carouselTrack}>
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                style={{
-                  ...cardStyle,
-                  opacity: index === current ? 1 : 0,
-                  transform:
-                    index === current
-                      ? "scale(1)"
-                      : "scale(0.95)",
-                }}
-              >
-                {/* Centered Image */}
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  style={imageStyle}
-                />
+      {/* GOOGLE REVIEW SCHEMA */}
 
-                {/* Text */}
-                <p style={textStyle}>
-                  “{testimonial.text}”
-                </p>
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(reviewSchema)
+          }}
+        />
+      </Head>
 
-                {/* Name */}
-                <h4 style={nameStyle}>
-                  {testimonial.name}
-                </h4>
+      <section style={sectionStyle}>
 
-                {/* Role */}
-                <span style={roleStyle}>
-                  {testimonial.role}
-                </span>
-              </div>
-            ))}
+        <div style={containerStyle}>
+
+          <h2 style={headingStyle}>
+            Real Clients, Real Testimonials
+          </h2>
+
+          <div style={carouselWrapper}>
+
+            <button onClick={prevSlide} style={arrowLeft}>
+              ‹
+            </button>
+
+            <div style={carouselTrack}>
+
+              {testimonials.map((testimonial, index) => (
+
+                <div
+                  key={testimonial.id}
+                  style={{
+                    ...cardStyle,
+                    opacity: index === current ? 1 : 0,
+                    transform:
+                      index === current
+                        ? "scale(1)"
+                        : "scale(0.95)",
+                  }}
+                >
+
+                  {testimonial.image && (
+
+                    <img
+                      src={testimonial.image}
+                      alt={testimonial.name}
+                      style={imageStyle}
+                    />
+
+                  )}
+
+                  <p style={textStyle}>
+                    “{testimonial.text}”
+                  </p>
+
+                  <h4 style={nameStyle}>
+                    {testimonial.name}
+                  </h4>
+
+                  <span style={roleStyle}>
+                    {testimonial.role}
+                  </span>
+
+                </div>
+
+              ))}
+
+            </div>
+
+            <button onClick={nextSlide} style={arrowRight}>
+              ›
+            </button>
+
           </div>
 
-          <button onClick={nextSlide} style={arrowRight}>
-            ›
-          </button>
+          <div style={dotsWrapper}>
+
+            {testimonials.map((_, index) => (
+
+              <div
+                key={index}
+                onClick={() => setCurrent(index)}
+                style={{
+                  ...dotStyle,
+                  background:
+                    index === current
+                      ? "#ffffff"
+                      : "#cccccc",
+                }}
+              />
+
+            ))}
+
+          </div>
+
         </div>
 
-        {/* Dots */}
-        <div style={dotsWrapper}>
-          {testimonials.map((_, index) => (
-            <div
-              key={index}
-              onClick={() => setCurrent(index)}
-              style={{
-                ...dotStyle,
-                background:
-                  index === current
-                    ? "#6a0dad"
-                    : "#cccccc",
-              }}
-            />
-          ))}
-        </div>
-      </div>
-    </section>
+      </section>
+
+    </>
+
   );
+
 }
 
 
@@ -129,7 +193,7 @@ export default function Testimonials() {
 
 const sectionStyle = {
   padding: "100px 5%",
-  background: "#ffffff",
+  background: "linear-gradient(to right, #8011d0, #460773)",
 };
 
 const containerStyle = {
@@ -142,7 +206,7 @@ const headingStyle = {
   fontSize: "36px",
   fontWeight: "800",
   marginBottom: "50px",
-  color: "#6a0dad",
+  color: "#ffffff",
 };
 
 const carouselWrapper = {
@@ -178,7 +242,7 @@ const imageStyle = {
 
 const textStyle = {
   fontSize: "18px",
-  color: "#222",   // DARKER TEXT
+  color: "#050505",
   marginBottom: "25px",
   lineHeight: "1.7",
 };
@@ -186,7 +250,7 @@ const textStyle = {
 const nameStyle = {
   fontWeight: "600",
   fontSize: "18px",
-  color: "#111",
+  color: "#020202",
   marginBottom: "5px",
 };
 

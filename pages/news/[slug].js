@@ -10,13 +10,16 @@ export default function NewsDetails() {
 
   const [item, setItem] = useState(null);
   const [properties, setProperties] = useState([]);
+  const [relatedNews, setRelatedNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [readingTime, setReadingTime] = useState(0);
 
   useEffect(() => {
 
     if (slug) {
       fetchNews();
       fetchFeaturedProperties();
+      fetchRelatedNews();
     }
 
   }, [slug]);
@@ -30,7 +33,15 @@ export default function NewsDetails() {
       .single();
 
     if (!error && data) {
+
       setItem(data);
+
+      // Calculate reading time
+      const text = data.content.replace(/<[^>]+>/g, "");
+      const words = text.trim().split(/\s+/).length;
+      const minutes = Math.ceil(words / 200);
+      setReadingTime(minutes);
+
     }
 
     setLoading(false);
@@ -44,6 +55,21 @@ export default function NewsDetails() {
       .limit(3);
 
     setProperties(data || []);
+
+  }
+
+  async function fetchRelatedNews(){
+
+    if (!slug) return;
+
+    const { data } = await supabase
+      .from("news")
+      .select("title, slug, image_url, created_at")
+      .neq("slug", slug)
+      .order("created_at", { ascending: false })
+      .limit(3);
+
+    setRelatedNews(data || []);
 
   }
 
@@ -63,9 +89,11 @@ export default function NewsDetails() {
     item.excerpt ||
     "Real estate news from Fantabrand Properties.";
 
-  const pageUrl = `https://fantabrandproperties.com.ng/news/${item.slug}`;
+  const pageUrl =
+    `https://fantabrandproperties.com.ng/news/${item.slug}`;
 
-  const pageImage = item.image_url || "/logo.png";
+  const pageImage =
+    `https://fantabrandproperties.com.ng/api/og/news?title=${encodeURIComponent(item.title)}`;
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -102,22 +130,20 @@ export default function NewsDetails() {
 
         <link rel="canonical" href={pageUrl} />
 
-        {/* Open Graph */}
-
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:image" content={pageImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="article" />
-
-        {/* Twitter */}
+        <meta property="og:site_name" content="Fantabrand Properties" />
+        <meta property="article:published_time" content={item.created_at} />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
-
-        {/* Google Structured Data */}
 
         <script
           type="application/ld+json"
@@ -141,6 +167,7 @@ export default function NewsDetails() {
           <img
             src={item.image_url}
             alt={item.title}
+            loading="lazy"
             style={{
               width: "100%",
               borderRadius: "12px",
@@ -151,7 +178,7 @@ export default function NewsDetails() {
         )}
 
         <div style={{ color: "#666", marginBottom: "10px" }}>
-          {new Date(item.created_at).toDateString()}
+          {new Date(item.created_at).toDateString()} • {readingTime} min read
         </div>
 
         <h1
@@ -172,87 +199,208 @@ export default function NewsDetails() {
           dangerouslySetInnerHTML={{ __html: item.content }}
         />
 
-        {/* Featured Properties */}
+        {/* SOCIAL SHARE BUTTONS */}
 
+        <div style={{ marginTop: "40px" }}>
+
+          <h3 style={{ marginBottom: "15px" }}>
+            Share this article
+          </h3>
+
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(pageTitle + " " + pageUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{background:"#25D366",color:"#fff",padding:"10px 16px",borderRadius:"6px",textDecoration:"none"}}
+            >
+              WhatsApp
+            </a>
+
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{background:"#1877F2",color:"#fff",padding:"10px 16px",borderRadius:"6px",textDecoration:"none"}}
+            >
+              Facebook
+            </a>
+
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{background:"#0077B5",color:"#fff",padding:"10px 16px",borderRadius:"6px",textDecoration:"none"}}
+            >
+              LinkedIn
+            </a>
+
+            <a
+              href={`https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{background:"#000",color:"#fff",padding:"10px 16px",borderRadius:"6px",textDecoration:"none"}}
+            >
+              Twitter
+            </a>
+
+          </div>
+
+        </div>
+
+        {relatedNews.length > 0 && (
+        <>
         <hr style={{ margin: "50px 0" }} />
 
         <h2 style={{ marginBottom: "20px" }}>
-          Featured Properties
+        Related News
         </h2>
 
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
-            gap: "20px"
-          }}
+        style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
+        gap: "20px"
+        }}
         >
 
-          {properties.map(property => (
+        {relatedNews.map(news => (
 
-            <div
-              key={property.id}
-              style={{
-                border: "1px solid #eee",
-                borderRadius: "12px",
-                overflow: "hidden",
-                background: "#fff"
-              }}
-            >
+        <a
+        key={news.slug}
+        href={`/news/${news.slug}`}
+        style={{
+        border: "1px solid #eee",
+        borderRadius: "12px",
+        overflow: "hidden",
+        background: "#fff",
+        textDecoration: "none",
+        color: "#000"
+        }}
+        >
 
-              {property.image && (
+        {news.image_url && (
 
-                <img
-                  src={property.image}
-                  alt={property.title}
-                  style={{
-                    width: "100%",
-                    height: "180px",
-                    objectFit: "cover"
-                  }}
-                />
+        <img
+        src={news.image_url}
+        alt={news.title}
+        loading="lazy"
+        style={{
+        width: "100%",
+        height: "160px",
+        objectFit: "cover"
+        }}
+        />
 
-              )}
+        )}
 
-              <div style={{ padding: "15px" }}>
+        <div style={{ padding: "15px" }}>
 
-                <h3 style={{ marginBottom: "5px" }}>
-                  {property.title}
-                </h3>
+        <div style={{ fontSize: "14px", color: "#777", marginBottom: "6px" }}>
+        {new Date(news.created_at).toDateString()}
+        </div>
 
-                <div style={{ color: "#777", fontSize: "14px" }}>
-                  {property.location}
-                </div>
-
-                <div
-                  style={{
-                    marginTop: "8px",
-                    fontWeight: "bold",
-                    color: "#7c3aed"
-                  }}
-                >
-                  ₦{property.price}
-                </div>
-
-                <a
-                  href={`/properties/${property.slug}`}
-                  style={{
-                    display: "inline-block",
-                    marginTop: "12px",
-                    color: "#7c3aed",
-                    fontWeight: "bold"
-                  }}
-                >
-                  View Property →
-                </a>
-
-              </div>
-
-            </div>
-
-          ))}
+        <h3 style={{ fontSize: "18px" }}>
+        {news.title}
+        </h3>
 
         </div>
+
+        </a>
+
+        ))}
+
+        </div>
+        </>
+        )}
+
+        {properties.length > 0 && (
+        <>
+        <hr style={{ margin: "50px 0" }} />
+
+        <h2 style={{ marginBottom: "20px" }}>
+        Featured Properties
+        </h2>
+
+        <div
+        style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
+        gap: "20px"
+        }}
+        >
+
+        {properties.map(property => (
+
+        <div
+        key={property.id}
+        style={{
+        border: "1px solid #eee",
+        borderRadius: "12px",
+        overflow: "hidden",
+        background: "#fff"
+        }}
+        >
+
+        {property.image && (
+
+        <img
+        src={property.image}
+        alt={property.title}
+        loading="lazy"
+        style={{
+        width: "100%",
+        height: "180px",
+        objectFit: "cover"
+        }}
+        />
+
+        )}
+
+        <div style={{ padding: "15px" }}>
+
+        <h3 style={{ marginBottom: "5px" }}>
+        {property.title}
+        </h3>
+
+        <div style={{ color: "#777", fontSize: "14px" }}>
+        {property.location}
+        </div>
+
+        <div
+        style={{
+        marginTop: "8px",
+        fontWeight: "bold",
+        color: "#7c3aed"
+        }}
+        >
+        ₦{property.price}
+        </div>
+
+        <a
+        href={`/properties/${property.slug}`}
+        style={{
+        display: "inline-block",
+        marginTop: "12px",
+        color: "#7c3aed",
+        fontWeight: "bold",
+        textDecoration: "none"
+        }}
+        >
+        View Property →
+        </a>
+
+        </div>
+
+        </div>
+
+        ))}
+
+        </div>
+        </>
+
+        )}
 
       </div>
     </>

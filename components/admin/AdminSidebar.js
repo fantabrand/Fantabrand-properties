@@ -23,6 +23,8 @@ export default function AdminSidebar({ closeSidebar }) {
     { name: "News", path: "/admin/news" },
     { name: "Add News", path: "/admin/news/new" },
 
+    { name: "Testimonials", path: "/admin/testimonials" },
+
     { name: "Inspections", path: "/admin/inspections" },
 
     { name: "Newsletter", path: "/admin/newsletter" },
@@ -72,16 +74,25 @@ export default function AdminSidebar({ closeSidebar }) {
       </div>
 
       <nav className={styles.nav}>
+
         {menu.map((item) => {
 
           let badge = null;
 
           if (item.name === "Inspections" && counts.inspections > 0) {
-            badge = <span className={styles.badge}>{counts.inspections}</span>;
+            badge = (
+              <span className={styles.badge}>
+                {counts.inspections}
+              </span>
+            );
           }
 
           if (item.name === "Newsletter" && counts.subscribers > 0) {
-            badge = <span className={styles.badge}>{counts.subscribers}</span>;
+            badge = (
+              <span className={styles.badge}>
+                {counts.subscribers}
+              </span>
+            );
           }
 
           return (
@@ -100,6 +111,7 @@ export default function AdminSidebar({ closeSidebar }) {
           );
 
         })}
+
       </nav>
 
       <div className={styles.logout}>

@@ -334,7 +334,16 @@ className={styles.whatsapp}
 >
 Chat on WhatsApp
 </a>
-
+{property.brochure_url && (
+  <a
+    href={property.brochure_url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className={styles.brochureBtn}
+  >
+    📄 Download Brochure
+  </a>
+)}
 <div className={styles.inspectBox}>
 
 <input
