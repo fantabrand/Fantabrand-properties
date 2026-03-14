@@ -1,80 +1,12 @@
 import { supabase } from "@/lib/supabase/client";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import Head from "next/head";
 
-export default function NewsDetails() {
-
-  const router = useRouter();
-  const { slug } = router.query;
-
-  const [item, setItem] = useState(null);
-  const [properties, setProperties] = useState([]);
-  const [relatedNews, setRelatedNews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [readingTime, setReadingTime] = useState(0);
-
-  useEffect(() => {
-
-    if (slug) {
-      fetchNews();
-      fetchFeaturedProperties();
-      fetchRelatedNews();
-    }
-
-  }, [slug]);
-
-  async function fetchNews() {
-
-    const { data, error } = await supabase
-      .from("news")
-      .select("*")
-      .eq("slug", slug)
-      .single();
-
-    if (!error && data) {
-
-      setItem(data);
-
-      const text = data.content.replace(/<[^>]+>/g, "");
-      const words = text.trim().split(/\s+/).length;
-      const minutes = Math.ceil(words / 200);
-      setReadingTime(minutes);
-
-    }
-
-    setLoading(false);
-  }
-
-  async function fetchFeaturedProperties(){
-
-    const { data } = await supabase
-      .from("properties")
-      .select("*")
-      .limit(3);
-
-    setProperties(data || []);
-
-  }
-
-  async function fetchRelatedNews(){
-
-    if (!slug) return;
-
-    const { data } = await supabase
-      .from("news")
-      .select("title, slug, image_url, created_at")
-      .neq("slug", slug)
-      .order("created_at", { ascending: false })
-      .limit(3);
-
-    setRelatedNews(data || []);
-
-  }
-
-  if (loading) {
-    return <div style={{ padding: "40px" }}>Loading...</div>;
-  }
+export default function NewsDetails({
+  item,
+  properties,
+  relatedNews,
+  readingTime
+}) {
 
   if (!item) {
     return <div style={{ padding: "40px" }}>Article not found</div>;
@@ -91,7 +23,6 @@ export default function NewsDetails() {
   const pageUrl =
     `https://fantabrandproperties.com.ng/news/${item.slug}`;
 
-  // Use article image if available, fallback to branded OG generator
   const pageImage =
     item.image_url ||
     `https://fantabrandproperties.com.ng/api/og/news?title=${encodeURIComponent(item.title)}`;
@@ -137,14 +68,12 @@ export default function NewsDetails() {
         <meta property="og:description" content={pageDescription} />
         <meta property="og:image" content={pageImage} />
         <meta property="og:image:secure_url" content={pageImage} />
-        <meta property="og:image:type" content="image/jpeg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content={item.title} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:site_name" content="Fantabrand Properties" />
-        <meta property="article:published_time" content={item.created_at} />
 
         {/* TWITTER */}
 
@@ -177,7 +106,6 @@ export default function NewsDetails() {
           <img
             src={item.image_url}
             alt={item.title}
-            loading="lazy"
             style={{
               width: "100%",
               borderRadius: "12px",
@@ -209,7 +137,7 @@ export default function NewsDetails() {
           dangerouslySetInnerHTML={{ __html: item.content }}
         />
 
-        {/* SOCIAL SHARE */}
+        {/* SHARE */}
 
         <div style={{ marginTop: "40px" }}>
 
@@ -259,7 +187,112 @@ export default function NewsDetails() {
 
         </div>
 
+        {/* RELATED NEWS */}
+
+        {relatedNews.length > 0 && (
+          <>
+            <hr style={{ margin: "50px 0" }} />
+
+            <h2 style={{ marginBottom: "20px" }}>
+              Related News
+            </h2>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
+                gap: "20px"
+              }}
+            >
+
+              {relatedNews.map(news => (
+
+                <a
+                  key={news.slug}
+                  href={`/news/${news.slug}`}
+                  style={{
+                    border: "1px solid #eee",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                    background: "#fff",
+                    textDecoration: "none",
+                    color: "#000"
+                  }}
+                >
+
+                  {news.image_url && (
+
+                    <img
+                      src={news.image_url}
+                      alt={news.title}
+                      style={{
+                        width: "100%",
+                        height: "160px",
+                        objectFit: "cover"
+                      }}
+                    />
+
+                  )}
+
+                  <div style={{ padding: "15px" }}>
+
+                    <div style={{ fontSize: "14px", color: "#777" }}>
+                      {new Date(news.created_at).toDateString()}
+                    </div>
+
+                    <h3>{news.title}</h3>
+
+                  </div>
+
+                </a>
+
+              ))}
+
+            </div>
+          </>
+        )}
+
       </div>
     </>
   );
+}
+
+export async function getServerSideProps({ params }) {
+
+  const { slug } = params;
+
+  const { data: item } = await supabase
+    .from("news")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+
+  if (!item) {
+    return { props: { item: null } };
+  }
+
+  const text = item.content.replace(/<[^>]+>/g, "");
+  const words = text.trim().split(/\s+/).length;
+  const readingTime = Math.ceil(words / 200);
+
+  const { data: properties } = await supabase
+    .from("properties")
+    .select("*")
+    .limit(3);
+
+  const { data: relatedNews } = await supabase
+    .from("news")
+    .select("title, slug, image_url, created_at")
+    .neq("slug", slug)
+    .order("created_at", { ascending: false })
+    .limit(3);
+
+  return {
+    props: {
+      item,
+      properties: properties || [],
+      relatedNews: relatedNews || [],
+      readingTime
+    }
+  };
 }
