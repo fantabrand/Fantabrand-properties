@@ -1,5 +1,10 @@
-import { supabase } from "@/lib/supabase/client";
 import Head from "next/head";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 export default function NewsDetails({
   item,
@@ -21,12 +26,12 @@ export default function NewsDetails({
     "Real estate news from Fantabrand Properties.";
 
   const pageUrl =
-    `https://fantabrandproperties.com.ng/news/${item.slug}`;
+    `https://www.fantabrandproperties.com.ng/news/${item.slug}`;
 
   const pageImage =
-item.image_url
-? item.image_url
-: `https://www.fantabrandproperties.com.ng/api/og/news?title=${encodeURIComponent(item.title)}`;
+    item.image_url
+      ? item.image_url
+      : `https://www.fantabrandproperties.com.ng/api/og/news?title=${encodeURIComponent(item.title)}`;
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -188,71 +193,6 @@ item.image_url
 
         </div>
 
-        {/* RELATED NEWS */}
-
-        {relatedNews.length > 0 && (
-          <>
-            <hr style={{ margin: "50px 0" }} />
-
-            <h2 style={{ marginBottom: "20px" }}>
-              Related News
-            </h2>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
-                gap: "20px"
-              }}
-            >
-
-              {relatedNews.map(news => (
-
-                <a
-                  key={news.slug}
-                  href={`/news/${news.slug}`}
-                  style={{
-                    border: "1px solid #eee",
-                    borderRadius: "12px",
-                    overflow: "hidden",
-                    background: "#fff",
-                    textDecoration: "none",
-                    color: "#000"
-                  }}
-                >
-
-                  {news.image_url && (
-
-                    <img
-                      src={news.image_url}
-                      alt={news.title}
-                      style={{
-                        width: "100%",
-                        height: "160px",
-                        objectFit: "cover"
-                      }}
-                    />
-
-                  )}
-
-                  <div style={{ padding: "15px" }}>
-
-                    <div style={{ fontSize: "14px", color: "#777" }}>
-                      {new Date(news.created_at).toDateString()}
-                    </div>
-
-                    <h3>{news.title}</h3>
-
-                  </div>
-
-                </a>
-
-              ))}
-
-            </div>
-          </>
-        )}
-
       </div>
     </>
   );
@@ -269,7 +209,7 @@ export async function getServerSideProps({ params }) {
     .single();
 
   if (!item) {
-    return { props: { item: null } };
+    return { notFound: true };
   }
 
   const text = item.content.replace(/<[^>]+>/g, "");
@@ -296,4 +236,5 @@ export async function getServerSideProps({ params }) {
       readingTime
     }
   };
+
 }
