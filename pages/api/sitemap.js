@@ -1,17 +1,20 @@
-import { supabase } from "../../lib/supabase/client";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 export default async function handler(req, res) {
 
-  const baseUrl = "https://fantabrandproperties.com.ng";
+  const baseUrl = "https://www.fantabrandproperties.com.ng";
 
   try {
 
-    // Fetch news articles
     const { data: news } = await supabase
       .from("news")
       .select("slug, created_at");
 
-    // Fetch properties
     const { data: properties } = await supabase
       .from("properties")
       .select("slug, created_at");
@@ -33,14 +36,13 @@ export default async function handler(req, res) {
       </url>
     `);
 
-    // Filter invalid slugs (prevents /news/null)
     const newsUrls = (news || [])
       .filter(article => article.slug)
       .map(article => `
         <url>
           <loc>${baseUrl}/news/${article.slug}</loc>
           <lastmod>${new Date(article.created_at).toISOString()}</lastmod>
-          <changefreq>weekly</changefreq>
+          <changefreq>daily</changefreq>
           <priority>0.9</priority>
         </url>
       `);
@@ -57,6 +59,7 @@ export default async function handler(req, res) {
       `);
 
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 ${staticUrls.join("")}
