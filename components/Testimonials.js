@@ -203,7 +203,7 @@ const containerStyle = {
 };
 
 const headingStyle = {
-  fontSize: "36px",
+fontSize: "clamp(26px, 4vw, 36px)",
   fontWeight: "800",
   marginBottom: "50px",
   color: "#ffffff",
@@ -215,7 +215,7 @@ const carouselWrapper = {
 
 const carouselTrack = {
   position: "relative",
-  height: "340px",
+  height: "420px",
 };
 
 const cardStyle = {
@@ -228,6 +228,7 @@ const cardStyle = {
     "0 20px 50px rgba(124,58,237,0.15)",
   transition: "all 0.5s ease",
   textAlign: "center",
+  minHeight: "350px",
 };
 
 const imageStyle = {
