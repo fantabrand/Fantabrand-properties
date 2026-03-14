@@ -1,1 +1,1 @@
-Sitemap: https://www.fantabrandproperties.com.ng/api/sitemap
+Sitemap: https://www.fantabrandproperties.com.ng/sitemap.xml
