@@ -36,7 +36,6 @@ export default function NewsDetails() {
 
       setItem(data);
 
-      // Calculate reading time
       const text = data.content.replace(/<[^>]+>/g, "");
       const words = text.trim().split(/\s+/).length;
       const minutes = Math.ceil(words / 200);
@@ -92,7 +91,9 @@ export default function NewsDetails() {
   const pageUrl =
     `https://fantabrandproperties.com.ng/news/${item.slug}`;
 
+  // Use article image if available, fallback to branded OG generator
   const pageImage =
+    item.image_url ||
     `https://fantabrandproperties.com.ng/api/og/news?title=${encodeURIComponent(item.title)}`;
 
   const articleSchema = {
@@ -130,20 +131,29 @@ export default function NewsDetails() {
 
         <link rel="canonical" href={pageUrl} />
 
+        {/* OPEN GRAPH */}
+
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:image" content={pageImage} />
+        <meta property="og:image:secure_url" content={pageImage} />
+        <meta property="og:image:type" content="image/jpeg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={item.title} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:site_name" content="Fantabrand Properties" />
         <meta property="article:published_time" content={item.created_at} />
 
+        {/* TWITTER */}
+
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
+
+        {/* STRUCTURED DATA */}
 
         <script
           type="application/ld+json"
@@ -199,7 +209,7 @@ export default function NewsDetails() {
           dangerouslySetInnerHTML={{ __html: item.content }}
         />
 
-        {/* SOCIAL SHARE BUTTONS */}
+        {/* SOCIAL SHARE */}
 
         <div style={{ marginTop: "40px" }}>
 
@@ -248,159 +258,6 @@ export default function NewsDetails() {
           </div>
 
         </div>
-
-        {relatedNews.length > 0 && (
-        <>
-        <hr style={{ margin: "50px 0" }} />
-
-        <h2 style={{ marginBottom: "20px" }}>
-        Related News
-        </h2>
-
-        <div
-        style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
-        gap: "20px"
-        }}
-        >
-
-        {relatedNews.map(news => (
-
-        <a
-        key={news.slug}
-        href={`/news/${news.slug}`}
-        style={{
-        border: "1px solid #eee",
-        borderRadius: "12px",
-        overflow: "hidden",
-        background: "#fff",
-        textDecoration: "none",
-        color: "#000"
-        }}
-        >
-
-        {news.image_url && (
-
-        <img
-        src={news.image_url}
-        alt={news.title}
-        loading="lazy"
-        style={{
-        width: "100%",
-        height: "160px",
-        objectFit: "cover"
-        }}
-        />
-
-        )}
-
-        <div style={{ padding: "15px" }}>
-
-        <div style={{ fontSize: "14px", color: "#777", marginBottom: "6px" }}>
-        {new Date(news.created_at).toDateString()}
-        </div>
-
-        <h3 style={{ fontSize: "18px" }}>
-        {news.title}
-        </h3>
-
-        </div>
-
-        </a>
-
-        ))}
-
-        </div>
-        </>
-        )}
-
-        {properties.length > 0 && (
-        <>
-        <hr style={{ margin: "50px 0" }} />
-
-        <h2 style={{ marginBottom: "20px" }}>
-        Featured Properties
-        </h2>
-
-        <div
-        style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
-        gap: "20px"
-        }}
-        >
-
-        {properties.map(property => (
-
-        <div
-        key={property.id}
-        style={{
-        border: "1px solid #eee",
-        borderRadius: "12px",
-        overflow: "hidden",
-        background: "#fff"
-        }}
-        >
-
-        {property.image && (
-
-        <img
-        src={property.image}
-        alt={property.title}
-        loading="lazy"
-        style={{
-        width: "100%",
-        height: "180px",
-        objectFit: "cover"
-        }}
-        />
-
-        )}
-
-        <div style={{ padding: "15px" }}>
-
-        <h3 style={{ marginBottom: "5px" }}>
-        {property.title}
-        </h3>
-
-        <div style={{ color: "#777", fontSize: "14px" }}>
-        {property.location}
-        </div>
-
-        <div
-        style={{
-        marginTop: "8px",
-        fontWeight: "bold",
-        color: "#7c3aed"
-        }}
-        >
-        ₦{property.price}
-        </div>
-
-        <a
-        href={`/properties/${property.slug}`}
-        style={{
-        display: "inline-block",
-        marginTop: "12px",
-        color: "#7c3aed",
-        fontWeight: "bold",
-        textDecoration: "none"
-        }}
-        >
-        View Property →
-        </a>
-
-        </div>
-
-        </div>
-
-        ))}
-
-        </div>
-        </>
-
-        )}
 
       </div>
     </>
