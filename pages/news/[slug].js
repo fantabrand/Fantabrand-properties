@@ -24,8 +24,9 @@ export default function NewsDetails({
     `https://fantabrandproperties.com.ng/news/${item.slug}`;
 
   const pageImage =
-    item.image_url ||
-    `https://fantabrandproperties.com.ng/api/og/news?title=${encodeURIComponent(item.title)}`;
+item.image_url
+? item.image_url
+: `https://www.fantabrandproperties.com.ng/api/og/news?title=${encodeURIComponent(item.title)}`;
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -42,7 +43,7 @@ export default function NewsDetails({
       name: "Fantabrand Properties",
       logo: {
         "@type": "ImageObject",
-        url: "https://fantabrandproperties.com.ng/logo.png"
+        url: "https://www.fantabrandproperties.com.ng/logo.png"
       }
     },
     datePublished: item.created_at,
