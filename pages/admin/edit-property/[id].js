@@ -1,4 +1,3 @@
-
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "@/styles/AdminEditProperty.module.css";
@@ -49,9 +48,7 @@ fetchProperty();
 },[id]);
 
 function toggleSection(section){
-
 setOpenSection(prev => prev===section ? null : section);
-
 }
 
 async function checkUser(){
@@ -64,7 +61,6 @@ return;
 }
 
 setCheckingAuth(false);
-
 }
 
 async function fetchProperty(){
@@ -132,6 +128,18 @@ setFormData({
 ...formData,
 [name]:value
 });
+
+}
+
+/* DELETE GALLERY IMAGE */
+
+function removeGalleryImage(index){
+
+const updatedGallery=[...existingGallery];
+
+updatedGallery.splice(index,1);
+
+setExistingGallery(updatedGallery);
 
 }
 
@@ -280,67 +288,25 @@ onClick={()=>toggleSection("basic")}
 
 <div className={styles.sectionContent}>
 
-<input
-name="title"
-value={formData.title}
-onChange={handleChange}
-className={styles.input}
-/>
+<input name="title" value={formData.title} onChange={handleChange} className={styles.input}/>
 
-<input
-name="slug"
-value={formData.slug}
-onChange={handleChange}
-className={styles.input}
-/>
+<input name="slug" value={formData.slug} onChange={handleChange} className={styles.input}/>
 
-<input
-name="location"
-value={formData.location}
-onChange={handleChange}
-className={styles.input}
-/>
+<input name="location" value={formData.location} onChange={handleChange} className={styles.input}/>
 
 <div className={styles.row}>
 
-<input
-name="latitude"
-placeholder="Latitude"
-value={formData.latitude}
-onChange={handleChange}
-className={styles.input}
-/>
+<input name="latitude" placeholder="Latitude" value={formData.latitude} onChange={handleChange} className={styles.input}/>
 
-<input
-name="longitude"
-placeholder="Longitude"
-value={formData.longitude}
-onChange={handleChange}
-className={styles.input}
-/>
+<input name="longitude" placeholder="Longitude" value={formData.longitude} onChange={handleChange} className={styles.input}/>
 
 </div>
 
-<input
-name="price"
-value={formData.price}
-onChange={handleChange}
-className={styles.input}
-/>
+<input name="price" value={formData.price} onChange={handleChange} className={styles.input}/>
 
-<textarea
-name="description"
-value={formData.description}
-onChange={handleChange}
-className={styles.textarea}
-/>
+<textarea name="description" value={formData.description} onChange={handleChange} className={styles.textarea}/>
 
-<select
-name="title_document"
-value={formData.title_document}
-onChange={handleChange}
-className={styles.input}
->
+<select name="title_document" value={formData.title_document} onChange={handleChange} className={styles.input}>
 
 <option value="">Select Title</option>
 <option value="C of O">C of O</option>
@@ -349,52 +315,6 @@ className={styles.input}
 <option value="Registered Survey">Registered Survey</option>
 
 </select>
-
-</div>
-
-)}
-
-</div>
-
-
-{/* PROPERTY CONTENT */}
-
-<div className={styles.section}>
-
-<div
-className={styles.sectionHeader}
-onClick={()=>toggleSection("content")}
->
-
-<h3>Property Content</h3>
-<span>{openSection==="content"?"−":"+"}</span>
-
-</div>
-
-{openSection==="content" && (
-
-<div className={styles.sectionContent}>
-
-<textarea
-value={whyLocation}
-onChange={(e)=>setWhyLocation(e.target.value)}
-placeholder="Why Location"
-className={styles.textarea}
-/>
-
-<textarea
-value={attractions}
-onChange={(e)=>setAttractions(e.target.value)}
-placeholder="Environment Attractions"
-className={styles.textarea}
-/>
-
-<textarea
-value={features}
-onChange={(e)=>setFeatures(e.target.value)}
-placeholder="Estate Features"
-className={styles.textarea}
-/>
 
 </div>
 
@@ -433,6 +353,30 @@ className={styles.fileInput}
 onChange={(e)=>setImage(e.target.files[0])}
 />
 
+{/* EXISTING GALLERY */}
+
+<h4>Gallery Images</h4>
+
+<div className={styles.galleryPreview}>
+
+{existingGallery.map((img,index)=>(
+<div key={index} className={styles.galleryItem}>
+
+<img src={img}/>
+
+<button
+type="button"
+className={styles.deleteBtn}
+onClick={()=>removeGalleryImage(index)}
+>
+✕
+</button>
+
+</div>
+))}
+
+</div>
+
 <input
 type="file"
 multiple
@@ -452,7 +396,6 @@ onChange={(e)=>setBrochureFile(e.target.files[0])}
 )}
 
 </div>
-
 
 <button className={styles.button}>
 Update Property
