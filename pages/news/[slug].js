@@ -1,5 +1,10 @@
 import Head from "next/head";
+import styles from "../../styles/NewsArticle.module.css";
 import { createClient } from "@supabase/supabase-js";
+import Link from "next/link";
+
+import { FaWhatsapp, FaFacebookF, FaLinkedinIn } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -73,10 +78,6 @@ export default function NewsDetails({
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:image" content={pageImage} />
-        <meta property="og:image:secure_url" content={pageImage} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content={item.title} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:site_name" content="Fantabrand Properties" />
@@ -101,11 +102,37 @@ export default function NewsDetails({
 
       <div
         style={{
-          maxWidth: "900px",
+          maxWidth: "820px",
           margin: "auto",
           padding: "40px 20px"
         }}
       >
+
+        {/* TITLE */}
+
+        <h1
+          style={{
+            fontSize: "34px",
+            fontWeight: "700",
+            marginBottom: "10px"
+          }}
+        >
+          {item.title}
+        </h1>
+
+        {/* DATE + READING TIME */}
+
+        <div
+          style={{
+            color: "#666",
+            marginBottom: "25px",
+            fontSize: "14px"
+          }}
+        >
+          {new Date(item.created_at).toDateString()} • {readingTime} min read
+        </div>
+
+        {/* HERO IMAGE */}
 
         {item.image_url && (
 
@@ -114,36 +141,24 @@ export default function NewsDetails({
             alt={item.title}
             style={{
               width: "100%",
+              height: "420px",
+              objectFit: "cover",
               borderRadius: "12px",
-              marginBottom: "20px"
+              marginBottom: "30px",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.08)"
             }}
           />
 
         )}
 
-        <div style={{ color: "#666", marginBottom: "10px" }}>
-          {new Date(item.created_at).toDateString()} • {readingTime} min read
-        </div>
-
-        <h1
-          style={{
-            fontSize: "32px",
-            fontWeight: "bold",
-            marginBottom: "20px"
-          }}
-        >
-          {item.title}
-        </h1>
+        {/* ARTICLE CONTENT */}
 
         <div
-          style={{
-            lineHeight: "1.8",
-            fontSize: "16px"
-          }}
+          className={styles.articleContent}
           dangerouslySetInnerHTML={{ __html: item.content }}
         />
 
-        {/* SHARE */}
+        {/* SHARE SECTION */}
 
         <div style={{ marginTop: "40px" }}>
 
@@ -151,47 +166,97 @@ export default function NewsDetails({
             Share this article
           </h3>
 
-          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          <div className={styles.shareIcons}>
 
             <a
               href={`https://wa.me/?text=${encodeURIComponent(pageTitle + " " + pageUrl)}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{background:"#25D366",color:"#fff",padding:"10px 16px",borderRadius:"6px",textDecoration:"none"}}
+              className={`${styles.shareIcon} ${styles.whatsapp}`}
             >
-              WhatsApp
+              <FaWhatsapp size={18} />
             </a>
 
             <a
               href={`https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{background:"#1877F2",color:"#fff",padding:"10px 16px",borderRadius:"6px",textDecoration:"none"}}
+              className={`${styles.shareIcon} ${styles.facebook}`}
             >
-              Facebook
+              <FaFacebookF size={16} />
             </a>
 
             <a
               href={`https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{background:"#0077B5",color:"#fff",padding:"10px 16px",borderRadius:"6px",textDecoration:"none"}}
+              className={`${styles.shareIcon} ${styles.linkedin}`}
             >
-              LinkedIn
+              <FaLinkedinIn size={16} />
             </a>
 
             <a
               href={`https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{background:"#000",color:"#fff",padding:"10px 16px",borderRadius:"6px",textDecoration:"none"}}
+              className={`${styles.shareIcon} ${styles.twitter}`}
             >
-              Twitter
+              <FaXTwitter size={16} />
             </a>
 
           </div>
 
         </div>
+
+        {/* RELATED ARTICLES */}
+
+        {relatedNews.length > 0 && (
+
+          <div className={styles.relatedSection}>
+
+            <h3 style={{ marginTop: "50px", marginBottom: "20px" }}>
+              Related Articles
+            </h3>
+
+            <div className={styles.relatedGrid}>
+
+              {relatedNews.map(article => (
+
+                <Link
+                  key={article.slug}
+                  href={`/news/${article.slug}`}
+                  className={styles.relatedCard}
+                >
+
+                  {article.image_url && (
+                    <img
+                      src={article.image_url}
+                      alt={article.title}
+                      className={styles.relatedImage}
+                    />
+                  )}
+
+                  <div className={styles.relatedContent}>
+
+                    <div className={styles.relatedTitle}>
+                      {article.title}
+                    </div>
+
+                    <div className={styles.relatedDate}>
+                      {new Date(article.created_at).toDateString()}
+                    </div>
+
+                  </div>
+
+                </Link>
+
+              ))}
+
+            </div>
+
+          </div>
+
+        )}
 
       </div>
     </>

@@ -4,50 +4,36 @@ import styles from "../styles/ExecutiveChat.module.css";
 export default function ExecutiveChat() {
 
   const [open, setOpen] = useState(false);
-  const [typingText, setTypingText] = useState("");
-
-  const fullText = "Executive assistant online";
+  const [showHint, setShowHint] = useState(false);
 
   useEffect(() => {
 
-    let index = 1;
+    const timer = setTimeout(() => {
+      setShowHint(true);
+    }, 5000);
 
-    const interval = setInterval(() => {
-
-      setTypingText(fullText.slice(0, index));
-
-      if (index >= fullText.length) {
-        clearInterval(interval);
-      }
-
-      index++;
-
-    }, 40);
-
-    return () => clearInterval(interval);
+    return () => clearTimeout(timer);
 
   }, []);
 
+  const phone = "2349063504797";
 
-  const whatsappMessage = encodeURIComponent(
-    "Hello Fantabrand Properties, I would like to enquire about your available estates."
-  );
-
-  const whatsappLink = `https://wa.me/2349063504797?text=${whatsappMessage}`;
-
+  const createLink = (text) => {
+    return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+  };
 
   return (
 
     <div className={styles.chatWrapper}>
 
-      {!open && (
-        <div className={styles.onlineText}>
-          <span className={styles.onlineDot}></span>
-          {typingText}
+      {!open && showHint && (
+        <div className={styles.tooltipHint}>
+          Need help finding land?
         </div>
       )}
 
       {open && (
+
         <div className={styles.chatBox}>
 
           <div className={styles.chatHeader}>
@@ -57,23 +43,41 @@ export default function ExecutiveChat() {
           <div className={styles.chatBody}>
 
             <p className={styles.chatIntro}>
-              Welcome to <strong>Fantabrand Properties</strong>.
-              Our executive desk is available to assist you with
-              property enquiries, inspections, and investment options.
+              Welcome to <strong>Fantabrand Properties</strong>.  
+              How can we assist you today?
             </p>
 
             <a
-              href={whatsappLink}
+              href={createLink("Hello Fantabrand, I would like to see your available estates.")}
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.chatButton}
+              className={styles.optionButton}
             >
-              Continue on WhatsApp
+              View Available Estates
+            </a>
+
+            <a
+              href={createLink("Hello Fantabrand, I would like to book a property inspection.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.optionButton}
+            >
+              Book Property Inspection
+            </a>
+
+            <a
+              href={createLink("Hello Fantabrand, I need advice on real estate investment.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.optionButton}
+            >
+              Speak With Investment Advisor
             </a>
 
           </div>
 
         </div>
+
       )}
 
       <button
@@ -81,10 +85,23 @@ export default function ExecutiveChat() {
         onClick={() => setOpen(!open)}
         aria-label="Open chat"
       >
-        {open ? "×" : "Chat"}
+
+        {open ? (
+          "×"
+        ) : (
+
+          <div className={styles.typingDots}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+        )}
+
       </button>
 
     </div>
 
   );
+
 }

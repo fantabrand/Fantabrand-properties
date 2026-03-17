@@ -1,122 +1,165 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase/client";
+import { supabase } from "../../lib/supabase/client";
 import Link from "next/link";
+import styles from "../../styles/NewsPage.module.css";
 
-export default function NewsPage(){
+export default function NewsPage() {
 
-  const [news,setNews] = useState([]);
+  const [featured, setFeatured] = useState(null);
+  const [articles, setArticles] = useState([]);
+  const [trending, setTrending] = useState([]);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchNews();
-  },[]);
+  }, []);
 
-  async function fetchNews(){
+  async function fetchNews() {
 
     const { data } = await supabase
       .from("news")
       .select("*")
-      .order("created_at",{ascending:false});
+      .order("created_at", { ascending: false });
 
-    setNews(data || []);
+    if (!data) return;
 
+    if (data.length > 0) {
+      setFeatured(data[0]);
+      setArticles(data.slice(1));
+      setTrending(data.slice(0, 5)); // top 5 trending
+    }
   }
 
-  return(
+  return (
 
-    <div style={{
-      maxWidth:"1200px",
-      margin:"auto",
-      padding:"60px 20px"
-    }}>
+    <div className={styles.container}>
 
-      <h1 style={{
-        fontSize:"36px",
-        marginBottom:"40px"
-      }}>
-        Latest News
+      <h1 className={styles.pageTitle}>
+        Real Estate News
       </h1>
 
-      <div style={{
-        display:"grid",
-        gridTemplateColumns:"repeat(auto-fit,minmax(320px,1fr))",
-        gap:"30px"
-      }}>
+      {/* FEATURED ARTICLE */}
 
-        {news.map(post=>(
+      {featured && (
 
-          <Link
-            key={post.id}
-            href={`/news/${post.slug}`}
-            style={{textDecoration:"none"}}
-          >
+        <Link
+          href={`/news/${featured.slug}`}
+          className={styles.featured}
+        >
 
-            <div style={{
-              background:"#fff",
-              borderRadius:"14px",
-              overflow:"hidden",
-              boxShadow:"0 10px 25px rgba(0,0,0,0.08)",
-              transition:"0.3s"
-            }}>
+          {featured.image_url && (
+            <img
+              src={featured.image_url}
+              alt={featured.title}
+              className={styles.featuredImage}
+            />
+          )}
 
-              {post.image_url && (
+          <div className={styles.featuredContent}>
+
+            <h2>
+              {featured.title}
+            </h2>
+
+            <p>
+              {featured.excerpt}
+            </p>
+
+          </div>
+
+        </Link>
+
+      )}
+
+      {/* MAIN LAYOUT */}
+
+      <div className={styles.mainLayout}>
+
+        {/* ARTICLES GRID */}
+
+        <div className={styles.grid}>
+
+          {articles.map(article => (
+
+            <Link
+              key={article.id}
+              href={`/news/${article.slug}`}
+              className={styles.card}
+            >
+
+              {article.image_url && (
 
                 <img
-                  src={post.image_url}
-                  style={{
-                    width:"100%",
-                    height:"200px",
-                    objectFit:"cover"
-                  }}
+                  src={article.image_url}
+                  alt={article.title}
+                  className={styles.cardImage}
                 />
 
               )}
 
-              <div style={{padding:"20px"}}>
+              <div className={styles.cardContent}>
 
-                <div style={{
-                  fontSize:"13px",
-                  color:"#777",
-                  marginBottom:"10px"
-                }}>
-                  {new Date(post.created_at).toDateString()}
-                </div>
+                <h3>
+                  {article.title}
+                </h3>
 
-                <h2 style={{
-                  fontSize:"20px",
-                  marginBottom:"10px",
-                  color:"#111"
-                }}>
-                  {post.title}
-                </h2>
-
-                <p style={{
-                  color:"#555",
-                  fontSize:"14px",
-                  lineHeight:"1.6"
-                }}>
-                  {post.excerpt}
+                <p>
+                  {article.excerpt}
                 </p>
 
-                <div style={{
-                  marginTop:"15px",
-                  fontWeight:"bold",
-                  color:"#7c3aed"
-                }}>
-                  Read More →
+              </div>
+
+            </Link>
+
+          ))}
+
+        </div>
+
+        {/* TRENDING SIDEBAR */}
+
+        <div className={styles.sidebar}>
+
+          <h3 className={styles.sidebarTitle}>
+            Trending Articles
+          </h3>
+
+          {trending.map(article => (
+
+            <Link
+              key={article.id}
+              href={`/news/${article.slug}`}
+              className={styles.trendingItem}
+            >
+
+              {article.image_url && (
+                <img
+                  src={article.image_url}
+                  alt={article.title}
+                  className={styles.trendingImage}
+                />
+              )}
+
+              <div>
+
+                <div className={styles.trendingTitle}>
+                  {article.title}
+                </div>
+
+                <div className={styles.trendingDate}>
+                  {new Date(article.created_at).toDateString()}
                 </div>
 
               </div>
 
-            </div>
+            </Link>
 
-          </Link>
+          ))}
 
-        ))}
+        </div>
 
       </div>
 
     </div>
 
-  )
+  );
 
 }

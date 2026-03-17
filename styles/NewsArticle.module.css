@@ -1,0 +1,124 @@
+.articleContent {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #333;
+}
+
+.articleContent img {
+  width: 100%;
+  margin: 25px 0;
+  border-radius: 10px;
+}
+
+.articleContent a {
+  color: #7c3aed;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.articleContent h2 {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.articleContent ul {
+  margin: 20px 0;
+  padding-left: 20px;
+}
+
+.articleContent li {
+  margin-bottom: 8px;
+}
+.articleContent {
+  max-width: 800px;
+  margin: auto;
+}
+/* SOCIAL SHARE */
+
+.shareIcons {
+  display: flex;
+  gap: 12px;
+}
+
+.shareIcon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: white;
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.shareIcon:hover {
+  transform: scale(1.12);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+
+/* Individual colors */
+
+.whatsapp {
+  background: #25D366;
+}
+
+.facebook {
+  background: #1877F2;
+}
+
+.linkedin {
+  background: #0077B5;
+}
+
+.twitter {
+  background: #000;
+}
+/* RELATED ARTICLES */
+
+.relatedSection {
+  margin-top: 60px;
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.relatedCard {
+  display: block;
+  text-decoration: none;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  background: #fff;
+}
+
+.relatedCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.relatedImage {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+.relatedContent {
+  padding: 12px 14px;
+}
+
+.relatedTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.relatedDate {
+  font-size: 13px;
+  color: #777;
+}

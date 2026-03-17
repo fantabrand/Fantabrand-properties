@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "../../../lib/supabase/client";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/router";
@@ -6,10 +6,13 @@ import AdminLayout from "../../../components/admin/AdminLayout";
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Link from "@tiptap/extension-link";
+import Image from "@tiptap/extension-image";
 
 export default function AddNews() {
 
   const router = useRouter();
+  const fileInputRef = useRef(null);
 
   const [title,setTitle] = useState("");
   const [slug,setSlug] = useState("");
@@ -21,12 +24,18 @@ export default function AddNews() {
   const [metaDescription,setMetaDescription] = useState("");
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Link.configure({
+        openOnClick: true
+      }),
+      Image
+    ],
     content: "",
-    immediatelyRender: false,
+    immediatelyRender:false,
     onUpdate: ({ editor }) => {
       setContent(editor.getHTML());
-    },
+    }
   });
 
   function generateSlug(text){
@@ -37,9 +46,9 @@ export default function AddNews() {
       .replace(/ +/g,"-");
 
     setSlug(slug);
-
   }
 
+  // Featured image upload
   async function handleImageUpload(e){
 
     const file = e.target.files[0];
@@ -62,7 +71,33 @@ export default function AddNews() {
       .getPublicUrl(fileName);
 
     setImage(data.publicUrl);
+  }
 
+  // Upload image inside editor
+  async function uploadEditorImage(e){
+
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const fileName = `${uuidv4()}-${file.name}`;
+
+    const { error } = await supabase.storage
+      .from("news-images")
+      .upload(fileName,file);
+
+    if(error){
+      alert("Image upload failed");
+      console.log(error);
+      return;
+    }
+
+    const { data } = supabase.storage
+      .from("news-images")
+      .getPublicUrl(fileName);
+
+    if(editor){
+      editor.chain().focus().setImage({ src: data.publicUrl }).run();
+    }
   }
 
   async function createPost(e){
@@ -85,14 +120,13 @@ export default function AddNews() {
         }
       ]);
 
-    if (error) {
+    if(error){
       console.log(error);
       alert(error.message);
       return;
     }
 
     router.push("/admin/news");
-
   }
 
   const inputStyle = {
@@ -143,6 +177,8 @@ export default function AddNews() {
             readOnly
           />
 
+          {/* Featured Image Upload */}
+
           <div style={{marginBottom:"20px"}}>
 
             <input
@@ -174,7 +210,8 @@ export default function AddNews() {
           {/* Editor Toolbar */}
 
           {editor && (
-            <div style={{marginBottom:"10px"}}>
+
+            <div style={{marginBottom:"10px",display:"flex",gap:"10px",flexWrap:"wrap"}}>
 
               <button type="button" onClick={()=>editor.chain().focus().toggleBold().run()}>
                 Bold
@@ -188,27 +225,54 @@ export default function AddNews() {
                 Bullet List
               </button>
 
+              <button
+                type="button"
+                onClick={()=>{
+                  const url = prompt("Enter link URL");
+                  if(url){
+                    editor.chain().focus().setLink({ href:url }).run();
+                  }
+                }}
+              >
+                Add Link
+              </button>
+
+              <button
+                type="button"
+                onClick={()=>{
+                  fileInputRef.current.click();
+                }}
+              >
+                Upload Image
+              </button>
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={uploadEditorImage}
+                style={{display:"none"}}
+              />
+
             </div>
           )}
 
-          {/* Rich Text Editor */}
+          {/* Editor */}
 
           <div
-  style={{
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    padding: "15px",
-    minHeight: "220px",
-    background: "#ffffff",
-    color: "#111",
-    fontSize: "15px",
-    lineHeight: "1.7"
-  }}
->
-  <EditorContent editor={editor} />
-</div>
+            style={{
+              border:"1px solid #ddd",
+              borderRadius:"8px",
+              padding:"15px",
+              minHeight:"220px",
+              background:"#fff",
+              fontSize:"15px",
+              lineHeight:"1.7"
+            }}
+          >
+            <EditorContent editor={editor}/>
+          </div>
 
-          <h3 style={{marginBottom:"10px"}}>
+          <h3 style={{marginBottom:"10px",marginTop:"20px"}}>
             SEO Settings
           </h3>
 
