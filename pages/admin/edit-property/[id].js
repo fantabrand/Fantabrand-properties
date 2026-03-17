@@ -9,7 +9,6 @@ const router = useRouter();
 const { id } = router.query;
 
 const [checkingAuth,setCheckingAuth]=useState(true);
-
 const [openSection,setOpenSection]=useState("basic");
 
 const [formData,setFormData]=useState({
@@ -135,11 +134,22 @@ setFormData({
 
 function removeGalleryImage(index){
 
-const updatedGallery=[...existingGallery];
+const updated=[...existingGallery];
+updated.splice(index,1);
+setExistingGallery(updated);
 
-updatedGallery.splice(index,1);
+}
 
-setExistingGallery(updatedGallery);
+/* PAYMENT PLAN CHANGE */
+
+function handlePaymentChange(e){
+
+const {name,value}=e.target;
+
+setPaymentPlan({
+...paymentPlan,
+[name]:value
+});
 
 }
 
@@ -247,7 +257,6 @@ payment_plan:JSON.stringify(paymentPlan)
 if(!error){
 
 alert("Property updated successfully");
-
 router.push("/admin/properties");
 
 }else{
@@ -289,17 +298,12 @@ onClick={()=>toggleSection("basic")}
 <div className={styles.sectionContent}>
 
 <input name="title" value={formData.title} onChange={handleChange} className={styles.input}/>
-
 <input name="slug" value={formData.slug} onChange={handleChange} className={styles.input}/>
-
 <input name="location" value={formData.location} onChange={handleChange} className={styles.input}/>
 
 <div className={styles.row}>
-
-<input name="latitude" placeholder="Latitude" value={formData.latitude} onChange={handleChange} className={styles.input}/>
-
-<input name="longitude" placeholder="Longitude" value={formData.longitude} onChange={handleChange} className={styles.input}/>
-
+<input name="latitude" value={formData.latitude} onChange={handleChange} className={styles.input}/>
+<input name="longitude" value={formData.longitude} onChange={handleChange} className={styles.input}/>
 </div>
 
 <input name="price" value={formData.price} onChange={handleChange} className={styles.input}/>
@@ -307,13 +311,11 @@ onClick={()=>toggleSection("basic")}
 <textarea name="description" value={formData.description} onChange={handleChange} className={styles.textarea}/>
 
 <select name="title_document" value={formData.title_document} onChange={handleChange} className={styles.input}>
-
 <option value="">Select Title</option>
 <option value="C of O">C of O</option>
 <option value="Gazette">Gazette</option>
 <option value="Excision">Excision</option>
 <option value="Registered Survey">Registered Survey</option>
-
 </select>
 
 </div>
@@ -322,6 +324,76 @@ onClick={()=>toggleSection("basic")}
 
 </div>
 
+{/* PROPERTY CONTENT */}
+
+<div className={styles.section}>
+
+<div
+className={styles.sectionHeader}
+onClick={()=>toggleSection("content")}
+>
+
+<h3>Property Description</h3>
+<span>{openSection==="content"?"−":"+"}</span>
+
+</div>
+
+{openSection==="content" && (
+
+<div className={styles.sectionContent}>
+
+<textarea
+value={whyLocation}
+onChange={(e)=>setWhyLocation(e.target.value)}
+placeholder="Why This Location"
+className={styles.textarea}
+/>
+
+<textarea
+value={attractions}
+onChange={(e)=>setAttractions(e.target.value)}
+placeholder="Environment Attractions"
+className={styles.textarea}
+/>
+
+<textarea
+value={features}
+onChange={(e)=>setFeatures(e.target.value)}
+placeholder="Estate Features"
+className={styles.textarea}
+/>
+
+<h4>Payment Plan</h4>
+
+<input
+name="outright"
+placeholder="Outright Payment"
+value={paymentPlan.outright || ""}
+onChange={handlePaymentChange}
+className={styles.input}
+/>
+
+<input
+name="three_months"
+placeholder="3 Months Plan"
+value={paymentPlan.three_months || ""}
+onChange={handlePaymentChange}
+className={styles.input}
+/>
+
+<input
+name="six_months"
+placeholder="6 Months Plan"
+value={paymentPlan.six_months || ""}
+onChange={handlePaymentChange}
+className={styles.input}
+/>
+
+</div>
+
+)}
+
+</div>
 
 {/* MEDIA UPLOADS */}
 
@@ -347,13 +419,7 @@ onClick={()=>toggleSection("media")}
 <img src={existingImage}/>
 </div>
 
-<input
-type="file"
-className={styles.fileInput}
-onChange={(e)=>setImage(e.target.files[0])}
-/>
-
-{/* EXISTING GALLERY */}
+<input type="file" className={styles.fileInput} onChange={(e)=>setImage(e.target.files[0])}/>
 
 <h4>Gallery Images</h4>
 
