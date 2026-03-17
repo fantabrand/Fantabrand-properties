@@ -297,18 +297,60 @@ onClick={()=>toggleSection("basic")}
 
 <div className={styles.sectionContent}>
 
-<input name="title" value={formData.title} onChange={handleChange} className={styles.input}/>
-<input name="slug" value={formData.slug} onChange={handleChange} className={styles.input}/>
-<input name="location" value={formData.location} onChange={handleChange} className={styles.input}/>
+<input
+name="title"
+placeholder="Property Title"
+value={formData.title}
+onChange={handleChange}
+className={styles.input}
+/>
+<input
+name="slug"
+placeholder="Property Slug"
+value={formData.slug}
+onChange={handleChange}
+className={styles.input}
+/>
+<input
+name="location"
+placeholder="Property Location"
+value={formData.location}
+onChange={handleChange}
+className={styles.input}
+/>
 
 <div className={styles.row}>
-<input name="latitude" value={formData.latitude} onChange={handleChange} className={styles.input}/>
-<input name="longitude" value={formData.longitude} onChange={handleChange} className={styles.input}/>
+<input
+name="latitude"
+placeholder="Latitude"
+value={formData.latitude}
+onChange={handleChange}
+className={styles.input}
+/>
+<input
+name="longitude"
+placeholder="Longitude"
+value={formData.longitude}
+onChange={handleChange}
+className={styles.input}
+/>
 </div>
 
-<input name="price" value={formData.price} onChange={handleChange} className={styles.input}/>
+<input
+name="price"
+placeholder="Property Price"
+value={formData.price}
+onChange={handleChange}
+className={styles.input}
+/>
 
-<textarea name="description" value={formData.description} onChange={handleChange} className={styles.textarea}/>
+<textarea
+name="description"
+placeholder="Property Description"
+value={formData.description}
+onChange={handleChange}
+className={styles.textarea}
+/>
 
 <select name="title_document" value={formData.title_document} onChange={handleChange} className={styles.input}>
 <option value="">Select Title</option>
@@ -363,32 +405,168 @@ placeholder="Estate Features"
 className={styles.textarea}
 />
 
-<h4>Payment Plan</h4>
+<h4>Payment Plan - 150sqm</h4>
 
 <input
-name="outright"
-placeholder="Outright Payment"
-value={paymentPlan.outright || ""}
-onChange={handlePaymentChange}
+placeholder="Outright Price"
+value={paymentPlan?.["150sqm"]?.outright || ""}
+onChange={(e)=>setPaymentPlan({
+...paymentPlan,
+"150sqm":{
+...paymentPlan["150sqm"],
+outright:e.target.value
+}
+})}
 className={styles.input}
 />
 
 <input
-name="three_months"
-placeholder="3 Months Plan"
-value={paymentPlan.three_months || ""}
-onChange={handlePaymentChange}
+placeholder="3 Months Price"
+value={paymentPlan?.["150sqm"]?.three_months || ""}
+onChange={(e)=>setPaymentPlan({
+...paymentPlan,
+"150sqm":{
+...paymentPlan["150sqm"],
+three_months:e.target.value
+}
+})}
 className={styles.input}
 />
 
 <input
-name="six_months"
-placeholder="6 Months Plan"
-value={paymentPlan.six_months || ""}
-onChange={handlePaymentChange}
+placeholder="6 Months Price"
+value={paymentPlan?.["150sqm"]?.six_months || ""}
+onChange={(e)=>setPaymentPlan({
+...paymentPlan,
+"150sqm":{
+...paymentPlan["150sqm"],
+six_months:e.target.value
+}
+})}
 className={styles.input}
 />
 
+<input
+placeholder="Initial Deposit"
+value={paymentPlan?.["150sqm"]?.initial_deposit || ""}
+onChange={(e)=>setPaymentPlan({
+...paymentPlan,
+"150sqm":{
+...paymentPlan["150sqm"],
+initial_deposit:e.target.value
+}
+})}
+className={styles.input}
+/>
+
+
+<h4>Payment Plan - 300sqm</h4>
+
+<input
+placeholder="Outright Price"
+value={paymentPlan?.["300sqm"]?.outright || ""}
+onChange={(e)=>setPaymentPlan({
+...paymentPlan,
+"300sqm":{
+...paymentPlan["300sqm"],
+outright:e.target.value
+}
+})}
+className={styles.input}
+/>
+
+<input
+placeholder="3 Months Price"
+value={paymentPlan?.["300sqm"]?.three_months || ""}
+onChange={(e)=>setPaymentPlan({
+...paymentPlan,
+"300sqm":{
+...paymentPlan["300sqm"],
+three_months:e.target.value
+}
+})}
+className={styles.input}
+/>
+
+<input
+placeholder="6 Months Price"
+value={paymentPlan?.["300sqm"]?.six_months || ""}
+onChange={(e)=>setPaymentPlan({
+...paymentPlan,
+"300sqm":{
+...paymentPlan["300sqm"],
+six_months:e.target.value
+}
+})}
+className={styles.input}
+/>
+
+<input
+placeholder="Initial Deposit"
+value={paymentPlan?.["300sqm"]?.initial_deposit || ""}
+onChange={(e)=>setPaymentPlan({
+...paymentPlan,
+"300sqm":{
+...paymentPlan["300sqm"],
+initial_deposit:e.target.value
+}
+})}
+className={styles.input}
+/>
+
+<h4>Payment Plan - 500sqm</h4>
+
+<input
+placeholder="Outright Price"
+value={paymentPlan?.["500sqm"]?.outright || ""}
+onChange={(e)=>setPaymentPlan({
+...paymentPlan,
+"500sqm":{
+...paymentPlan["500sqm"],
+outright:e.target.value
+}
+})}
+className={styles.input}
+/>
+
+<input
+placeholder="3 Months Price"
+value={paymentPlan?.["500sqm"]?.three_months || ""}
+onChange={(e)=>setPaymentPlan({
+...paymentPlan,
+"500sqm":{
+...paymentPlan["500sqm"],
+three_months:e.target.value
+}
+})}
+className={styles.input}
+/>
+
+<input
+placeholder="6 Months Price"
+value={paymentPlan?.["500sqm"]?.six_months || ""}
+onChange={(e)=>setPaymentPlan({
+...paymentPlan,
+"500sqm":{
+...paymentPlan["500sqm"],
+six_months:e.target.value
+}
+})}
+className={styles.input}
+/>
+
+<input
+placeholder="Initial Deposit"
+value={paymentPlan?.["500sqm"]?.initial_deposit || ""}
+onChange={(e)=>setPaymentPlan({
+...paymentPlan,
+"500sqm":{
+...paymentPlan["500sqm"],
+initial_deposit:e.target.value
+}
+})}
+className={styles.input}
+/>
 </div>
 
 )}
