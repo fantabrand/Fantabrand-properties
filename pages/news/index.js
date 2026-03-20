@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase/client";
 import Link from "next/link";
 import styles from "../../styles/NewsPage.module.css";
+import Head from "next/head";
 
 export default function NewsPage() {
 
@@ -30,136 +31,150 @@ export default function NewsPage() {
   }
 
   return (
+    <>
+      {/* ✅ SEO IMPLEMENTATION */}
+      <Head>
+        <title>Real Estate News & Investment Insights Nigeria | Fantabrand Properties</title>
 
-    <div className={styles.container}>
+        <meta
+          name="description"
+          content="Latest real estate news, land investment tips and property insights in Lagos, Ibeju Lekki and Epe. Learn how to invest smartly in Nigerian real estate."
+        />
 
-      <h1 className={styles.pageTitle}>
-        Real Estate News
-      </h1>
+        <meta property="og:title" content="Real Estate News & Investment Insights Nigeria" />
+        <meta property="og:description" content="Stay updated with real estate trends, land investment tips and opportunities in Lagos." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.fantabrandproperties.com.ng/news" />
+      </Head>
 
-      {/* FEATURED ARTICLE */}
+      <div className={styles.container}>
 
-      {featured && (
+        <h1 className={styles.pageTitle}>
+          Real Estate News
+        </h1>
 
-        <Link
-          href={`/news/${featured.slug}`}
-          className={styles.featured}
-        >
+        {/* FEATURED ARTICLE */}
 
-          {featured.image_url && (
-            <img
-              src={featured.image_url}
-              alt={featured.title}
-              className={styles.featuredImage}
-            />
-          )}
+        {featured && (
 
-          <div className={styles.featuredContent}>
+          <Link
+            href={`/news/${featured.slug}`}
+            className={styles.featured}
+          >
 
-            <h2>
-              {featured.title}
-            </h2>
+            {featured.image_url && (
+              <img
+                src={featured.image_url}
+                alt={featured.title}
+                className={styles.featuredImage}
+              />
+            )}
 
-            <p>
-              {featured.excerpt}
-            </p>
+            <div className={styles.featuredContent}>
+
+              <h2>
+                {featured.title}
+              </h2>
+
+              <p>
+                {featured.excerpt}
+              </p>
+
+            </div>
+
+          </Link>
+
+        )}
+
+        {/* MAIN LAYOUT */}
+
+        <div className={styles.mainLayout}>
+
+          {/* ARTICLES GRID */}
+
+          <div className={styles.grid}>
+
+            {articles.map(article => (
+
+              <Link
+                key={article.id}
+                href={`/news/${article.slug}`}
+                className={styles.card}
+              >
+
+                {article.image_url && (
+
+                  <img
+                    src={article.image_url}
+                    alt={article.title}
+                    className={styles.cardImage}
+                  />
+
+                )}
+
+                <div className={styles.cardContent}>
+
+                  <h3>
+                    {article.title}
+                  </h3>
+
+                  <p>
+                    {article.excerpt}
+                  </p>
+
+                </div>
+
+              </Link>
+
+            ))}
 
           </div>
 
-        </Link>
+          {/* TRENDING SIDEBAR */}
 
-      )}
+          <div className={styles.sidebar}>
 
-      {/* MAIN LAYOUT */}
+            <h3 className={styles.sidebarTitle}>
+              Trending Articles
+            </h3>
 
-      <div className={styles.mainLayout}>
+            {trending.map(article => (
 
-        {/* ARTICLES GRID */}
+              <Link
+                key={article.id}
+                href={`/news/${article.slug}`}
+                className={styles.trendingItem}
+              >
 
-        <div className={styles.grid}>
+                {article.image_url && (
+                  <img
+                    src={article.image_url}
+                    alt={article.title}
+                    className={styles.trendingImage}
+                  />
+                )}
 
-          {articles.map(article => (
+                <div>
 
-            <Link
-              key={article.id}
-              href={`/news/${article.slug}`}
-              className={styles.card}
-            >
+                  <div className={styles.trendingTitle}>
+                    {article.title}
+                  </div>
 
-              {article.image_url && (
+                  <div className={styles.trendingDate}>
+                    {new Date(article.created_at).toDateString()}
+                  </div>
 
-                <img
-                  src={article.image_url}
-                  alt={article.title}
-                  className={styles.cardImage}
-                />
-
-              )}
-
-              <div className={styles.cardContent}>
-
-                <h3>
-                  {article.title}
-                </h3>
-
-                <p>
-                  {article.excerpt}
-                </p>
-
-              </div>
-
-            </Link>
-
-          ))}
-
-        </div>
-
-        {/* TRENDING SIDEBAR */}
-
-        <div className={styles.sidebar}>
-
-          <h3 className={styles.sidebarTitle}>
-            Trending Articles
-          </h3>
-
-          {trending.map(article => (
-
-            <Link
-              key={article.id}
-              href={`/news/${article.slug}`}
-              className={styles.trendingItem}
-            >
-
-              {article.image_url && (
-                <img
-                  src={article.image_url}
-                  alt={article.title}
-                  className={styles.trendingImage}
-                />
-              )}
-
-              <div>
-
-                <div className={styles.trendingTitle}>
-                  {article.title}
                 </div>
 
-                <div className={styles.trendingDate}>
-                  {new Date(article.created_at).toDateString()}
-                </div>
+              </Link>
 
-              </div>
+            ))}
 
-            </Link>
-
-          ))}
+          </div>
 
         </div>
 
       </div>
-
-    </div>
-
+    </>
   );
-
 }

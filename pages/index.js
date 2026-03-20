@@ -20,129 +20,98 @@ export default function Home() {
     fetchNews();
   }, []);
 
-  /* =========================
-     FETCH PROPERTIES
-  ========================= */
-
   async function fetchProperties() {
-
     const { data, error } = await supabase
       .from("properties")
       .select("*")
       .order("created_at", { ascending: false })
       .limit(12);
 
-    if (!error) {
-      setProperties(data || []);
-    }
-
+    if (!error) setProperties(data || []);
   }
 
-  /* =========================
-     FETCH NEWS
-  ========================= */
-
   async function fetchNews() {
-
     const { data, error } = await supabase
       .from("news")
       .select("*")
       .order("created_at", { ascending: false })
       .limit(5);
 
-    if (!error) {
-      setNews(data || []);
-    }
-
+    if (!error) setNews(data || []);
   }
 
-  /* =========================
-     NEWS SLIDER ROTATION
-  ========================= */
-
   useEffect(() => {
-
     if (news.length === 0) return;
 
     const interval = setInterval(() => {
-
       setHeroIndex((prev) =>
         prev === news.length - 1 ? 0 : prev + 1
       );
-
     }, 6000);
 
     return () => clearInterval(interval);
-
   }, [news]);
 
   return (
-
     <>
       <Head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              "mainEntity": [
-                {
-                  "@type": "Question",
-                  "name": "What does Fantabrand Properties do?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Fantabrand Properties Limited helps individuals and investors acquire verified land and real estate in high-growth locations across Nigeria."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Where are your properties located?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Our properties are located in fast-growing investment areas including Ilorin, Kwara State and other strategic locations."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Can I inspect the land before payment?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes. Fantabrand Properties organizes site inspections so buyers can verify the property before making payment."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Do you offer installment payment plans?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes. Flexible installment payment plans are available depending on the property."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "What documents will I receive after purchase?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Buyers receive important documents such as Deed of Assignment, Survey Plan, Payment Receipt and Allocation Letter."
-                  }
-                }
-              ]
-            })
-          }}
+        {/* ✅ FIXED SEO (ILORIN) */}
+        <title>Affordable Land for Sale in Ilorin Kwara | Fantabrand Properties</title>
+
+        <meta
+          name="description"
+          content="Buy affordable land in Ilorin Kwara State with flexible payment plans. Fantabrand Properties offers verified land for sale in Ilorin Nigeria."
         />
+
+        <meta
+          name="keywords"
+          content="land for sale in ilorin, buy land ilorin kwara, affordable land ilorin nigeria, real estate ilorin"
+        />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <meta property="og:title" content="Land for Sale in Ilorin Kwara | Fantabrand Properties" />
+        <meta property="og:description" content="Secure verified land in Ilorin with flexible payment plans." />
+        <meta property="og:url" content="https://www.fantabrandproperties.com.ng/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="/hero1.jpg" />
+
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
       <main className={styles.home}>
 
+        {/* HERO SLIDER (UNCHANGED) */}
         <HeroSlider />
 
-        {/* =========================
-            FEATURED PROPERTIES
-        ========================= */}
-
+        {/* ✅ NEW ILORIN SEO SECTION */}
         <section className={styles.featureSection}>
+          <div className={styles.container}>
 
+            <h1 className={styles.sectionTitle}>
+              Affordable Land for Sale in Ilorin Kwara State
+            </h1>
+
+            <p className={styles.sectionSubtitle}>
+              Buy affordable and verified land in Ilorin Kwara State with flexible payment plans. 
+              Limited plots available — secure your investment today.
+            </p>
+
+            <div className={styles.center} style={{ marginTop: "20px" }}>
+              <Link href="/land-in-ilorin" className={styles.primaryBtn}>
+                View Land in Ilorin
+              </Link>
+            </div>
+
+            <p style={{ marginTop: "10px", fontSize: "14px", color: "#888" }}>
+              ⚡ Limited plots remaining — prices increasing soon
+            </p>
+
+          </div>
+        </section>
+
+        {/* PROPERTIES (UNCHANGED) */}
+        <section className={styles.featureSection}>
           <div className={styles.container}>
 
             <h2 className={styles.sectionTitle}>
@@ -158,24 +127,16 @@ export default function Home() {
             </div>
 
             <div className={styles.center}>
-              <Link
-                href="/properties"
-                className={styles.primaryBtn}
-              >
+              <Link href="/properties" className={styles.primaryBtn}>
                 View All Properties
               </Link>
             </div>
 
           </div>
-
         </section>
 
-        {/* =========================
-            NEWS SECTION
-        ========================= */}
-
+        {/* NEWS (UNCHANGED) */}
         <section className={styles.featureSection}>
-
           <div className={styles.container}>
 
             <h2 className={styles.sectionTitle}>
@@ -187,7 +148,6 @@ export default function Home() {
             </p>
 
             {news.length > 0 && (
-
               <Link
                 href={`/news/${news[heroIndex].slug}`}
                 className={styles.featuredNews}
@@ -196,8 +156,8 @@ export default function Home() {
                 <img
                   src={
                     news[heroIndex].image_url
-                    ? news[heroIndex].image_url
-                    : "/hero1.jpg"
+                      ? news[heroIndex].image_url
+                      : "/hero1.jpg"
                   }
                   alt={news[heroIndex].title}
                 />
@@ -210,32 +170,25 @@ export default function Home() {
                     {news[heroIndex].category || "News"}
                   </span>
 
-                  <h3>
-                    {news[heroIndex].title}
-                  </h3>
+                  <h3>{news[heroIndex].title}</h3>
 
                   <p>
                     {news[heroIndex].excerpt ||
-                     news[heroIndex].content?.substring(0,120)}
+                      news[heroIndex].content?.substring(0, 120)}
                   </p>
 
                 </div>
 
               </Link>
-
             )}
 
             <div className={styles.center}>
-              <Link
-                href="/news"
-                className={styles.primaryBtn}
-              >
+              <Link href="/news" className={styles.primaryBtn}>
                 View All News
               </Link>
             </div>
 
           </div>
-
         </section>
 
         <WhyChoose />
@@ -244,7 +197,5 @@ export default function Home() {
 
       </main>
     </>
-
   );
-
 }
