@@ -1,0 +1,47 @@
+.logo-svg {
+  width: 120px;
+  height: auto;
+}
+
+/* Stroke animation */
+.logo-svg path {
+  fill: none;
+  stroke: #a855f7;
+  stroke-width: 4;
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+}
+
+/* First path */
+.path1 {
+  animation: draw 1.6s ease forwards;
+}
+
+/* Second path (slight delay) */
+.path2 {
+  animation: draw 1.6s ease forwards 0.4s;
+}
+
+/* Draw effect */
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Fill after drawing */
+.logo-svg path {
+  animation: draw 1.6s ease forwards, fillIn 0.8s ease forwards 1.6s;
+}
+
+@keyframes fillIn {
+  to {
+    fill: url(#grad);
+    stroke: none;
+  }
+}
+
+/* Optional glow (luxury feel) */
+.logo-svg {
+  filter: drop-shadow(0 0 8px #a855f7);
+}

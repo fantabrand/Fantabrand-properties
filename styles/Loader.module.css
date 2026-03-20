@@ -1,0 +1,32 @@
+/* styles/Loader.module.css */
+
+.loaderContainer {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background: #0a0a0a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999;
+}
+
+.logo {
+  font-size: 60px;
+  color: purple;
+  animation: pulse 1.5s infinite;
+}
+
+.text {
+  margin-top: 10px;
+  color: white;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.5; transform: scale(1); }
+}
