@@ -26,7 +26,7 @@ return ( <div className={styles.container}>
       <h2>Luxury Property Sales</h2>
 
       <p>
-        We market and sell premium apartments, villas and gated estates
+        We market and sell premium land, luxury properties and gated estates
         with strong emphasis on title security and capital appreciation.
       </p>
 
@@ -102,7 +102,7 @@ return ( <div className={styles.container}>
 
   <section className={styles.cta}>
 
-    <h2>Ready to Invest in Lagos Real Estate?</h2>
+    <h2>Want to join early investors and buy Nigeria's fast growing cities?</h2>
 
     <p>
       Speak with Fantabrand Properties today and discover

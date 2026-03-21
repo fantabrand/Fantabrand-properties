@@ -89,21 +89,21 @@ export default function Home() {
           <div className={styles.container}>
 
             <h1 className={styles.sectionTitle}>
-              Affordable Land for Sale in Ilorin Kwara State
+              Affordable Properties in Ilorin Kwara State
             </h1>
 
             <p className={styles.sectionSubtitle}>
-              Buy affordable and verified land in Ilorin Kwara State with flexible payment plans. 
+              We have affordable and verified properties in Ilorin Kwara State with flexible payment plans. 
               Limited plots available — secure your investment today.
             </p>
 
             <div className={styles.center} style={{ marginTop: "20px" }}>
               <Link href="/land-in-ilorin" className={styles.primaryBtn}>
-                View Land in Ilorin
+                Buy Land in Ilorin
               </Link>
             </div>
 
-            <p style={{ marginTop: "10px", fontSize: "14px", color: "#888" }}>
+            <p style={{ marginTop: "20px", fontSize: "16px", color: "#888" }}>
               ⚡ Limited plots remaining — prices increasing soon
             </p>
 

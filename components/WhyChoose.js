@@ -10,17 +10,17 @@ export default function WhyChoose() {
     {
       icon: <Home size={32} />,
       title: "Luxury Property Selection",
-      desc: "We offer carefully curated luxury homes in prime locations that match your lifestyle and investment goals.",
+      desc: "We offer carefully curated luxury and secured properties in prime locations that match your lifestyle and investment goals.",
     },
     {
       icon: <Users size={32} />,
       title: "Client-Focused Service",
-      desc: "Our team provides personalized support throughout your property journey from inquiry to ownership.",
+      desc: "Our team is ever-ready to provide personalized support throughout your property journey from inquiry to ownership.",
     },
     {
       icon: <Award size={32} />,
       title: "Proven Excellence",
-      desc: "We have built a strong reputation for delivering quality developments and exceptional real estate service.",
+      desc: "We have a track record of strong reputation for delivering refined and exceptional real estate service.",
     },
   ];
 

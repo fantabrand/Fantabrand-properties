@@ -59,7 +59,7 @@ export default function Contact() {
 
           <div className={styles.infoBlock}>
             <h4>Email</h4>
-            <span>info@fantabrandproperties.com</span>
+            <span>info@fantabrandproperties.com.ng</span>
           </div>
 
           <div className={styles.infoBlock}>

@@ -1,9 +1,8 @@
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function IlorinPage() {
-
   return (
     <>
       <Head>
@@ -11,187 +10,205 @@ export default function IlorinPage() {
 
         <meta
           name="description"
-          content="Buy affordable land in Ilorin Kwara State with verified documents and flexible payment plans. Invest in fast-growing real estate in Ilorin."
-        />
-
-        <meta
-          name="keywords"
-          content="land in ilorin, buy land in ilorin kwara, affordable land ilorin, real estate ilorin nigeria"
-        />
-
-        <meta property="og:title" content="Affordable Land in Ilorin Kwara" />
-        <meta property="og:description" content="Secure verified land in Ilorin with flexible payment plans." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.fantabrandproperties.com.ng/land-in-ilorin" />
-
-        {/* ✅ FULL GOOGLE SCHEMA */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "RealEstateAgent",
-              "name": "Fantabrand Properties Limited",
-              "url": "https://www.fantabrandproperties.com.ng/land-in-ilorin",
-              "logo": "https://www.fantabrandproperties.com.ng/logo.png",
-              "description": "Fantabrand Properties offers verified and affordable land for sale in Ilorin Kwara State with flexible payment plans.",
-              "areaServed": {
-                "@type": "Place",
-                "name": "Ilorin, Kwara State, Nigeria"
-              },
-              "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Ilorin",
-                "addressRegion": "Kwara",
-                "addressCountry": "NG"
-              },
-              "contactPoint": {
-                "@type": "ContactPoint",
-                "telephone": "+2349063504797",
-                "contactType": "customer service",
-                "areaServed": "NG"
-              },
-              "sameAs": [
-                "https://wa.me/2349063504797"
-              ]
-            })
-          }}
+          content="Buy affordable land in Ilorin Kwara State with verified documents and flexible payment plans."
         />
       </Head>
 
-      <main className={styles.home}>
+      <main style={{ background: "#050505", color: "white" }}>
 
-        {/* HERO WITH GRADIENT + PATTERN */}
-        <section
-          className={styles.featureSection}
-          style={{
-            background: "linear-gradient(135deg, #2b0a3d, #4b0082)",
-            color: "#fff",
-            position: "relative",
-            overflow: "hidden"
-          }}
-        >
+        {/* HERO */}
+        <section style={heroSection}>
 
-          {/* PATTERN OVERLAY */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              backgroundImage: "url('/pattern.png')",
-              opacity: 0.08,
-              backgroundRepeat: "repeat"
-            }}
-          />
+          <div style={heroImage}></div>
+          <div style={heroOverlay}></div>
 
-          {/* CONTENT */}
-          <div
-            className={styles.container}
-            style={{
-              position: "relative",
-              padding: "80px 20px",
-              zIndex: 2
-            }}
+          <motion.div
+            style={heroContent}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
           >
-
-            <h1 className={styles.sectionTitle}>
-              Land for Sale in Ilorin Kwara State
+            <h1 style={heroTitle}>
+              Own Verified Land in Ilorin Before Prices Increase
             </h1>
 
-            <p className={styles.sectionSubtitle}>
-              Secure verified land in Ilorin with flexible payment plans. 
-              Limited plots available — invest early and maximize returns.
+            <p style={heroSubtitle}>
+              Secure your plot in a fast-developing location with flexible payment plans.
             </p>
 
-            <div className={styles.center} style={{ marginTop: "20px" }}>
-              <a
-                href="https://wa.me/2349063504797"
-                className={styles.primaryBtn}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Chat on WhatsApp
-              </a>
+            <div style={valueStrip}>
+              <span>From ₦500k</span>
+              <span>📍 Ilorin</span>
+              <span>Flexible Payment</span>
             </div>
 
-            <p style={{ marginTop: "10px", fontSize: "14px", color: "#ddd" }}>
-              ⚡ Limited plots remaining — prices increasing soon
-            </p>
+            <a href="https://wa.me/2349063504797" style={ctaBtn}>
+              Chat on WhatsApp
+            </a>
 
-          </div>
+            <p style={urgency}>
+              Limited plots remaining — act fast
+            </p>
+          </motion.div>
         </section>
 
         {/* TRUST */}
-        <section className={styles.featureSection}>
-          <div className={styles.container}>
+        <section style={section}>
+          <h2 style={title}>100% Secure Investment</h2>
 
-            <h2 className={styles.sectionTitle}>
-              100% Verified & Secure Land
-            </h2>
-
-            <ul style={{ marginTop: "20px", lineHeight: "2" }}>
-              <li>✔ Registered Survey Plan</li>
-              <li>✔ Deed of Assignment</li>
-              <li>✔ Allocation Guarantee</li>
-              <li>✔ No Government Acquisition</li>
-            </ul>
-
+          <div style={grid}>
+            {[
+              "Registered Survey Plan",
+              "Deed of Assignment",
+              "Instant Allocation",
+              "No Government Issues"
+            ].map((item, i) => (
+              <div key={i} style={card}>{item}</div>
+            ))}
           </div>
         </section>
 
-        {/* WHY ILORIN */}
-        <section className={styles.featureSection}>
-          <div className={styles.container}>
+        {/* WHY */}
+        <section style={section}>
+          <h2 style={title}>Why Invest in Ilorin?</h2>
 
-            <h2 className={styles.sectionTitle}>
-              Why Invest in Ilorin?
-            </h2>
-
-            <ul style={{ marginTop: "20px", lineHeight: "2" }}>
-              <li>✅ Affordable land compared to major cities</li>
-              <li>✅ Rapid urban development</li>
-              <li>✅ Growing population</li>
-              <li>✅ High ROI potential</li>
-            </ul>
-
+          <div style={grid}>
+            {[
+              "Affordable entry price",
+              "Rapid urban development",
+              "Growing population",
+              "High ROI potential"
+            ].map((item, i) => (
+              <div key={i} style={card}>{item}</div>
+            ))}
           </div>
         </section>
 
         {/* CTA */}
-        <section className={styles.featureSection}>
-          <div className={styles.container}>
+        <section style={ctaSection}>
+          <h2 style={title}>Secure Your Plot Today</h2>
 
-            <h2 className={styles.sectionTitle}>
-              Secure Your Plot Today
-            </h2>
-
-            <div className={styles.center} style={{ marginTop: "20px" }}>
-              <a
-                href="https://wa.me/2349063504797"
-                className={styles.primaryBtn}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Book Inspection Now
-              </a>
-            </div>
-
-          </div>
+          <a href="https://wa.me/2349063504797" style={ctaBtn}>
+            Book Inspection Now
+          </a>
         </section>
 
-        {/* BACK LINK */}
-        <section className={styles.featureSection}>
-          <div className={styles.container}>
-
-            <div className={styles.center}>
-              <Link href="/" className={styles.primaryBtn}>
-                Back to Home
-              </Link>
-            </div>
-
-          </div>
+        {/* BACK */}
+        <section style={section}>
+          <Link href="/" style={backBtn}>
+            Back to Home
+          </Link>
         </section>
 
       </main>
     </>
   );
 }
+
+/* 🔥 STYLES */
+
+const heroSection = {
+  position: "relative",
+  height: "90vh",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  overflow: "hidden"
+};
+
+const heroImage = {
+  position: "absolute",
+  inset: 0,
+  backgroundImage: "url('/land.jpg')",
+  backgroundSize: "cover",
+  backgroundPosition: "center"
+};
+
+const heroOverlay = {
+  position: "absolute",
+  inset: 0,
+  background: "linear-gradient(to bottom, rgba(0,0,0,0.7), #050505)"
+};
+
+const heroContent = {
+  textAlign: "center",
+  zIndex: 2,
+  maxWidth: 800,
+  padding: "0 20px"
+};
+
+const heroTitle = {
+  fontSize: "42px",
+  fontWeight: "700",
+  marginBottom: "16px"
+};
+
+const heroSubtitle = {
+  fontSize: "16px",
+  color: "rgba(255,255,255,0.7)",
+  marginBottom: "20px"
+};
+
+const valueStrip = {
+  display: "flex",
+  justifyContent: "center",
+  gap: "20px",
+  marginBottom: "20px",
+  fontSize: "14px",
+  color: "#c084fc",
+  flexWrap: "wrap"
+};
+
+const urgency = {
+  fontSize: "13px",
+  marginTop: "12px",
+  color: "#c084fc"
+};
+
+const ctaBtn = {
+  padding: "12px 26px",
+  borderRadius: "30px",
+  background: "linear-gradient(90deg, #9333ea, #c084fc)",
+  color: "white",
+  textDecoration: "none",
+  display: "inline-block",
+  fontWeight: "500"
+};
+
+const section = {
+  padding: "80px 20px",
+  maxWidth: 1100,
+  margin: "auto",
+  textAlign: "center"
+};
+
+const title = {
+  fontSize: "26px",
+  marginBottom: "30px"
+};
+
+const grid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+  gap: "20px"
+};
+
+const card = {
+  padding: "20px",
+  borderRadius: "16px",
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.08)"
+};
+
+const ctaSection = {
+  textAlign: "center",
+  padding: "80px 20px"
+};
+
+const backBtn = {
+  padding: "10px 20px",
+  borderRadius: "30px",
+  border: "1px solid rgba(255,255,255,0.2)",
+  color: "white",
+  textDecoration: "none"
+};
