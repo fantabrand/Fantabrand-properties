@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "../../lib/supabase/client";
 import styles from "../../styles/PropertyDetails.module.css";
 import Head from "next/head";
@@ -16,34 +16,46 @@ export default function PropertyDetails() {
   const [time, setTime] = useState("");
   const [loading, setLoading] = useState(false);
   const [mainImage, setMainImage] = useState(null);
-  const [activeFaq, setActiveFaq] = useState(null);
+
+  // ✅ FAQ STATE
+  const [activeFAQ, setActiveFAQ] = useState(null);
+
+  const sectionsRef = useRef([]);
 
   useEffect(() => {
-    if (router.isReady && slug) {
-      fetchProperty();
-    }
+    if (router.isReady && slug) fetchProperty();
   }, [router.isReady, slug]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add(styles.fadeIn);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    sectionsRef.current.forEach((el) => el && observer.observe(el));
+  }, [property]);
+
   async function fetchProperty() {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("properties")
       .select("*")
       .eq("slug", slug)
       .single();
 
-    if (error) {
-      console.log(error);
-    } else {
-      setProperty(data);
-      setMainImage(data.image_url);
-    }
+    setProperty(data);
+    setMainImage(data.image_url);
   }
 
   const safeParse = (value, fallback) => {
     try {
       return value ? JSON.parse(value) : fallback;
-    } catch (error) {
-      console.log("JSON parse error:", error);
+    } catch {
       return fallback;
     }
   };
@@ -52,230 +64,152 @@ export default function PropertyDetails() {
     return <p className={styles.loading}>Loading...</p>;
   }
 
+  const description = property.description || property.mission;
+  const features = safeParse(property.estate_features, []);
   const whyLocation = safeParse(property.why_location, []);
   const attractions = safeParse(property.environment_attractions, []);
-  const features = safeParse(property.estate_features, []);
-  const paymentPlan = safeParse(property.payment_plan, {});
-
-  const galleryImages = property.gallery
-    ? property.gallery
-        .split(",")
-        .map((img) => img.trim())
-        .filter(Boolean)
-    : [];
+  const paymentPlan = safeParse(property.payment_plan, {}) || {};
+  const galleryImages = safeParse(property.gallery_images, []);
+  const faqs = safeParse(property.faqs, []);
 
   const whatsappUrl = `https://wa.me/2349063504797?text=${encodeURIComponent(
     `Hello, I am interested in ${property.title}`
   )}`;
 
-  const faqs = [
-    {
-      question: `Where is ${property.title} located?`,
-      answer: `${property.title} is located in ${property.location}, a fast developing area with strong investment potential.`,
-    },
-    {
-      question: `What title document does ${property.title} have?`,
-      answer: `${property.title} comes with ${
-        property.title_document || "verified land documentation"
-      } ensuring secure ownership.`,
-    },
-    {
-      question: `Can I inspect ${property.title} before payment?`,
-      answer:
-        "Yes. We organize site inspections so buyers can verify the property before making payment. Kindly book an inspection.",
-    },
-    {
-      question: `Is installment payment available for ${property.title}?`,
-      answer:
-        "Yes. Flexible installment payment options may be available depending on the property.",
-    },
-  ];
-
-  async function bookInspection() {
-    if (!name || !phone || !date || !time) {
-      alert("Please fill all fields");
-      return;
-    }
-
-    setLoading(true);
-
-    const { error } = await supabase.from("inspection_requests").insert([
-      {
-        property_title: property.title,
-        property_slug: property.slug,
-        name: name,
-        phone: phone,
-        inspection_date: date,
-        inspection_time: time,
-      },
-    ]);
-
-    setLoading(false);
-
-    if (error) {
-      console.log(error);
-      alert("Failed to book inspection");
-    } else {
-      alert("Inspection request submitted successfully!");
-      setName("");
-      setPhone("");
-      setDate("");
-      setTime("");
-    }
-  }
-
-  const formatPlanLabel = (key) => {
-    if (key === "outright") return "Outright";
-    if (key === "initialDeposit") return "Initial Deposit";
-    if (key.toLowerCase().includes("months")) {
-      return key.replace(/(\d+)\s*months/i, "$1 Months");
-    }
-    return key;
+  const toggleFAQ = (index) => {
+    setActiveFAQ(activeFAQ === index ? null : index);
   };
 
-  const orderedPlanKeys = (plan = {}) => {
-    const keys = Object.keys(plan);
+  const FeatureIcon = ({ index }) => {
+    const icons = [
+      <svg viewBox="0 0 24 24" className={styles.svgIcon}>
+        <path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z" />
+      </svg>,
+      <svg viewBox="0 0 24 24" className={styles.svgIcon}>
+        <path d="M4 20l8-16 8 16M12 4v16" />
+      </svg>,
+      <svg viewBox="0 0 24 24" className={styles.svgIcon}>
+        <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
+      </svg>,
+      <svg viewBox="0 0 24 24" className={styles.svgIcon}>
+        <path d="M12 2C8 8 6 11 6 14a6 6 0 0012 0c0-3-2-6-6-12z" />
+      </svg>,
+    ];
 
-    const priority = ["outright", "3months", "6months", "12months", "24months", "36months", "48months", "60months", "initialDeposit"];
-
-    const sorted = keys.sort((a, b) => {
-      const aIndex = priority.indexOf(a);
-      const bIndex = priority.indexOf(b);
-
-      if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
-      if (aIndex !== -1) return -1;
-      if (bIndex !== -1) return 1;
-
-      return a.localeCompare(b);
-    });
-
-    return sorted;
+    return icons[index % icons.length];
   };
 
   return (
     <>
-      <Head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              mainEntity: faqs.map((faq) => ({
-                "@type": "Question",
-                name: faq.question,
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: faq.answer,
-                },
-              })),
-            }),
-          }}
-        />
-      </Head>
+      <Head />
 
       <div className={styles.container}>
         <div className={styles.grid}>
-          {/* LEFT SIDE */}
+          {/* LEFT */}
           <div className={styles.left}>
             <h1 className={styles.title}>{property.title}</h1>
             <p className={styles.subLocation}>{property.location}</p>
 
-            <img
-              src={mainImage}
-              alt={property.title}
-              className={styles.heroImage}
-            />
+            <img src={mainImage} className={styles.heroImage} />
 
             {galleryImages.length > 0 && (
-              <div className={styles.galleryRow}>
+              <div className={styles.thumbnailWrapper}>
                 {galleryImages.map((img, index) => (
                   <img
                     key={index}
                     src={img}
-                    alt={`${property.title} gallery ${index + 1}`}
-                    className={styles.galleryThumb}
+                    className={`${styles.thumbnail} ${
+                      mainImage === img ? styles.activeThumbnail : ""
+                    }`}
                     onClick={() => setMainImage(img)}
                   />
                 ))}
               </div>
             )}
 
-            <div className={styles.section}>
-              <h2>Description</h2>
-              <p>{property.description}</p>
-            </div>
-
-            {whyLocation.length > 0 && (
-              <div className={styles.section}>
-                <h2>Why This Location</h2>
-                <ul>
-                  {whyLocation.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {attractions.length > 0 && (
-              <div className={styles.section}>
-                <h2>Environment Attractions</h2>
-                <ul>
-                  {attractions.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
+            {description && (
+              <div
+                className={styles.section}
+                ref={(el) => (sectionsRef.current[0] = el)}
+              >
+                <h2>About This Estate</h2>
+                <p className={styles.description}>{description}</p>
               </div>
             )}
 
             {features.length > 0 && (
-              <div className={styles.section}>
+              <div
+                className={styles.section}
+                ref={(el) => (sectionsRef.current[1] = el)}
+              >
                 <h2>Estate Features</h2>
-
-                <div className={styles.featuresGrid}>
-                  {features.map((item, index) => (
-                    <div key={index} className={styles.featureCard}>
-                      ✔ {item}
+                <div className={styles.featureGrid}>
+                  {features.map((item, i) => (
+                    <div key={i} className={styles.featureCard}>
+                      <FeatureIcon index={i} />
+                      <p>{item}</p>
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* PAYMENT PLAN */}
+            {whyLocation.length > 0 && (
+              <div
+                className={styles.section}
+                ref={(el) => (sectionsRef.current[2] = el)}
+              >
+                <h2>Why This Location</h2>
+                <ul className={styles.list}>
+                  {whyLocation.map((item, i) => (
+                    <li key={i}>📍 {item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {attractions.length > 0 && (
+              <div
+                className={styles.section}
+                ref={(el) => (sectionsRef.current[3] = el)}
+              >
+                <h2>Nearby Attractions</h2>
+                <ul className={styles.list}>
+                  {attractions.map((item, i) => (
+                    <li key={i}>🏙 {item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {Object.keys(paymentPlan).length > 0 && (
-              <div className={styles.section}>
-                <h2>Payment Plan</h2>
+              <div
+                className={styles.section}
+                ref={(el) => (sectionsRef.current[4] = el)}
+              >
+                <h2 style={{ textAlign: "center" }}>Payment Plan</h2>
 
                 <div className={styles.paymentGrid}>
                   {Object.keys(paymentPlan).map((size) => {
-                    const currentPlan = paymentPlan[size] || {};
-                    const planKeys = orderedPlanKeys(currentPlan);
+                    const plan = paymentPlan[size] || {};
 
                     return (
                       <div key={size} className={styles.paymentCard}>
-                        <h4 className={styles.paymentSize}>{size}</h4>
+                        <h4 className={styles.paymentSize}>
+                          {size.toUpperCase()}
+                        </h4>
 
-                        <div className={styles.paymentLines}>
-                          {planKeys.map((key) => (
-                            <p key={key} className={styles.paymentLine}>
-                              <span className={styles.planLabel}>
-                                {formatPlanLabel(key)}:
-                              </span>{" "}
-                              <span className={styles.planValue}>
-                                ₦{currentPlan[key] || "-"}
-                              </span>
-                            </p>
-                          ))}
-                        </div>
+                        {Object.keys(plan).map((key) => (
+                          <p key={key} className={styles.paymentLine}>
+                            {key}: ₦{plan[key]}
+                          </p>
+                        ))}
 
                         <Link
-                          href={`/booking?property=${property.slug}&size=${encodeURIComponent(
-                            size
-                          )}`}
+                          href={`/booking?property=${property.slug}&size=${size}`}
                           className={styles.reservePlotLink}
                         >
-                          Reserve a Plot
+                          Reserve Plot
                         </Link>
                       </div>
                     );
@@ -284,116 +218,71 @@ export default function PropertyDetails() {
               </div>
             )}
 
-            {/* LOCATION TEXT ONLY */}
-            <div className={styles.section}>
-              <h2>Estate Location</h2>
-              <p className={styles.mapNote}>📍 Location: {property.location}</p>
-            </div>
+            {/* 🔥 PREMIUM FAQ */}
+            {faqs.length > 0 && (
+              <div
+                className={styles.section}
+                ref={(el) => (sectionsRef.current[5] = el)}
+              >
+                <h2>Frequently Asked Questions</h2>
 
-            {/* FAQ */}
-            <div className={styles.section}>
-              <h2>Property FAQs</h2>
+                <div className={styles.faqContainer}>
+                  {faqs.map((faq, index) => {
+                    const isActive = activeFAQ === index;
 
-              {faqs.map((faq, index) => (
-                <div key={index} className={styles.faqItem}>
-                  <button
-                    className={styles.faqQuestion}
-                    onClick={() =>
-                      setActiveFaq(activeFaq === index ? null : index)
-                    }
-                  >
-                    {faq.question}
-                    <span>{activeFaq === index ? "−" : "+"}</span>
-                  </button>
+                    return (
+                      <div key={index} className={styles.faqItem}>
+                        <div
+                          className={styles.faqQuestion}
+                          onClick={() => toggleFAQ(index)}
+                        >
+                          <span>{faq.question}</span>
+                          <span
+                            className={`${styles.faqIcon} ${
+                              isActive ? styles.rotateIcon : ""
+                            }`}
+                          >
+                            +
+                          </span>
+                        </div>
 
-                  {activeFaq === index && (
-                    <p className={styles.faqAnswer}>{faq.answer}</p>
-                  )}
+                        <div
+                          className={`${styles.faqAnswerWrapper} ${
+                            isActive ? styles.open : ""
+                          }`}
+                        >
+                          <div className={styles.faqAnswer}>
+                            {faq.answer}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
 
-          {/* RIGHT SIDE */}
+          {/* RIGHT */}
           <div className={styles.right}>
             <div className={styles.priceCard}>
-              <h1 className={styles.price}>₦{property.price}</h1>
-
-              <p className={styles.location}>{property.location}</p>
+              <h1>₦{property.price}</h1>
 
               {property.title_document && (
-                <div
-                  style={{
-                    background: "#e6f4ea",
-                    color: "#137333",
-                    padding: "8px 12px",
-                    borderRadius: "8px",
-                    marginBottom: "15px",
-                    fontWeight: "600",
-                    textAlign: "center",
-                  }}
-                >
+                <div className={styles.titleDoc}>
                   📜 {property.title_document}
                 </div>
               )}
 
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.whatsapp}
-              >
+              <a href={whatsappUrl} className={styles.whatsapp}>
                 Chat on WhatsApp
               </a>
 
               {property.brochure_url && (
-                <a
-                  href={property.brochure_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.brochureBtn}
-                >
-                  📄 Download Brochure
+                <a href={property.brochure_url} className={styles.brochureBtn}>
+                  Download Brochure
                 </a>
               )}
-
-              <div className={styles.inspectBox}>
-                <input
-                  type="text"
-                  placeholder="Your Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-
-                <input
-                  type="tel"
-                  placeholder="Phone Number"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-
-                <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                />
-
-                <select
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                >
-                  <option value="">Select Time</option>
-                  <option>9:00 AM</option>
-                  <option>11:00 AM</option>
-                  <option>1:00 PM</option>
-                  <option>3:00 PM</option>
-                  <option>5:00 PM</option>
-                </select>
-
-                <button className={styles.inspectBtn} onClick={bookInspection}>
-                  {loading ? "Booking..." : "Book Inspection"}
-                </button>
-              </div>
             </div>
           </div>
         </div>

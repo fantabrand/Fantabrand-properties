@@ -6,6 +6,8 @@ export default function BookingPage() {
   const router = useRouter();
   const { property, size } = router.query;
 
+  const [isMobile, setIsMobile] = useState(false);
+
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -16,10 +18,21 @@ export default function BookingPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  // ✅ Detect screen size
+  useEffect(() => {
+    const checkScreen = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkScreen();
+    window.addEventListener("resize", checkScreen);
+
+    return () => window.removeEventListener("resize", checkScreen);
+  }, []);
+
   // 🔥 Fetch property
   useEffect(() => {
     if (!property) return;
-
     fetchProperty();
   }, [property]);
 
@@ -30,51 +43,13 @@ export default function BookingPage() {
       .eq("slug", property)
       .single();
 
-    if (error) {
-      console.log(error);
-    } else {
-      setPropertyData(data);
-    }
+    if (!error) setPropertyData(data);
   };
 
   if (!router.isReady) return null;
 
-  // 🧠 Format slug fallback
   const formatProperty = (slug) => {
     return slug?.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
-  };
-
-  // 💰 FIXED PRICE
-  const getPrice = () => {
-    if (!propertyData?.price) return "₦0";
-
-    let price = parseInt(propertyData.price);
-
-    if (isNaN(price)) return "₦0";
-
-    // 🔥 Fix small values like 375 → 3,750,000
-    if (price < 10000) {
-      price = price * 10000;
-    }
-
-    return `₦${price.toLocaleString()}`;
-  };
-
-  // 💰 FIXED DEPOSIT (20%)
-  const getDeposit = () => {
-    if (!propertyData?.price) return "₦0";
-
-    let price = parseInt(propertyData.price);
-
-    if (isNaN(price)) return "₦0";
-
-    if (price < 10000) {
-      price = price * 10000;
-    }
-
-    const deposit = price * 0.2;
-
-    return `₦${deposit.toLocaleString()}`;
   };
 
   const handleChange = (e) => {
@@ -97,16 +72,19 @@ export default function BookingPage() {
 
     setLoading(false);
 
-    if (error) {
-      alert("Something went wrong!");
-      console.log(error);
-    } else {
-      setSuccess(true);
-    }
+    if (!error) setSuccess(true);
+    else alert("Something went wrong!");
   };
 
   return (
-    <div style={styles.container}>
+    <div
+      style={{
+        ...styles.container,
+        flexDirection: isMobile ? "column" : "row",
+        padding: isMobile ? "20px" : "60px",
+        gap: isMobile ? "30px" : "50px",
+      }}
+    >
       {/* LEFT */}
       <div style={styles.left}>
         <h1 style={styles.title}>Secure Your Plot Today</h1>
@@ -118,27 +96,28 @@ export default function BookingPage() {
         <div style={styles.infoCard}>
           <Info label="Plot Size" value={size} />
           <Info label="Location" value={propertyData?.location || "..."} />
-          <Info
-            label="Title"
-            value={propertyData?.title_document || "..."}
-          />
+          <Info label="Title" value={propertyData?.title_document || "..."} />
         </div>
 
-       <div style={styles.valueBox}>
-  <p style={styles.valueItem}>✅ Flexible Payment Plans Available</p>
-  <p style={styles.valueItem}>✅ Free Site Inspection</p>
-  <p style={styles.valueItem}>✅ Instant Allocation</p>
-  <p style={styles.valueItem}>✅ Verified & Secure Title</p>
-</div>
+        <div style={styles.valueBox}>
+          <p>✅ Flexible Payment Plans Available</p>
+          <p>✅ Free Site Inspection</p>
+          <p>✅ Instant Allocation</p>
+          <p>✅ Verified & Secure Title</p>
+        </div>
 
-<p style={{ marginTop: "15px", color: "#7c3aed", fontWeight: "600" }}>
-  Speak with our team to get current pricing →
-</p>
+        <p style={styles.link}>
+          Speak with our team to get current pricing →
+        </p>
       </div>
 
-
       {/* RIGHT */}
-      <div style={styles.right}>
+      <div
+        style={{
+          ...styles.right,
+          padding: isMobile ? "20px" : "40px",
+        }}
+      >
         {success ? (
           <div style={styles.successBox}>
             <h2>🎉 Booking Received</h2>
@@ -205,50 +184,75 @@ const styles = {
   container: {
     display: "flex",
     minHeight: "85vh",
-    padding: "60px",
     background: "#f8f9fc",
-    gap: "50px",
   },
+
   left: { flex: 1 },
+
   right: {
     flex: 1,
     background: "white",
-    padding: "40px",
     borderRadius: "16px",
     boxShadow: "0 20px 50px rgba(0,0,0,0.08)",
+    width: "100%",
   },
-  title: { fontSize: "36px", fontWeight: "700" },
-  subtitle: { color: "#7c3aed", marginBottom: "20px" },
+
+  title: {
+    fontSize: "clamp(26px, 5vw, 36px)",
+    fontWeight: "700",
+  },
+
+  subtitle: {
+    color: "#7c3aed",
+    marginBottom: "20px",
+  },
+
   infoCard: {
     background: "white",
-    padding: "25px",
+    padding: "20px",
     borderRadius: "12px",
     marginBottom: "20px",
   },
+
   infoRow: {
     display: "flex",
     justifyContent: "space-between",
     marginBottom: "10px",
+    flexWrap: "wrap",
   },
+
   label: { color: "#666" },
+
   value: { fontWeight: "600" },
-  price: { fontSize: "34px", fontWeight: "bold" },
-  badge: { color: "red", marginTop: "10px" },
+
   input: {
     width: "100%",
-    padding: "12px",
-    marginBottom: "10px",
-    borderRadius: "6px",
+    padding: "14px",
+    marginBottom: "12px",
+    borderRadius: "8px",
     border: "1px solid #ddd",
   },
+
   button: {
     width: "100%",
     padding: "14px",
-    background: "#7c3aed",
+    background: "linear-gradient(135deg,#6d28d9,#9333ea)",
     color: "white",
     border: "none",
-    borderRadius: "8px",
+    borderRadius: "10px",
+    fontWeight: "600",
   },
+
   successBox: { textAlign: "center" },
-  
+
+  valueBox: {
+    marginTop: "15px",
+    lineHeight: "1.8",
+  },
+
+  link: {
+    marginTop: "15px",
+    color: "#7c3aed",
+    fontWeight: "600",
+  },
 };
