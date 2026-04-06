@@ -20,7 +20,7 @@ export default function PropertiesPage() {
 
   return (
     <div style={{ padding: "60px 40px" }}>
-      <h1>All Properties</h1>
+      <h1>The future of luxury living</h1>
 
       <div
         style={{

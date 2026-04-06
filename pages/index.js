@@ -115,7 +115,7 @@ export default function Home() {
           <div className={styles.container}>
 
             <h2 className={styles.sectionTitle}>
-              Explore Our Properties
+              Explore Our Projects
             </h2>
 
             <p className={styles.sectionSubtitle}>
@@ -128,7 +128,7 @@ export default function Home() {
 
             <div className={styles.center}>
               <Link href="/properties" className={styles.primaryBtn}>
-                View All Properties
+                Explore 
               </Link>
             </div>
 

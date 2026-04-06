@@ -44,15 +44,22 @@ export default function PropertyCard({ property }) {
         </div>
       </Link>
 
-      {/* WHATSAPP BUTTON */}
-      <a
-        href={`https://wa.me/2349063504797?text=${whatsappMessage}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.whatsappBtn}
-      >
-        Purchase
-      </a>
+     <Link href={`/properties/${property.slug}`} className={styles.exploreBtn}>
+  <span className={styles.text}>Explore Estate</span>
+
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className={styles.icon}
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+  </svg>
+
+  <span className={styles.ripple}></span>
+</Link>
     </div>
   );
 }

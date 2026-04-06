@@ -65,7 +65,7 @@
   background: white;
   padding: 18px;
   border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   transition: 0.3s ease;
 }
 
@@ -84,14 +84,63 @@
 
 .paymentCard {
   background: white;
-  padding: 20px;
+  padding: 22px;
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
   transition: 0.3s ease;
+  border: 1px solid rgba(124, 58, 237, 0.06);
 }
 
 .paymentCard:hover {
   transform: translateY(-5px);
+}
+
+.paymentSize {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #111827;
+}
+
+.paymentLines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.paymentLine {
+  margin: 0;
+  font-size: 15px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.planLabel {
+  font-weight: 600;
+  color: #111827;
+}
+
+.planValue {
+  color: #4b5563;
+}
+
+.reservePlotLink {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 12px 18px;
+  background: linear-gradient(to right, #7c3aed, #a855f7);
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.18);
+}
+
+.reservePlotLink:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(to right, #6d28d9, #9333ea);
 }
 
 /* PRICE SIDEBAR */
@@ -103,7 +152,7 @@
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
 }
 
 .price {
@@ -128,27 +177,29 @@
   border-radius: 10px;
   text-decoration: none;
   margin-bottom: 15px;
-  font-weight: 600;}
-  
-  .whatsapp:hover{
-background:#1cc019;
+  font-weight: 600;
+  transition: 0.3s ease;
 }
 
-.brochureBtn{
-display:block;
-text-align:center;
+.whatsapp:hover {
+  background: #1cc019;
+}
+
+.brochureBtn {
+  display: block;
+  text-align: center;
   background: linear-gradient(to right, #3aed70, #1b9a27);
-color:white;
-padding:12px;
-border-radius:10px;
-font-weight:600;
-margin-bottom:12px;
-text-decoration:none;
-transition:0.3s;
+  color: white;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-decoration: none;
+  transition: 0.3s;
 }
 
-.brochureBtn:hover{
-background:#6d28d9;
+.brochureBtn:hover {
+  background: #6d28d9;
 }
 
 .inspectBtn {
@@ -159,6 +210,12 @@ background:#6d28d9;
   background: black;
   color: white;
   cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+.inspectBtn:hover {
+  background: #111827;
 }
 
 .loading {
@@ -206,12 +263,57 @@ background:#6d28d9;
   font-size: 14px;
 }
 
+.inspectBox input:focus,
+.inspectBox select:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+}
+
+/* FAQ */
+
+.faqItem {
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+}
+
+.faqQuestion {
+  width: 100%;
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  gap: 10px;
+}
+
+.faqAnswer {
+  margin-top: 10px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.mapContainer {
+  margin-top: 20px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.mapNote {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
 /* ========================= */
 /* MOBILE RESPONSIVE FIXES */
 /* ========================= */
 
 @media (max-width: 900px) {
-
   .grid {
     grid-template-columns: 1fr;
     gap: 40px;
@@ -226,11 +328,9 @@ background:#6d28d9;
     height: auto;
     max-height: 350px;
   }
-
 }
 
 @media (max-width: 600px) {
-
   .container {
     padding: 40px 16px;
   }
@@ -252,37 +352,36 @@ background:#6d28d9;
     font-size: 26px;
   }
 
+  .paymentCard {
+    padding: 18px;
+  }
+
+  .paymentSize {
+    font-size: 20px;
+  }
+
+  .reservePlotLink {
+    width: 100%;
+    text-align: center;
+  }
 }
-.faqItem{
-border-bottom:1px solid #eee;
-padding:15px 0;
+.inspectBtn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: black;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s ease;
 }
 
-.faqQuestion{
-width:100%;
-background:none;
-border:none;
-display:flex;
-justify-content:space-between;
-font-size:16px;
-font-weight:600;
-cursor:pointer;
+.inspectBtn:hover {
+  background: #7c3aed;
 }
 
-.faqAnswer{
-margin-top:10px;
-color:#555;
-line-height:1.6;
-}
-.mapContainer{
-margin-top:20px;
-border-radius:14px;
-overflow:hidden;
-box-shadow:0 10px 25px rgba(0,0,0,0.08);
-}
-
-.mapNote{
-margin-top:10px;
-font-size:14px;
-color:#666;
+.inspectBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }

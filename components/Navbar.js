@@ -80,16 +80,16 @@ export default function Navbar() {
           {/* DESKTOP MENU */}
           <div className={styles.desktopMenu}>
             <NavLink href="/" current={router.pathname}>Home</NavLink>
-            <NavLink href="/properties" current={router.pathname}>Properties</NavLink>
+            <NavLink href="/properties" current={router.pathname}>Projects</NavLink>
             <NavLink href="/services" current={router.pathname}>Services</NavLink>
-            <NavLink href="/news" current={router.pathname}>News</NavLink>
+            <NavLink href="/news" current={router.pathname}>Blog</NavLink>
             <NavLink href="/about" current={router.pathname}>About</NavLink>
+            <NavLink href="/become-a-partner" current={router.pathname}>Become A Partner</NavLink>
             <NavLink href="/contact" current={router.pathname}>Contact</NavLink>
           </div>
 
           {/* ACTIONS */}
           <div className={styles.actions}>
-
             {/* MOBILE MENU BUTTON */}
             <div
               className={`${styles.menuButton} ${
@@ -105,7 +105,6 @@ export default function Navbar() {
                 <span></span>
               </div>
             </div>
-
           </div>
         </div>
       </nav>
@@ -127,8 +126,9 @@ export default function Navbar() {
         <NavLink href="/" current={router.pathname}>Home</NavLink>
         <NavLink href="/properties" current={router.pathname}>Properties</NavLink>
         <NavLink href="/services" current={router.pathname}>Services</NavLink>
-        <NavLink href="/news" current={router.pathname}>News</NavLink>
+        <NavLink href="/news" current={router.pathname}>Blog</NavLink>
         <NavLink href="/about" current={router.pathname}>About</NavLink>
+        <NavLink href="/become-a-partner" current={router.pathname}>Become A Partner</NavLink>
         <NavLink href="/contact" current={router.pathname}>Contact</NavLink>
       </div>
     </>
@@ -136,7 +136,7 @@ export default function Navbar() {
 }
 
 function NavLink({ href, children, current }) {
-  const active = current === href;
+  const active = current.startsWith(href);
 
   return (
     <Link href={href} className={active ? styles.active : ""}>

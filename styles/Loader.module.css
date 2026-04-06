@@ -2,14 +2,16 @@
 
 .loaderContainer {
   position: fixed;
-  width: 100%;
-  height: 100vh;
+  inset: 0; /* 🔥 replaces width + height perfectly */
   background: #0a0a0a;
+
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+
   z-index: 9999;
+  overflow: hidden; /* 🔥 prevents internal scroll */
 }
 
 .logo {

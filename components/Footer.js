@@ -23,40 +23,33 @@ export default function Footer() {
           </div>
 
           <p style={desc}>
-            Redefining luxury real estate experiences across Nigeria.
+            Luxury living redefined.
           </p>
 
-          {/* Social Icons */}
+          {/* 🔥 PREMIUM SOCIAL ICONS */}
           <div style={socialWrap}>
-            <a href="https://facebook.com/fantabrand" target="_blank" style={socialIcon}>
-              <svg width="18" height="18" fill="white" viewBox="0 0 24 24">
-                <path d="M22 12a10 10 0 10-11.5 9.9v-7h-2.6V12h2.6V9.8c0-2.6 
-                1.6-4 3.9-4 1.1 0 2.3.2 2.3.2v2.5h-1.3c-1.3 
-                0-1.7.8-1.7 1.6V12h2.9l-.5 
-                2.9h-2.4v7A10 10 0 0022 12"/>
+            {/* Facebook */}
+            <a href="https://facebook.com/fantabrand" target="_blank" rel="noopener noreferrer" style={socialIcon}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
               </svg>
             </a>
 
-            <a href="https://instagram.com/fantabrand" target="_blank" style={socialIcon}>
-              <svg width="18" height="18" fill="white" viewBox="0 0 24 24">
-                <path d="M7 2C4.2 2 2 4.2 2 7v10c0 2.8 
-                2.2 5 5 5h10c2.8 0 5-2.2 
-                5-5V7c0-2.8-2.2-5-5-5H7zm5 
-                5a5 5 0 110 10 5 5 0 010-10z"/>
+            {/* Instagram */}
+            <a href="https://instagram.com/fantabrand" target="_blank" rel="noopener noreferrer" style={socialIcon}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
+                <rect x="2" y="2" width="20" height="20" rx="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17" cy="7" r="1"/>
               </svg>
             </a>
 
-            <a href="https://linkedin.com/company/fantabrand" target="_blank" style={socialIcon}>
-              <svg width="18" height="18" fill="white" viewBox="0 0 24 24">
-                <path d="M4.98 3.5C4.98 4.88 3.87 
-                6 2.5 6S0 4.88 0 3.5 1.12 1 
-                2.5 1 4.98 2.12 4.98 3.5zM.5 
-                8h4V24h-4V8zm7.5 
-                0h3.8v2.2h.1c.5-.9 
-                1.8-2.2 3.7-2.2 4 
-                0 4.7 2.6 4.7 
-                6V24h-4v-7.6c0-1.8 
-                0-4.1-2.5-4.1z"/>
+            {/* LinkedIn */}
+            <a href="https://linkedin.com/company/fantabrand" target="_blank" rel="noopener noreferrer" style={socialIcon}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
+                <rect x="2" y="9" width="4" height="12"/>
+                <circle cx="4" cy="4" r="2"/>
+                <path d="M10 9h4v2h.1a4 4 0 013.9-2c4 0 4.5 2.5 4.5 6V21h-4v-5c0-2-.5-3-2-3s-2.5 1.3-2.5 3V21h-4z"/>
               </svg>
             </a>
           </div>
@@ -67,7 +60,8 @@ export default function Footer() {
           <h3 style={heading}>Explore</h3>
           <div style={linkColumn}>
             <Link href="/" style={link}>Home</Link>
-            <Link href="/properties" style={link}>Properties</Link>
+            <Link href="/properties" style={link}>Projects</Link>
+            <Link href="/become-a-partner" style={link}>Become a Partner</Link>
             <Link href="/contact" style={link}>Contact</Link>
           </div>
         </div>
@@ -110,24 +104,20 @@ export default function Footer() {
         © 2026 Fantabrand Properties. All rights reserved.
       </p>
 
-      {/* Hover Effects */}
+      {/* 🔥 PREMIUM HOVER EFFECTS */}
       <style jsx global>{`
         footer a {
           transition: all 0.3s ease;
         }
 
         footer a:hover {
-          transform: translateY(-3px);
-          opacity: 1 !important;
+          transform: translateY(-4px) scale(1.05);
+          background: linear-gradient(135deg, #9333ea, #c084fc);
+          box-shadow: 0 10px 30px rgba(147,51,234,0.5);
         }
 
         footer a:hover svg {
           transform: scale(1.1);
-        }
-
-        footer div[style*="38px"]:hover {
-          background: linear-gradient(135deg, #9333ea, #c084fc);
-          box-shadow: 0 0 25px rgba(147,51,234,0.6);
         }
       `}</style>
     </motion.footer>
@@ -213,15 +203,16 @@ const socialWrap = {
 };
 
 const socialIcon = {
-  width: 38,
-  height: 38,
+  width: 42,
+  height: 42,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  borderRadius: "12px",
-  background: "rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  cursor: "pointer"
+  borderRadius: "14px",
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.12)",
+  cursor: "pointer",
+  transition: "all 0.3s ease"
 };
 
 const heading = {
