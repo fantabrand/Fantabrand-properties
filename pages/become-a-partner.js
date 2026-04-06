@@ -6,7 +6,7 @@ import styles from "../styles/BecomePartner.module.css";
 export default function BecomePartner() {
 
   /* WHATSAPP LINK */
-  const whatsappLink = `https://wa.me/234XXXXXXXXXX?text=${encodeURIComponent(
+  const whatsappLink = `https://wa.me/2349063504797?text=${encodeURIComponent(
     "Hello Fantabrand Properties, I would like to become a partner and start earning with your real estate opportunities."
   )}`;
 
