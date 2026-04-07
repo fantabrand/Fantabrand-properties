@@ -6,8 +6,6 @@ export default function BookingPage() {
   const router = useRouter();
   const { property, size } = router.query;
 
-  const [isMobile, setIsMobile] = useState(false);
-
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -18,18 +16,6 @@ export default function BookingPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  // ✅ Detect screen size
-  useEffect(() => {
-    const checkScreen = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    checkScreen();
-    window.addEventListener("resize", checkScreen);
-
-    return () => window.removeEventListener("resize", checkScreen);
-  }, []);
-
   // 🔥 Fetch property
   useEffect(() => {
     if (!property) return;
@@ -37,13 +23,13 @@ export default function BookingPage() {
   }, [property]);
 
   const fetchProperty = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("properties")
       .select("*")
       .eq("slug", property)
       .single();
 
-    if (!error) setPropertyData(data);
+    setPropertyData(data);
   };
 
   if (!router.isReady) return null;
@@ -76,129 +62,157 @@ export default function BookingPage() {
     else alert("Something went wrong!");
   };
 
+  const whatsappLink = `https://wa.me/23463504797?text=Hello, I'm interested in ${formatProperty(
+    property
+  )} (${size})`;
+
   return (
-    <div
-      style={{
-        ...styles.container,
-        flexDirection: isMobile ? "column" : "row",
-        padding: isMobile ? "20px" : "60px",
-        gap: isMobile ? "30px" : "50px",
-      }}
-    >
-      {/* LEFT */}
-      <div style={styles.left}>
-        <h1 style={styles.title}>Secure Your Plot Today</h1>
+    <div style={styles.page}>
+      <div style={styles.container}>
+        {/* LEFT SIDE */}
+        <div style={styles.left}>
+          <h1 style={styles.title}>Secure Your Plot Today</h1>
 
-        <p style={styles.subtitle}>
-          {propertyData?.title || formatProperty(property)}
-        </p>
+          <p style={styles.subtitle}>
+            {propertyData?.title || formatProperty(property)}
+          </p>
 
-        <div style={styles.infoCard}>
-          <Info label="Plot Size" value={size} />
-          <Info label="Location" value={propertyData?.location || "..."} />
-          <Info label="Title" value={propertyData?.title_document || "..."} />
-        </div>
-
-        <div style={styles.valueBox}>
-          <p>✅ Flexible Payment Plans Available</p>
-          <p>✅ Free Site Inspection</p>
-          <p>✅ Instant Allocation</p>
-          <p>✅ Verified & Secure Title</p>
-        </div>
-
-        <p style={styles.link}>
-          Speak with our team to get current pricing →
-        </p>
-      </div>
-
-      {/* RIGHT */}
-      <div
-        style={{
-          ...styles.right,
-          padding: isMobile ? "20px" : "40px",
-        }}
-      >
-        {success ? (
-          <div style={styles.successBox}>
-            <h2>🎉 Booking Received</h2>
-            <p>Our team will contact you shortly.</p>
+          <div style={styles.infoCard}>
+            <Info label="Plot Size" value={size} />
+            <Info label="Location" value={propertyData?.location || "..."} />
+            <Info
+              label="Title"
+              value={propertyData?.title_document || "..."}
+            />
           </div>
-        ) : (
-          <>
-            <h1 style={styles.formTitle}>
-              Interested in owning a piece of Luxury?
-            </h1>
 
-            <p style={styles.formSubtitle}>
-              Fill the form below and we will contact you immediately
-            </p>
+          <div style={styles.valueBox}>
+            <p>✅ Flexible Payment Plans</p>
+            <p>✅ Free Site Inspection</p>
+            <p>✅ Instant Allocation</p>
+            <p>✅ Verified & Secure Title</p>
+          </div>
 
-            <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="name"
-                placeholder="Full Name"
-                required
-                onChange={handleChange}
-                style={styles.input}
-              />
+          <a href={whatsappLink} target="_blank" style={styles.whatsapp}>
+            💬 Chat on WhatsApp
+          </a>
+        </div>
 
-              <input
-                type="tel"
-                name="phone"
-                placeholder="Phone Number"
-                required
-                onChange={handleChange}
-                style={styles.input}
-              />
+        {/* RIGHT SIDE */}
+        <div style={styles.right}>
+          {success ? (
+            <div style={styles.successBox}>
+              <h2>🎉 Booking Confirmed</h2>
+              <p>Our team will contact you shortly.</p>
+            </div>
+          ) : (
+            <>
+              <h2 style={styles.formTitle}>
+                Own a Piece of Luxury Real Estate
+              </h2>
 
-              <input
-                type="email"
-                name="email"
-                placeholder="Email Address"
-                required
-                onChange={handleChange}
-                style={styles.input}
-              />
+              <form onSubmit={handleSubmit} style={styles.form}>
+                <FloatingInput
+                  name="name"
+                  label="Full Name"
+                  onChange={handleChange}
+                />
+                <FloatingInput
+                  name="phone"
+                  label="Phone Number"
+                  onChange={handleChange}
+                />
+                <FloatingInput
+                  name="email"
+                  label="Email Address"
+                  onChange={handleChange}
+                />
 
-              <button type="submit" style={styles.button} disabled={loading}>
-                {loading ? "Processing..." : "Submit →"}
-              </button>
-            </form>
-          </>
-        )}
+                <button style={styles.button} disabled={loading}>
+                  {loading ? "Processing..." : "Secure My Plot →"}
+                </button>
+              </form>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
-// 🔹 Info Component
+// 🔹 Floating Input
+const FloatingInput = ({ name, label, onChange }) => {
+  const [focused, setFocused] = useState(false);
+  const [hasValue, setHasValue] = useState(false);
+
+  return (
+    <div style={styles.inputGroup}>
+      <input
+        name={name}
+        required
+        onChange={(e) => {
+          onChange(e);
+          setHasValue(e.target.value !== "");
+        }}
+        onFocus={() => setFocused(true)}
+        onBlur={(e) => {
+          if (!e.target.value) setFocused(false);
+        }}
+        style={styles.input}
+      />
+
+      <label
+        style={{
+          ...styles.label,
+          top: focused || hasValue ? "6px" : "50%",
+          fontSize: focused || hasValue ? "11px" : "14px",
+          color: focused ? "#7c3aed" : "#777",
+          transform: focused || hasValue
+            ? "translateY(0)"
+            : "translateY(-50%)",
+        }}
+      >
+        {label}
+      </label>
+    </div>
+  );
+};
+
+// 🔹 Info Row
 const Info = ({ label, value }) => (
   <div style={styles.infoRow}>
-    <span style={styles.label}>{label}</span>
-    <span style={styles.value}>{value}</span>
+    <span>{label}</span>
+    <strong>{value}</strong>
   </div>
 );
 
+// 🎨 STYLES (ELITE UI)
 const styles = {
-  container: {
-    display: "flex",
-    minHeight: "85vh",
-    background: "#f8f9fc",
+  page: {
+    background: "#f6f7fb",
+    padding: "20px",
   },
 
-  left: { flex: 1 },
+  container: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "40px",
+    maxWidth: "1200px",
+    margin: "auto",
+  },
+
+  left: {},
 
   right: {
-    flex: 1,
-    background: "white",
+    background: "rgba(255,255,255,0.7)",
+    backdropFilter: "blur(20px)",
+    padding: "30px",
     borderRadius: "16px",
-    boxShadow: "0 20px 50px rgba(0,0,0,0.08)",
-    width: "100%",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.1)",
   },
 
   title: {
-    fontSize: "clamp(26px, 5vw, 36px)",
+    fontSize: "clamp(26px,5vw,38px)",
     fontWeight: "700",
   },
 
@@ -208,7 +222,7 @@ const styles = {
   },
 
   infoCard: {
-    background: "white",
+    background: "#fff",
     padding: "20px",
     borderRadius: "12px",
     marginBottom: "20px",
@@ -218,41 +232,75 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     marginBottom: "10px",
-    flexWrap: "wrap",
   },
-
-  label: { color: "#666" },
-
-  value: { fontWeight: "600" },
-
-  input: {
-    width: "100%",
-    padding: "14px",
-    marginBottom: "12px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-  },
-
-  button: {
-    width: "100%",
-    padding: "14px",
-    background: "linear-gradient(135deg,#6d28d9,#9333ea)",
-    color: "white",
-    border: "none",
-    borderRadius: "10px",
-    fontWeight: "600",
-  },
-
-  successBox: { textAlign: "center" },
 
   valueBox: {
-    marginTop: "15px",
     lineHeight: "1.8",
+    marginBottom: "20px",
   },
 
-  link: {
-    marginTop: "15px",
-    color: "#7c3aed",
+  whatsapp: {
+    display: "inline-block",
+    marginTop: "10px",
+    color: "#25D366",
     fontWeight: "600",
+  },
+
+  formTitle: {
+    marginBottom: "20px",
+    fontSize: "22px",
+  },
+
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+  },
+
+  inputGroup: {
+    position: "relative",
+  },
+
+  input: {
+  width: "100%",
+  padding: "18px 14px 8px", // top padding creates space for label
+  borderRadius: "10px",
+  border: "1px solid #ddd",
+  outline: "none",
+  fontSize: "15px",
+  color: "#111", // 🔥 VERY IMPORTANT (was too faint)
+  background: "#fff",
+  
+},
+
+  label: {
+  position: "absolute",
+  left: "12px",
+  background: "#fff",
+  padding: "0 6px",
+  pointerEvents: "none",
+  transition: "0.2s ease",
+},
+
+  button: {
+    padding: "16px",
+    borderRadius: "12px",
+    border: "none",
+    background: "linear-gradient(135deg,#6d28d9,#9333ea)",
+    color: "#fff",
+    fontWeight: "600",
+    cursor: "pointer",
+    transition: "0.3s",
+  },
+
+  successBox: {
+    textAlign: "center",
+  },
+
+  // 📱 MOBILE FIX
+  "@media (max-width:768px)": {
+    container: {
+      gridTemplateColumns: "1fr",
+    },
   },
 };

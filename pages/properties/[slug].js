@@ -70,7 +70,37 @@ export default function PropertyDetails() {
   const attractions = safeParse(property.environment_attractions, []);
   const paymentPlan = safeParse(property.payment_plan, {}) || {};
   const galleryImages = safeParse(property.gallery_images, []);
-  const faqs = safeParse(property.faqs, []);
+
+const autoFAQs = [
+  {
+    question: "Where is this estate located?",
+    answer: property.location
+      ? `${property.title} is located at ${property.location}. A fast developing area with strong investment potential in ilorin`
+      : "Location not specified",
+  },
+  {
+    question: "What title document does this property have?",
+    answer: property.title_document
+      ? `${property.title} comes with ${property.title_document}, ensuring secure ownership.`
+      : "Not specified",
+  },
+  {
+    question: "Can I inspect this property before making payment?",
+    answer: property.price
+      ? `Yes. We organize site inspections so buyers can verify the property before making payment. Kindly book an inspection.`
+      : "Contact for price",
+  },
+  {
+    question: "Is installment payment available for this property?",
+    answer: property.price
+      ? `Yes. Flexible installment payment options may be available depending on the property.`
+      : "Contact for price",
+  },
+];
+
+const customFAQs = safeParse(property.faqs, []);
+
+const faqs = [...autoFAQs, ...customFAQs];
 
   const whatsappUrl = `https://wa.me/2349063504797?text=${encodeURIComponent(
     `Hello, I am interested in ${property.title}`
@@ -80,24 +110,46 @@ export default function PropertyDetails() {
     setActiveFAQ(activeFAQ === index ? null : index);
   };
 
-  const FeatureIcon = ({ index }) => {
-    const icons = [
-      <svg viewBox="0 0 24 24" className={styles.svgIcon}>
-        <path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z" />
-      </svg>,
-      <svg viewBox="0 0 24 24" className={styles.svgIcon}>
-        <path d="M4 20l8-16 8 16M12 4v16" />
-      </svg>,
-      <svg viewBox="0 0 24 24" className={styles.svgIcon}>
-        <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
-      </svg>,
-      <svg viewBox="0 0 24 24" className={styles.svgIcon}>
-        <path d="M12 2C8 8 6 11 6 14a6 6 0 0012 0c0-3-2-6-6-12z" />
-      </svg>,
-    ];
+  // ===== ELITE REAL ESTATE SVG ICON SYSTEM =====
+const FeatureIcon = ({ label }) => {
+  const iconMap = {
+    "smart security": (
+      <svg viewBox="0 0 24 24" className={styles.svgIcon} fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z" />
+        <path d="M9.5 12l2 2 3-3" />
+      </svg>
+    ),
 
-    return icons[index % icons.length];
+    "dry land": (
+      <svg viewBox="0 0 24 24" className={styles.svgIcon} fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M3 17l6-6 4 4 6-6 2 2" />
+        <path d="M3 21h18" />
+      </svg>
+    ),
+
+    "modern gatehouse": (
+      <svg viewBox="0 0 24 24" className={styles.svgIcon} fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M3 10h18" />
+        <path d="M5 10v10M19 10v10" />
+        <path d="M9 10v10M15 10v10" />
+        <path d="M3 10l9-6 9 6" />
+      </svg>
+    ),
+
+    "prime location": (
+      <svg viewBox="0 0 24 24" className={styles.svgIcon} fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M12 21s7-5.5 7-11a7 7 0 10-14 0c0 5.5 7 11 7 11z" />
+        <circle cx="12" cy="10" r="2.5" />
+      </svg>
+    ),
   };
+
+  return iconMap[label?.toLowerCase()] || (
+    <svg viewBox="0 0 24 24" className={styles.svgIcon} fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="12" cy="12" r="8" />
+    </svg>
+  );
+};
 
   return (
     <>
@@ -146,7 +198,7 @@ export default function PropertyDetails() {
                 <div className={styles.featureGrid}>
                   {features.map((item, i) => (
                     <div key={i} className={styles.featureCard}>
-                      <FeatureIcon index={i} />
+                      <FeatureIcon label={item} />
                       <p>{item}</p>
                     </div>
                   ))}
@@ -162,7 +214,7 @@ export default function PropertyDetails() {
                 <h2>Why This Location</h2>
                 <ul className={styles.list}>
                   {whyLocation.map((item, i) => (
-                    <li key={i}>📍 {item}</li>
+                    <li key={i}> {item}</li>
                   ))}
                 </ul>
               </div>
@@ -176,7 +228,7 @@ export default function PropertyDetails() {
                 <h2>Nearby Attractions</h2>
                 <ul className={styles.list}>
                   {attractions.map((item, i) => (
-                    <li key={i}>🏙 {item}</li>
+                    <li key={i}>{item}</li>
                   ))}
                 </ul>
               </div>
@@ -219,49 +271,51 @@ export default function PropertyDetails() {
             )}
 
             {/* 🔥 PREMIUM FAQ */}
-            {faqs.length > 0 && (
-              <div
-                className={styles.section}
-                ref={(el) => (sectionsRef.current[5] = el)}
+{/* ✅ FAQ SECTION (AUTO + DYNAMIC) */}
+{faqs.length > 0 && (
+  <div
+    className={styles.section}
+    ref={(el) => (sectionsRef.current[5] = el)}
+  >
+    <h2 className={styles.faqTitle}>Property FAQs</h2>
+
+    <div className={styles.faqContainer}>
+      {faqs.map((faq, index) => {
+        const isActive = activeFAQ === index;
+
+        return (
+          <div key={index} className={styles.faqItem}>
+            <div
+              className={styles.faqQuestion}
+              onClick={() => toggleFAQ(index)}
+            >
+              <span>{faq.question}</span>
+
+              <span
+                className={`${styles.faqIcon} ${
+                  isActive ? styles.rotateIcon : ""
+                }`}
               >
-                <h2>Frequently Asked Questions</h2>
+                +
+              </span>
+            </div>
 
-                <div className={styles.faqContainer}>
-                  {faqs.map((faq, index) => {
-                    const isActive = activeFAQ === index;
-
-                    return (
-                      <div key={index} className={styles.faqItem}>
-                        <div
-                          className={styles.faqQuestion}
-                          onClick={() => toggleFAQ(index)}
-                        >
-                          <span>{faq.question}</span>
-                          <span
-                            className={`${styles.faqIcon} ${
-                              isActive ? styles.rotateIcon : ""
-                            }`}
-                          >
-                            +
-                          </span>
-                        </div>
-
-                        <div
-                          className={`${styles.faqAnswerWrapper} ${
-                            isActive ? styles.open : ""
-                          }`}
-                        >
-                          <div className={styles.faqAnswer}>
-                            {faq.answer}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+            <div
+              className={`${styles.faqAnswerWrapper} ${
+                isActive ? styles.open : ""
+              }`}
+            >
+              <div className={styles.faqAnswer}>
+                {faq.answer}
               </div>
-            )}
+            </div>
           </div>
+        );
+      })}
+    </div>
+  </div>
+)}
+              </div>         
 
           {/* RIGHT */}
           <div className={styles.right}>
