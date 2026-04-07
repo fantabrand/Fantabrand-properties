@@ -6,6 +6,10 @@
    GLOBAL RESET
 ========================= */
 
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   margin: 0;
@@ -13,10 +17,38 @@ body {
   background: #ffffff;
   color: #111111;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* =========================
-   WHY CHOOSE SECTION (WHITE LUXURY VERSION)
+   GLOBAL ELEMENT FIXES
+========================= */
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+button {
+  max-width: 100%;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* =========================
+   WHY CHOOSE SECTION
 ========================= */
 
 .whychoose-section {
@@ -40,7 +72,6 @@ body {
   font-weight: 600;
   margin-bottom: 15px;
   letter-spacing: -0.5px;
-  color: #111111;
 }
 
 .whychoose-header p {
@@ -48,15 +79,11 @@ body {
   font-size: 16px;
 }
 
-/* GRID */
-
 .whychoose-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 30px;
 }
-
-/* CARD */
 
 .whychoose-card {
   background: #f9fafb;
@@ -66,8 +93,6 @@ body {
   border: 1px solid #e5e7eb;
 }
 
-/* CARD HOVER */
-
 .whychoose-card:hover {
   transform: translateY(-8px);
   border-color: #a855f7;
@@ -75,22 +100,15 @@ body {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-/* ICON */
-
 .whychoose-icon {
   margin-bottom: 20px;
   color: #a855f7;
 }
 
-/* TITLE */
-
 .whychoose-card h3 {
   font-size: 20px;
   margin-bottom: 10px;
-  color: #111111;
 }
-
-/* DESCRIPTION */
 
 .whychoose-card p {
   color: #555555;
@@ -99,21 +117,7 @@ body {
 }
 
 /* =========================
-   MOBILE OPTIMIZATION
-========================= */
-
-@media (max-width: 768px) {
-  .whychoose-section {
-    padding: 70px 20px;
-  }
-
-  .whychoose-header h2 {
-    font-size: 28px;
-  }
-}
-
-/* =========================
-   WHATSAPP FLOAT BUTTON
+   WHATSAPP BUTTON
 ========================= */
 
 .whatsapp-button {
@@ -140,12 +144,9 @@ body {
 }
 
 /* =========================
-   REMOVE DEFAULT LINK UNDERLINE
+   EDITOR (ProseMirror)
 ========================= */
 
-a {
-  text-decoration: none;
-}
 .ProseMirror {
   outline: none;
   color: #111;
@@ -164,9 +165,17 @@ a {
 .ProseMirror ul {
   padding-left: 20px;
 }
-html, body {
-  padding: 0;
-  margin: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .whychoose-section {
+    padding: 70px 20px;
+  }
+
+  .whychoose-header h2 {
+    font-size: 28px;
+  }
 }

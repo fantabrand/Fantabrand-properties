@@ -1,10 +1,6 @@
 /* styles/BecomePartner.module.css */
 
-/* GLOBAL SAFETY */
-* {
-  box-sizing: border-box;
-}
-
+/* SECTIONS SAFETY (VALID — ALL CLASSES ✅) */
 .hero,
 .gallery,
 .values,
@@ -12,13 +8,6 @@
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
-}
-
-/* ✅ GLOBAL IMAGE FIX */
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
 }
 
 /* HERO */
@@ -59,7 +48,7 @@ img {
   line-height: 1.6;
 }
 
-/* PREMIUM BUTTON */
+/* BUTTON */
 .primaryBtn {
   display: inline-flex;
   align-items: center;
@@ -157,7 +146,6 @@ img {
   border-radius: 18px;
   backdrop-filter: blur(10px);
   transition: all 0.4s ease;
-
   opacity: 0;
   transform: translateY(40px);
 }
@@ -201,26 +189,9 @@ img {
   text-align: center;
 }
 
-/* ✅ GLOBAL FORM FIX (VERY IMPORTANT FOR YOUR ISSUE) */
-input,
-textarea,
-select {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-/* ✅ BUTTON FULL WIDTH ON SMALL DEVICES */
-button {
-  max-width: 100%;
-}
-
-/* ========================= */
-/* MOBILE OPTIMIZATION */
-/* ========================= */
+/* MOBILE */
 @media (max-width: 768px) {
 
-  /* HERO */
   .hero {
     height: auto;
     padding: 80px 16px;
@@ -240,7 +211,6 @@ button {
     font-size: 14px;
   }
 
-  /* GALLERY */
   .galleryGrid {
     grid-template-columns: 1fr;
   }
@@ -249,7 +219,6 @@ button {
     height: 200px;
   }
 
-  /* VALUES */
   .values {
     padding: 60px 16px;
   }
@@ -258,7 +227,7 @@ button {
     padding: 20px;
   }
 
-  /* ✅ CRITICAL FIX FOR OVERFLOW ISSUES */
+  /* ✅ FINAL OVERFLOW FIX */
   body {
     overflow-x: hidden;
   }
