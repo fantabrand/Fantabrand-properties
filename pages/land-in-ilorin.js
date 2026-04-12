@@ -6,13 +6,15 @@ export default function IlorinPage() {
   return (
     <>
       <Head>
-        <title>Affordable Land in Ilorin Kwara | Buy Land in Ilorin Nigeria</title>
+  <title>
+    Land for Sale in Ilorin Kwara – Affordable & Verified Plots
+  </title>
 
-        <meta
-          name="description"
-          content="Buy affordable land in Ilorin Kwara State with verified documents and flexible payment plans."
-        />
-      </Head>
+  <meta
+    name="description"
+    content="Explore affordable land for sale in Ilorin Kwara State. Verified properties with registered titles, flexible payment, and fast developing locations."
+  />
+</Head>
 
       <main style={{ background: "#050505", color: "white" }}>
 
@@ -28,13 +30,12 @@ export default function IlorinPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 style={heroTitle}>
-              Own Verified Land in Ilorin Before Prices Increase
-            </h1>
+            <h1>Land for Sale in Ilorin Kwara</h1>
 
-            <p style={heroSubtitle}>
-              Secure your plot in a fast-developing location with flexible payment plans.
-            </p>
+<p>
+Looking to buy land in Ilorin? We offer verified and affordable plots 
+in fast-growing areas like Ilorin East with flexible payment plans.
+</p>
 
             <div style={valueStrip}>
               <span>From ₦500k</span>

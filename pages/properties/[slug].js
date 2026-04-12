@@ -153,13 +153,59 @@ const FeatureIcon = ({ label }) => {
 
   return (
     <>
-      <Head />
+      <Head>
+  <title>
+    {property.title} – Land for Sale in {property.location} (Verified Title)
+  </title>
 
+  <meta
+    name="description"
+    content={`Buy land at ${property.title} located in ${property.location}. Verified title, instant allocation, and flexible payment plans available. Book inspection today.`}
+  />
+
+  <meta
+    property="og:title"
+    content={`${property.title} – Land in ${property.location}`}
+  />
+
+  <meta
+    property="og:description"
+    content={`Secure your plot at ${property.title} with verified title and flexible payment.`}
+  />
+
+  <meta property="og:image" content={property.image_url} />
+
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  {/* ✅ SCHEMA (VERY POWERFUL) */}
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: property.title,
+        description: property.description,
+        image: property.image_url,
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "NGN",
+          price: property.price,
+          availability: "https://schema.org/InStock"
+        }
+      }),
+    }}
+  />
+</Head>
       <div className={styles.container}>
         <div className={styles.grid}>
           {/* LEFT */}
           <div className={styles.left}>
-            <h1 className={styles.title}>{property.title}</h1>
+           <h1 className={styles.title}>
+  {property.title} – Land for Sale in {property.location}
+</h1>
             <p className={styles.subLocation}>{property.location}</p>
 
             <img src={mainImage} className={styles.heroImage} />
@@ -320,8 +366,15 @@ const FeatureIcon = ({ label }) => {
           {/* RIGHT */}
           <div className={styles.right}>
             <div className={styles.priceCard}>
-              <h1>₦{property.price}</h1>
+<h1>₦{property.price}</h1>
 
+{/* ✅ TRUST + URGENCY BOOST */}
+<div style={{ marginTop: "12px", lineHeight: "1.6" }}>
+  <p>✔ Limited plots available</p>
+  <p>✔ Verified title: {property.title_document || "Secure documentation"}</p>
+  <p>✔ Prime location in {property.location}</p>
+  <p>✔ High ROI potential</p>
+</div>
               {property.title_document && (
                 <div className={styles.titleDoc}>
                   📜 {property.title_document}

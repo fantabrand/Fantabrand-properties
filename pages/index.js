@@ -56,27 +56,26 @@ export default function Home() {
     <>
       <Head>
         {/* ✅ FIXED SEO (ILORIN) */}
-        <title>Affordable Land for Sale in Ilorin Kwara | Fantabrand Properties</title>
+  <title>
+    Buy Verified Land in Ilorin Kwara (Instant Allocation) | Fantabrand Properties
+  </title>
 
-        <meta
-          name="description"
-          content="Buy affordable land in Ilorin Kwara State with flexible payment plans. Fantabrand Properties offers verified land for sale in Ilorin Nigeria."
-        />
+  <meta
+    name="description"
+    content="Buy affordable and verified land in Ilorin Kwara State. Instant allocation, registered survey, and flexible payment plans. Secure your plot today."
+  />
 
-        <meta
-          name="keywords"
-          content="land for sale in ilorin, buy land ilorin kwara, affordable land ilorin nigeria, real estate ilorin"
-        />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {/* OPEN GRAPH */}
+  <meta property="og:title" content="Buy Verified Land in Ilorin Kwara (Instant Allocation)" />
+  <meta property="og:description" content="Secure verified land in Ilorin with flexible payment plans and instant allocation." />
+  <meta property="og:url" content="https://www.fantabrandproperties.com.ng/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/hero1.jpg" />
 
-        <meta property="og:title" content="Land for Sale in Ilorin Kwara | Fantabrand Properties" />
-        <meta property="og:description" content="Secure verified land in Ilorin with flexible payment plans." />
-        <meta property="og:url" content="https://www.fantabrandproperties.com.ng/" />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="/hero1.jpg" />
-
-        <meta name="twitter:card" content="summary_large_image" />
+  {/* TWITTER */}
+  <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
       <main className={styles.home}>
