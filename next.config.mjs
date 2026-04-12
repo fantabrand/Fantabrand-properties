@@ -5,6 +5,12 @@ const nextConfig = {
     domains: ["ixvywzrzfkufeoszzamm.supabase.co"],
   },
 
+  // ✅ ADD THIS (MULTI-LANGUAGE SUPPORT)
+  i18n: {
+    locales: ["en", "fr"],
+    defaultLocale: "en",
+  },
+
   async rewrites() {
     return [
       {

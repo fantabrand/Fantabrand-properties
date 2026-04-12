@@ -8,12 +8,33 @@ import PremiumFaq from "../components/PremiumFaq";
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
 import Head from "next/head";
+import { useRouter } from "next/router"; // ✅ ADDED
 
 export default function Home() {
+
+  const { locale } = useRouter(); // ✅ ADDED
 
   const [properties, setProperties] = useState([]);
   const [news, setNews] = useState([]);
   const [heroIndex, setHeroIndex] = useState(0);
+
+  // ✅ TRANSLATION CONTENT
+  const content = {
+    en: {
+      title: "Affordable Properties in Ilorin Kwara State",
+      subtitle:
+        "We have affordable and verified properties in Ilorin Kwara State with flexible payment plans. Limited plots available — secure your investment today.",
+      cta: "Buy Land in Ilorin",
+      urgency: "⚡ Limited plots remaining — prices increasing soon",
+    },
+    fr: {
+      title: "Propriétés abordables à Ilorin Kwara",
+      subtitle:
+        "Nous proposons des terrains sécurisés et abordables à Ilorin avec des paiements flexibles. Nombre de parcelles limité — investissez dès maintenant.",
+      cta: "Acheter un terrain à Ilorin",
+      urgency: "⚡ Parcelles limitées — les prix augmentent bientôt",
+    },
+  };
 
   useEffect(() => {
     fetchProperties();
@@ -55,27 +76,37 @@ export default function Home() {
   return (
     <>
       <Head>
-        {/* ✅ FIXED SEO (ILORIN) */}
-  <title>
-    Buy Verified Land in Ilorin Kwara (Instant Allocation) | Fantabrand Properties
-  </title>
 
-  <meta
-    name="description"
-    content="Buy affordable and verified land in Ilorin Kwara State. Instant allocation, registered survey, and flexible payment plans. Secure your plot today."
-  />
+        {/* ✅ DYNAMIC SEO */}
+        <title>
+          {locale === "fr"
+            ? "Acheter un terrain à Ilorin | Fantabrand Properties"
+            : "Buy Verified Land in Ilorin Kwara (Instant Allocation) | Fantabrand Properties"}
+        </title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="description"
+          content={
+            locale === "fr"
+              ? "Achetez un terrain sécurisé à Ilorin avec paiement flexible et attribution immédiate."
+              : "Buy affordable and verified land in Ilorin Kwara State. Instant allocation, registered survey, and flexible payment plans."
+          }
+        />
 
-  {/* OPEN GRAPH */}
-  <meta property="og:title" content="Buy Verified Land in Ilorin Kwara (Instant Allocation)" />
-  <meta property="og:description" content="Secure verified land in Ilorin with flexible payment plans and instant allocation." />
-  <meta property="og:url" content="https://www.fantabrandproperties.com.ng/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="/hero1.jpg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  {/* TWITTER */}
-  <meta name="twitter:card" content="summary_large_image" />
+        {/* HREFLANG */}
+        <link rel="alternate" href="https://www.fantabrandproperties.com.ng/" hreflang="en" />
+        <link rel="alternate" href="https://www.fantabrandproperties.com.ng/fr/" hreflang="fr" />
+
+        {/* OPEN GRAPH */}
+        <meta property="og:title" content="Fantabrand Properties" />
+        <meta property="og:description" content="Verified land in Ilorin with flexible payment plans." />
+        <meta property="og:url" content="https://www.fantabrandproperties.com.ng/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="/hero1.jpg" />
+
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
       <main className={styles.home}>
@@ -83,27 +114,26 @@ export default function Home() {
         {/* HERO SLIDER (UNCHANGED) */}
         <HeroSlider />
 
-        {/* ✅ NEW ILORIN SEO SECTION */}
+        {/* SEO SECTION */}
         <section className={styles.featureSection}>
           <div className={styles.container}>
 
             <h1 className={styles.sectionTitle}>
-              Affordable Properties in Ilorin Kwara State
+              {content[locale].title}
             </h1>
 
             <p className={styles.sectionSubtitle}>
-              We have affordable and verified properties in Ilorin Kwara State with flexible payment plans. 
-              Limited plots available — secure your investment today.
+              {content[locale].subtitle}
             </p>
 
             <div className={styles.center} style={{ marginTop: "20px" }}>
               <Link href="/land-in-ilorin" className={styles.primaryBtn}>
-                Buy Land in Ilorin
+                {content[locale].cta}
               </Link>
             </div>
 
             <p style={{ marginTop: "20px", fontSize: "16px", color: "#888" }}>
-              ⚡ Limited plots remaining — prices increasing soon
+              {content[locale].urgency}
             </p>
 
           </div>

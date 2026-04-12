@@ -5,6 +5,8 @@ import styles from "./Navbar.module.css";
 
 export default function Navbar() {
   const router = useRouter();
+  const { locale, asPath } = router; // ✅ ADD THIS
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -86,6 +88,13 @@ export default function Navbar() {
             <NavLink href="/about" current={router.pathname}>About</NavLink>
             <NavLink href="/become-a-partner" current={router.pathname}>Become A Partner</NavLink>
             <NavLink href="/contact" current={router.pathname}>Contact</NavLink>
+
+            {/* 🌍 LANGUAGE SWITCH (DESKTOP) */}
+            <Link href={asPath} locale={locale === "en" ? "fr" : "en"}>
+              <span style={{ marginLeft: "15px", cursor: "pointer", fontWeight: "600" }}>
+                {locale === "en" ? "FR 🇫🇷" : "EN 🇬🇧"}
+              </span>
+            </Link>
           </div>
 
           {/* ACTIONS */}
@@ -130,6 +139,13 @@ export default function Navbar() {
         <NavLink href="/about" current={router.pathname}>About</NavLink>
         <NavLink href="/become-a-partner" current={router.pathname}>Become A Partner</NavLink>
         <NavLink href="/contact" current={router.pathname}>Contact</NavLink>
+
+        {/* 🌍 LANGUAGE SWITCH (MOBILE) */}
+        <Link href={asPath} locale={locale === "en" ? "fr" : "en"}>
+          <span style={{ marginTop: "20px", display: "block", fontWeight: "600" }}>
+            {locale === "en" ? "Switch to French 🇫🇷" : "Switch to English 🇬🇧"}
+          </span>
+        </Link>
       </div>
     </>
   );

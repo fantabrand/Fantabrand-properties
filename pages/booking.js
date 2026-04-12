@@ -186,7 +186,8 @@ const Info = ({ label, value }) => (
   </div>
 );
 
-// 🎨 STYLES (ELITE UI)
+// ...everything remains the same above
+
 const styles = {
   page: {
     background: "#f6f7fb",
@@ -201,9 +202,13 @@ const styles = {
     margin: "auto",
   },
 
-  left: {},
+  // 👇 ADD THIS
+  left: {
+    gridColumn: "1",
+  },
 
   right: {
+    gridColumn: "2",
     background: "rgba(255,255,255,0.7)",
     backdropFilter: "blur(20px)",
     padding: "30px",
@@ -262,25 +267,24 @@ const styles = {
   },
 
   input: {
-  width: "100%",
-  padding: "18px 14px 8px", // top padding creates space for label
-  borderRadius: "10px",
-  border: "1px solid #ddd",
-  outline: "none",
-  fontSize: "15px",
-  color: "#111", // 🔥 VERY IMPORTANT (was too faint)
-  background: "#fff",
-  
-},
+    width: "100%",
+    padding: "18px 14px 8px",
+    borderRadius: "10px",
+    border: "1px solid #ddd",
+    outline: "none",
+    fontSize: "15px",
+    color: "#111",
+    background: "#fff",
+  },
 
   label: {
-  position: "absolute",
-  left: "12px",
-  background: "#fff",
-  padding: "0 6px",
-  pointerEvents: "none",
-  transition: "0.2s ease",
-},
+    position: "absolute",
+    left: "12px",
+    background: "#fff",
+    padding: "0 6px",
+    pointerEvents: "none",
+    transition: "0.2s ease",
+  },
 
   button: {
     padding: "16px",
@@ -297,10 +301,21 @@ const styles = {
     textAlign: "center",
   },
 
-  // 📱 MOBILE FIX
+  // 📱 MOBILE FIX (UPDATED)
   "@media (max-width:768px)": {
     container: {
       gridTemplateColumns: "1fr",
+    },
+
+    // 👇 THIS IS THE KEY FIX
+    right: {
+      gridColumn: "1",
+      gridRow: "1",
+    },
+
+    left: {
+      gridColumn: "1",
+      gridRow: "2",
     },
   },
 };
